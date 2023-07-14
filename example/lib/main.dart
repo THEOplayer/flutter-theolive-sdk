@@ -3,6 +3,8 @@ import 'dart:async';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_theolive/flutter_theolive.dart';
+import 'package:flutter_theolive/theolive_view.dart';
+import 'package:flutter_theolive/theolive_viewcontroller.dart';
 
 void main() {
   runApp(const MyApp());
@@ -47,6 +49,8 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
+  late THEOplayerViewController _theoController;
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -54,9 +58,17 @@ class _MyAppState extends State<MyApp> {
         appBar: AppBar(
           title: const Text('Plugin example app'),
         ),
-        body: Center(
-          child: Text('Running on: $_platformVersion\n'),
-        ),
+        body: Column(mainAxisAlignment: MainAxisAlignment.center,children: [
+          Container(width: 300, height: 300, child:
+            TheoPlayerView(key: UniqueKey(), onTHEOplayerViewCreated:(THEOplayerViewController controller) {
+              // assign the controller to interact with the player
+              _theoController = controller;
+            }
+            )
+          ),
+          Center(child: Text('Running on: $_platformVersion\n'),),
+        ],)
+
       ),
     );
   }

@@ -19,6 +19,8 @@ class FlutterTheolivePlugin: FlutterPlugin, MethodCallHandler {
   override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
     channel = MethodChannel(flutterPluginBinding.binaryMessenger, "flutter_theolive")
     channel.setMethodCallHandler(this)
+
+    flutterPluginBinding.platformViewRegistry.registerViewFactory("theoliveview", THEOliveViewFactory(flutterPluginBinding.binaryMessenger))
   }
 
   override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
