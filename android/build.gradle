@@ -2,7 +2,7 @@ group 'live.theo.sdk.flutter_theolive'
 version '1.0-SNAPSHOT'
 
 buildscript {
-    ext.kotlin_version = '1.7.10'
+    ext.kotlin_version = '1.8.22'
     repositories {
         google()
         mavenCentral()
@@ -50,7 +50,17 @@ android {
         minSdkVersion 24
     }
 
+    buildFeatures {
+        compose true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.4.8"
+    }
+
     dependencies {
-        implementation("com.theolive:player:0.1.1")
+        implementation "com.theolive:player:0.1.1"
+        implementation "androidx.compose.ui:ui:1.4.3"
+        implementation 'androidx.compose.material3:material3'
     }
 }
