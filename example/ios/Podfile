@@ -1,5 +1,8 @@
+# to make this work, you need to run `pod repo add dev1an https://github.com/Dev1an/cocoapod-specs.git` in terminal first
+source 'https://github.com/Dev1an/cocoapod-specs.git'
+
 # Uncomment this line to define a global platform for your project
-# platform :ios, '11.0'
+platform :ios, '14.0'
 
 # CocoaPods analytics sends network stats synchronously affecting flutter build latency.
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
