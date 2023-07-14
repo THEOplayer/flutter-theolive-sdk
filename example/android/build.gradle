@@ -3,6 +3,9 @@ buildscript {
     repositories {
         google()
         mavenCentral()
+        maven { url 'https://mvn.theoplayer.com/snapshots' }
+        maven { url = uri("https://maven.theoplayer.com/releases") }
+
     }
 
     dependencies {
@@ -15,6 +18,9 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        maven { url 'https://mvn.theoplayer.com/snapshots' }
+        maven { url = uri("https://maven.theoplayer.com/releases") }
+
     }
 }
 
