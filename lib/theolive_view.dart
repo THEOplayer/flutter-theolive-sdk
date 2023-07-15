@@ -33,7 +33,7 @@ class TheoPlayerView extends StatelessWidget {
             );
           },
           onCreatePlatformView: (params) {
-            return PlatformViewsService.initAndroidView(
+            return PlatformViewsService.initExpensiveAndroidView(
               id: params.id,
               viewType: viewType,
               layoutDirection: TextDirection.ltr,
