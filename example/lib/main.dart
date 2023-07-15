@@ -63,6 +63,10 @@ class _MyAppState extends State<MyApp> {
             TheoPlayerView(key: UniqueKey(), onTHEOplayerViewCreated:(THEOplayerViewController controller) {
               // assign the controller to interact with the player
               _theoController = controller;
+              //TODO: player is not available here yet, so we delay the load a bit... has to be fixed
+              Future.delayed(Duration(seconds: 1)).then((value) => {
+                _theoController.loadChannel("0nhw9z5zaz6bek27vdng81be5")
+              });
             }
             )
           ),
