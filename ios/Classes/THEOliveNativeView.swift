@@ -15,6 +15,7 @@ class THEOliveNativeView: NSObject, FlutterPlatformView {
     private var _view: UIView
     private var _channel: FlutterMethodChannel
 
+    private let player = THEOliveSDK.Player()
 
     init(
         frame: CGRect,
@@ -23,6 +24,7 @@ class THEOliveNativeView: NSObject, FlutterPlatformView {
         binaryMessenger messenger: FlutterBinaryMessenger?
     ) {
         _view = UIView()
+        _view.frame = frame
         _channel = FlutterMethodChannel(name: "THEOliveView/\(viewId)", binaryMessenger: messenger!)
         
         super.init()
@@ -35,14 +37,15 @@ class THEOliveNativeView: NSObject, FlutterPlatformView {
           switch call.method {
               case "loadChannel":
                guard let args = call.arguments as? [String: Any],
-                 let text = args["channelId"] as? String else {
+                 let channelId = args["channelId"] as? String else {
                  result(FlutterError(code: "ERROR_1", message: "Missing channelId!", details: nil))
                  return
                }
+                self.player.loadChannel(channelId)
                 print(THEOliveNativeView.TAG + " SWIFT loadChannel success")
                 result(nil)
             case "play":
-                print("SWIFT play!")
+                print("SWIFT play!, not implemented")
           default:
               result(FlutterMethodNotImplemented)
           }
@@ -58,12 +61,16 @@ class THEOliveNativeView: NSObject, FlutterPlatformView {
     func createNativeView(view _view: UIView){
         print("createNativeView")
         _view.backgroundColor = UIColor.yellow
-        let label = UILabel()
-        label.text = "THEOlive view should be here..."
-        label.textColor = UIColor.black
-        label.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        label.translatesAutoresizingMaskIntoConstraints = false
-        _view.addSubview(label)
+
+
+        let newPlayerView = THEOliveSDK.PlayerViewController(player: player)
+        //parent.addChild(playerViewController) //TODO: get main VC, if needed
+
+        newPlayerView.view.translatesAutoresizingMaskIntoConstraints = false
+        newPlayerView.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        //newPlayerView.didMove(toParent: parent)
+        newPlayerView.view.frame = _view.bounds
+        _view.addSubview(newPlayerView.view)
 
     }
     
