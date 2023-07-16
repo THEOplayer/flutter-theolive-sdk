@@ -31,7 +31,8 @@ class THEOliveNativeView: NSObject, FlutterPlatformView {
         
         // iOS views can be created here
         createNativeView(view: _view)
-        
+        setupEventListeners()
+                
         _channel.setMethodCallHandler({ (call: FlutterMethodCall, result: FlutterResult) -> Void in
           // receive calls from Dart
           switch call.method {
@@ -72,6 +73,15 @@ class THEOliveNativeView: NSObject, FlutterPlatformView {
         newPlayerView.view.frame = _view.bounds
         _view.addSubview(newPlayerView.view)
 
+    }
+    
+    func setupEventListeners() {
+        player.addEventListener(type: PlayerEventTypes.ChannelLoaded) { event in
+            // method channel invokeMethod with callback
+            self._channel.invokeMethod("onChannelLoaded", arguments: event.configuration.channelID) { (result) in
+                print(THEOliveNativeView.TAG + "SWIFT onChannelLoaded ack received: " + String(describing: result))
+            }
+        }
     }
     
 }
