@@ -20,10 +20,11 @@ import io.flutter.plugin.platform.PlatformView
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import live.theo.sdk.flutter_theolive.pigeon.THEOliveNativeAPI
 
 
 class THEOliveView(context: Context, viewId: Int, args: Any?, messenger: BinaryMessenger) : PlatformView,
-    MethodChannel.MethodCallHandler, EventListener {
+    MethodChannel.MethodCallHandler, EventListener, THEOliveNativeAPI {
 
     private val cv: ComposeView
     private lateinit var player: THEOlivePlayer
@@ -33,6 +34,7 @@ class THEOliveView(context: Context, viewId: Int, args: Any?, messenger: BinaryM
 
     init {
 
+        THEOliveNativeAPI.setUp(messenger, this);
         constraintLayout = LinearLayout(context)
 
         val layoutParams = ViewGroup.LayoutParams(
@@ -86,6 +88,7 @@ class THEOliveView(context: Context, viewId: Int, args: Any?, messenger: BinaryM
 
     override fun onMethodCall(call: MethodCall, result: Result) {
         // receive calls from Dart
+        Log.d("THEOliveView", "onMethodCall: $call.method");
 
         when (call.method) {
             "play" -> {
@@ -114,6 +117,13 @@ class THEOliveView(context: Context, viewId: Int, args: Any?, messenger: BinaryM
             else -> { // Note the block
                 result.notImplemented()
             }
+        }
+    }
+
+    override fun loadChannel(channelID: String) {
+        runBlocking {
+            Log.d("THEOliveView", "loadChannel: $channelID, player: $player");
+            player.loadChannel(channelID)
         }
     }
 }

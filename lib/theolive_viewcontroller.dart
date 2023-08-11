@@ -5,10 +5,13 @@ import 'package:flutter/services.dart';
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter_theolive/pigeon/theolive_api.g.dart';
+
 class THEOplayerViewController {
   static const String _TAG = "FL_DART_THEOliveViewController";
   late MethodChannel _channel;
   int _id;
+  final THEOliveNativeAPI _nativeAPI = THEOliveNativeAPI();
 
   THEOplayerViewController(this._id) {
     _channel = MethodChannel('THEOliveView/$_id');
@@ -49,7 +52,8 @@ class THEOplayerViewController {
 
   // if we want to call async
   loadChannel(String channelId)  {
-    _channel.invokeMethod("loadChannel", { "channelId": channelId } );
+    //_channel.invokeMethod("loadChannel", { "channelId": channelId } );
+    _nativeAPI.loadChannel(channelId);
   }
 
 }

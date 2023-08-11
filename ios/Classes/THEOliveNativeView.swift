@@ -10,7 +10,8 @@ import Flutter
 import UIKit
 import THEOliveSDK
 
-class THEOliveNativeView: NSObject, FlutterPlatformView {
+class THEOliveNativeView: NSObject, FlutterPlatformView, THEOliveNativeAPI {
+    
     private static var TAG = "FL_IOS_THEOliveNativeView"
     private var _view: UIView
     private var _channel: FlutterMethodChannel
@@ -26,9 +27,11 @@ class THEOliveNativeView: NSObject, FlutterPlatformView {
         _view = UIView()
         _view.frame = frame
         _channel = FlutterMethodChannel(name: "THEOliveView/\(viewId)", binaryMessenger: messenger!)
-        
+                
         super.init()
         
+        THEOliveNativeAPISetup.setUp(binaryMessenger: messenger!, api: self)
+
         // iOS views can be created here
         createNativeView(view: _view)
         setupEventListeners()
@@ -84,6 +87,11 @@ class THEOliveNativeView: NSObject, FlutterPlatformView {
             }
         }
         */
+    }
+    
+    func loadChannel(channelID: String) throws {
+        print(THEOliveNativeView.TAG + " SWIFT loadChannel API call")
+        self.player.loadChannel(channelID)
     }
     
 }
