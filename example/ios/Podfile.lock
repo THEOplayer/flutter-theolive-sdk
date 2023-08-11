@@ -2,15 +2,15 @@ PODS:
   - Flutter (1.0.0)
   - flutter_theolive (0.0.1):
     - Flutter
-    - THEOliveSDK (= 1.0.0-alpha.4)
-  - THEOliveSDK (1.0.0-alpha.4)
+    - THEOliveSDK (= 1.0.0)
+  - THEOliveSDK (1.0.0)
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
   - flutter_theolive (from `.symlinks/plugins/flutter_theolive/ios`)
 
 SPEC REPOS:
-  https://github.com/Dev1an/cocoapod-specs.git:
+  trunk:
     - THEOliveSDK
 
 EXTERNAL SOURCES:
@@ -21,9 +21,9 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
-  flutter_theolive: 1ba2c07e3a73f11213661e9e56f1ec5272d3affc
-  THEOliveSDK: 19041995ed2e87d3b946902e2c1103c2dfcbe3ca
+  flutter_theolive: 1a1284cd093a5b14a8ff1dfd544ff09d9c87eba8
+  THEOliveSDK: 52503ed616ef24120fc8ddbb0dc74f5d78175382
 
-PODFILE CHECKSUM: 74028d01956c88e412fd3b5a19ba08855e244768
+PODFILE CHECKSUM: 8ae5c35a5cecf3f61034d5617181e61ad4d19544
 
 COCOAPODS: 1.12.1

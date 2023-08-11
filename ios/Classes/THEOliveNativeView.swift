@@ -15,7 +15,7 @@ class THEOliveNativeView: NSObject, FlutterPlatformView {
     private var _view: UIView
     private var _channel: FlutterMethodChannel
 
-    private let player = THEOliveSDK.Player()
+    private let player = THEOliveSDK.THEOlivePlayer()
 
     init(
         frame: CGRect,
@@ -64,7 +64,7 @@ class THEOliveNativeView: NSObject, FlutterPlatformView {
         _view.backgroundColor = UIColor.yellow
 
 
-        let newPlayerView = THEOliveSDK.PlayerViewController(player: player)
+        let newPlayerView = THEOliveSDK.THEOlivePlayerViewController(player: player)
         //parent.addChild(playerViewController) //TODO: get main VC, if needed
 
         newPlayerView.view.translatesAutoresizingMaskIntoConstraints = false
@@ -76,12 +76,14 @@ class THEOliveNativeView: NSObject, FlutterPlatformView {
     }
     
     func setupEventListeners() {
+        /*
         player.addEventListener(type: PlayerEventTypes.ChannelLoaded) { event in
             // method channel invokeMethod with callback
             self._channel.invokeMethod("onChannelLoaded", arguments: event.configuration.channelID) { (result) in
                 print(THEOliveNativeView.TAG + "SWIFT onChannelLoaded ack received: " + String(describing: result))
             }
         }
+        */
     }
     
 }

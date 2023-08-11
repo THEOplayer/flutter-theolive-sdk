@@ -1,5 +1,5 @@
 # to make this work, you need to run `pod repo add dev1an https://github.com/Dev1an/cocoapod-specs.git` in terminal first
-source 'https://github.com/Dev1an/cocoapod-specs.git'
+#source 'https://github.com/Dev1an/cocoapod-specs.git'
 
 # Uncomment this line to define a global platform for your project
 platform :ios, '14.0'
