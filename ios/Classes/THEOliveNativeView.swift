@@ -10,11 +10,12 @@ import Flutter
 import UIKit
 import THEOliveSDK
 
-class THEOliveNativeView: NSObject, FlutterPlatformView, THEOliveNativeAPI {
+class THEOliveNativeView: NSObject, FlutterPlatformView, THEOliveNativeAPI, THEOlivePlayerEventListener {
     
     private static var TAG = "FL_IOS_THEOliveNativeView"
     private var _view: UIView
     private var _channel: FlutterMethodChannel
+    private let _flutterAPI: THEOliveFlutterAPI
 
     private let player = THEOliveSDK.THEOlivePlayer()
 
@@ -27,6 +28,7 @@ class THEOliveNativeView: NSObject, FlutterPlatformView, THEOliveNativeAPI {
         _view = UIView()
         _view.frame = frame
         _channel = FlutterMethodChannel(name: "THEOliveView/\(viewId)", binaryMessenger: messenger!)
+        _flutterAPI = THEOliveFlutterAPI(binaryMessenger: messenger!)
                 
         super.init()
         
@@ -79,19 +81,26 @@ class THEOliveNativeView: NSObject, FlutterPlatformView, THEOliveNativeAPI {
     }
     
     func setupEventListeners() {
-        /*
-        player.addEventListener(type: PlayerEventTypes.ChannelLoaded) { event in
-            // method channel invokeMethod with callback
-            self._channel.invokeMethod("onChannelLoaded", arguments: event.configuration.channelID) { (result) in
-                print(THEOliveNativeView.TAG + "SWIFT onChannelLoaded ack received: " + String(describing: result))
-            }
-        }
-        */
+        
+        player.add(eventListener: self)
+        
     }
     
     func loadChannel(channelID: String) throws {
         print(THEOliveNativeView.TAG + " SWIFT loadChannel API call")
         self.player.loadChannel(channelID)
+    }
+    
+    func onChannelLoaded(channelId: String) {
+        // method channel invokeMethod with callback
+        /*
+        self._channel.invokeMethod("onChannelLoaded", arguments: channelId) { (result) in
+            print(THEOliveNativeView.TAG + "SWIFT onChannelLoaded ack received: " + String(describing: result))
+        }
+         */
+        _flutterAPI.onChannelLoadedEvent(channelID: channelId) {
+            print(THEOliveNativeView.TAG + "SWIFT onChannelLoaded ack received: " + channelId)
+        }
     }
     
 }

@@ -20,6 +20,7 @@ import io.flutter.plugin.platform.PlatformView
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import live.theo.sdk.flutter_theolive.pigeon.THEOliveFlutterAPI
 import live.theo.sdk.flutter_theolive.pigeon.THEOliveNativeAPI
 
 
@@ -31,10 +32,14 @@ class THEOliveView(context: Context, viewId: Int, args: Any?, messenger: BinaryM
     private val constraintLayout: LinearLayout
 
     private val methodChannel: MethodChannel
+    private val flutterApi: THEOliveFlutterAPI
+
 
     init {
 
         THEOliveNativeAPI.setUp(messenger, this);
+        flutterApi = THEOliveFlutterAPI(messenger);
+
         constraintLayout = LinearLayout(context)
 
         val layoutParams = ViewGroup.LayoutParams(
@@ -74,7 +79,11 @@ class THEOliveView(context: Context, viewId: Int, args: Any?, messenger: BinaryM
     override fun onChannelLoaded(channelInfo: ChannelInfo) {
         super.onChannelLoaded(channelInfo)
         //TODO: instead of null, we can pass a result callback, if we care about a response from the receiver side too
-        methodChannel.invokeMethod("onChannelLoaded", channelInfo.channelId, null)
+        //methodChannel.invokeMethod("onChannelLoaded", channelInfo.channelId, null)
+        flutterApi.onChannelLoadedEvent(channelInfo.channelId, callback = {
+            Log.d("THEOliveView", "JAVA onChannelLoaded ack received: " + (channelInfo.channelId))
+
+        });
     }
 
 
@@ -126,4 +135,5 @@ class THEOliveView(context: Context, viewId: Int, args: Any?, messenger: BinaryM
             player.loadChannel(channelID)
         }
     }
+
 }

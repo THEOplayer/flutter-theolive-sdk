@@ -7,7 +7,7 @@ import 'dart:io';
 
 import 'package:flutter_theolive/pigeon/theolive_api.g.dart';
 
-class THEOplayerViewController {
+class THEOplayerViewController implements THEOliveFlutterAPI {
   static const String _TAG = "FL_DART_THEOliveViewController";
   late MethodChannel _channel;
   int _id;
@@ -16,6 +16,7 @@ class THEOplayerViewController {
   THEOplayerViewController(this._id) {
     _channel = MethodChannel('THEOliveView/$_id');
     _channel.setMethodCallHandler(_handleMethod);
+    THEOliveFlutterAPI.setup(this);
   }
 
 
@@ -55,5 +56,11 @@ class THEOplayerViewController {
     //_channel.invokeMethod("loadChannel", { "channelId": channelId } );
     _nativeAPI.loadChannel(channelId);
   }
+
+  @override
+  void onChannelLoadedEvent(String channelID) {
+    print("$_TAG  onChannelLoaded received: $channelID");
+  }
+
 
 }
