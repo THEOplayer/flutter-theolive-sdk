@@ -60,3 +60,16 @@ class THEOliveNativeAPISetup {
     }
   }
 }
+/// Generated class from Pigeon that represents Flutter messages that can be called from Swift.
+class THEOliveFlutterAPI {
+  private let binaryMessenger: FlutterBinaryMessenger
+  init(binaryMessenger: FlutterBinaryMessenger){
+    self.binaryMessenger = binaryMessenger
+  }
+  func onChannelLoadedEvent(channelID channelIDArg: String, completion: @escaping () -> Void) {
+    let channel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onChannelLoadedEvent", binaryMessenger: binaryMessenger)
+    channel.sendMessage([channelIDArg] as [Any?]) { _ in
+      completion()
+    }
+  }
+}

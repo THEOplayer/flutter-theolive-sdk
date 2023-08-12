@@ -76,3 +76,19 @@ interface THEOliveNativeAPI {
     }
   }
 }
+/** Generated class from Pigeon that represents Flutter messages that can be called from Kotlin. */
+@Suppress("UNCHECKED_CAST")
+class THEOliveFlutterAPI(private val binaryMessenger: BinaryMessenger) {
+  companion object {
+    /** The codec used by THEOliveFlutterAPI. */
+    val codec: MessageCodec<Any?> by lazy {
+      StandardMessageCodec()
+    }
+  }
+  fun onChannelLoadedEvent(channelIDArg: String, callback: () -> Unit) {
+    val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onChannelLoadedEvent", codec)
+    channel.send(listOf(channelIDArg)) {
+      callback()
+    }
+  }
+}

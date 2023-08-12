@@ -21,9 +21,8 @@ abstract class THEOliveNativeAPI {
 }
 
 //Native talks to Dart
-/*
+
 @FlutterApi()
 abstract class THEOliveFlutterAPI {
-  void onChannelLoaded();
+  void onChannelLoadedEvent(String channelID);
 }
- */

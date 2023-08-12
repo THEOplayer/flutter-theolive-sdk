@@ -40,3 +40,31 @@ class THEOliveNativeAPI {
     }
   }
 }
+
+abstract class THEOliveFlutterAPI {
+  static const MessageCodec<Object?> codec = StandardMessageCodec();
+
+  void onChannelLoadedEvent(String channelID);
+
+  static void setup(THEOliveFlutterAPI? api, {BinaryMessenger? binaryMessenger}) {
+    {
+      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onChannelLoadedEvent', codec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        channel.setMessageHandler(null);
+      } else {
+        channel.setMessageHandler((Object? message) async {
+          assert(message != null,
+          'Argument for dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onChannelLoadedEvent was null.');
+          final List<Object?> args = (message as List<Object?>?)!;
+          final String? arg_channelID = (args[0] as String?);
+          assert(arg_channelID != null,
+              'Argument for dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onChannelLoadedEvent was null, expected non-null String.');
+          api.onChannelLoadedEvent(arg_channelID!);
+          return;
+        });
+      }
+    }
+  }
+}
