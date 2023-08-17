@@ -10,6 +10,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import com.theolive.player.api.*
 import com.theoplayer.android.api.event.player.PlayerEventTypes
 import io.flutter.plugin.common.BinaryMessenger
@@ -47,10 +48,12 @@ class THEOliveView(context: Context, viewId: Int, args: Any?, messenger: BinaryM
             ViewGroup.LayoutParams.MATCH_PARENT)
         constraintLayout.layoutParams = layoutParams
 
+        constraintLayout.id = viewId
         cv = ComposeView(context)
-        cv.id = View.generateViewId(); //TODO: use viewId here, or on the wrapper
+        cv.id = View.generateViewId();
         constraintLayout.addView(cv)
 
+        cv.setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
         cv.setContent {
             val scope = rememberCoroutineScope()
             val player = rememberTHEOlivePlayer()
