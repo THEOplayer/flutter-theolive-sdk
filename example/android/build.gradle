@@ -3,9 +3,6 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-        maven { url 'https://mvn.theoplayer.com/snapshots' }
-        maven { url = uri("https://maven.theoplayer.com/releases") }
-
     }
 
     dependencies {
@@ -18,9 +15,6 @@ allprojects {
     repositories {
         google()
         mavenCentral()
-        maven { url 'https://mvn.theoplayer.com/snapshots' }
-        maven { url = uri("https://maven.theoplayer.com/releases") }
-
     }
 }
 
@@ -32,6 +26,6 @@ subprojects {
     project.evaluationDependsOn(':app')
 }
 
-task clean(type: Delete) {
+tasks.register("clean", Delete) {
     delete rootProject.buildDir
 }

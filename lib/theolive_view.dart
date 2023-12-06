@@ -1,5 +1,3 @@
-import 'dart:async';
-import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -7,14 +5,46 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_theolive/theolive_viewcontroller.dart';
 
-class TheoPlayerView extends StatelessWidget {
+class THEOliveView extends StatefulWidget {
 
-  final Function(THEOplayerViewController) onTHEOplayerViewCreated;
+  final Function(THEOliveViewController) onTHEOliveViewCreated;
 
-  const TheoPlayerView({required Key key, required this.onTHEOplayerViewCreated,}) : super(key: key);
+  THEOliveView({required Key key, required this.onTHEOliveViewCreated,}) : super(key: key);
+
+  late THEOliveViewController viewController;
+
+  @override
+  State<StatefulWidget> createState() {
+    return _THEOliveViewState();
+  }
+
+}
+
+class _THEOliveViewState extends State<THEOliveView> {
+
+  late THEOliveViewController viewController;
+
+  @override
+  void initState() {
+    print("_THEOliveViewState initState");
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    print("_THEOliveViewState dispose");
+    // NOTE: this would be nicer, if we move it inside the THEOliveView that's a StatefulWidget
+    // FIX for https://github.com/flutter/flutter/issues/97499
+    if (defaultTargetPlatform == TargetPlatform.iOS) {
+      viewController.manualDispose();
+    }
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    print("_THEOliveViewState build");
+
     // This is used in the platform side to register the view.
     const String viewType = 'theoliveview';
     // Pass parameters to the platform side.
@@ -28,7 +58,8 @@ class TheoPlayerView extends StatelessWidget {
               (context, controller) {
             return AndroidViewSurface(
               controller: controller as AndroidViewController,
-              gestureRecognizers: const <Factory<OneSequenceGestureRecognizer>>{},
+              gestureRecognizers: const <Factory<OneSequenceGestureRecognizer>>{
+              },
               hitTestBehavior: PlatformViewHitTestBehavior.opaque,
             );
           },
@@ -44,8 +75,11 @@ class TheoPlayerView extends StatelessWidget {
               },
             )
               ..addOnPlatformViewCreatedListener((id) {
+                print("_THEOliveViewState OnPlatformViewCreatedListener");
                 params.onPlatformViewCreated(id);
-                onTHEOplayerViewCreated(THEOplayerViewController(id));
+                viewController = THEOliveViewController(id);
+                widget.viewController = viewController;
+                widget.onTHEOliveViewCreated(viewController);
               })
               ..create();
           },
@@ -57,21 +91,38 @@ class TheoPlayerView extends StatelessWidget {
             creationParams: creationParams,
             creationParamsCodec: const StandardMessageCodec(),
             onPlatformViewCreated: (id) {
-              onTHEOplayerViewCreated(THEOplayerViewController(id));
+              print("_THEOliveViewState OnPlatformViewCreatedListener");
+              viewController = THEOliveViewController(id);
+              widget.viewController = viewController;
+              widget.onTHEOliveViewCreated(viewController);
             }
         );
       default:
         return Text("Unsupported platform $defaultTargetPlatform");
     }
-
-
   }
 
-  void _onPlatformViewCreated(int id) {
-    if (onTHEOplayerViewCreated == null) {
-      return;
-    }
-    onTHEOplayerViewCreated(THEOplayerViewController(id));
+  @override
+  void didChangeDependencies() {
+    print("_THEOliveViewState didChangeDependencies");
+    super.didChangeDependencies();
   }
 
+  @override
+  void activate() {
+    print("_THEOliveViewState activate");
+    super.activate();
+  }
+
+  @override
+  void deactivate() {
+    print("_THEOliveViewState deactivate");
+    super.deactivate();
+  }
+
+  @override
+  void reassemble() {
+    print("_THEOliveViewState reassemble");
+    super.reassemble();
+  }
 }

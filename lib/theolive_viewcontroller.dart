@@ -1,66 +1,55 @@
-import 'dart:ffi';
-
-import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
-import 'dart:async';
-import 'dart:io';
-
 import 'package:flutter_theolive/pigeon/theolive_api.g.dart';
 
-class THEOplayerViewController implements THEOliveFlutterAPI {
+class THEOliveViewController implements  THEOliveFlutterAPI{
   static const String _TAG = "FL_DART_THEOliveViewController";
-  late MethodChannel _channel;
+
   int _id;
+  THEOliveViewControllerEventListener? eventListener;
+
   final THEOliveNativeAPI _nativeAPI = THEOliveNativeAPI();
 
-  THEOplayerViewController(this._id) {
-    _channel = MethodChannel('THEOliveView/$_id');
-    _channel.setMethodCallHandler(_handleMethod);
+
+  THEOliveViewController(this._id) {
     THEOliveFlutterAPI.setup(this);
   }
 
-
-  // handle calls from Android
-  Future<dynamic> _handleMethod(MethodCall call) async {
-    switch (call.method) {
-      case 'onChannelLoaded':
-        dynamic channelId = call.arguments;
-        if (kDebugMode) {
-          print("$_TAG  onChannelLoaded received: $channelId");
-        }
-        return Future.value("ok"); // whatever, if we want to send back something
-      default:
-        print("$_TAG  unexpected received: ${call.method}");
-
-
-    }
-
+  void loadChannel(String channelId) {
+    _nativeAPI.loadChannel(channelId).onError(
+      //consume the exception, it is irrelevant to the flow, just for information
+            (error, stackTrace) => print("ERROR during loadChannel: $error")
+    );
   }
 
-  // if we need to wait for a result:
-  Future<void> play() async {
-    try {
-      final Bool result = await _channel.invokeMethod('play');
-      if (kDebugMode) {
-        print("$_TAG Result from native: $result");
-      }
-    } on PlatformException catch (e) {
-      if (kDebugMode) {
-        print("$_TAG Error from native: $e.message");
-      }
-    }
+  void play() {
+    _nativeAPI.play();
   }
 
-  // if we want to call async
-  loadChannel(String channelId)  {
-    //_channel.invokeMethod("loadChannel", { "channelId": channelId } );
-    _nativeAPI.loadChannel(channelId);
+  void pause() {
+    _nativeAPI.pause();
+  }
+
+  void manualDispose() {
+    _nativeAPI.manualDispose();
   }
 
   @override
   void onChannelLoadedEvent(String channelID) {
     print("$_TAG  onChannelLoaded received: $channelID");
+    eventListener?.onChannelLoadedEvent(channelID);
   }
 
+  @override
+  void onPlaying() {
+    print("$_TAG  onPlaying received");
+    eventListener?.onPlaying();
+  }
 
+  void preloadChannels(List<String> list) {
+    _nativeAPI.preloadChannels(list);
+  }
+}
+
+abstract class THEOliveViewControllerEventListener {
+  void onChannelLoadedEvent(String channelID);
+  void onPlaying();
 }

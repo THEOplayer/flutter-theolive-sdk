@@ -6,6 +6,7 @@ import 'package:flutter_theolive/flutter_theolive.dart';
 import 'package:flutter_theolive/theolive_view.dart';
 import 'package:flutter_theolive/theolive_viewcontroller.dart';
 
+
 void main() {
   runApp(const MyApp());
 }
@@ -49,7 +50,7 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  late THEOplayerViewController _theoController;
+  late THEOliveViewController _theoController;
 
   @override
   Widget build(BuildContext context) {
@@ -60,12 +61,12 @@ class _MyAppState extends State<MyApp> {
         ),
         body: Column(mainAxisAlignment: MainAxisAlignment.center,children: [
           Container(width: 300, height: 300, child:
-            TheoPlayerView(key: UniqueKey(), onTHEOplayerViewCreated:(THEOplayerViewController controller) {
+            THEOliveView(key: UniqueKey(), onTHEOliveViewCreated:(THEOliveViewController controller) {
               // assign the controller to interact with the player
               _theoController = controller;
               //TODO: player is not available here yet, so we delay the load a bit... has to be fixed
               Future.delayed(Duration(seconds: 1)).then((value) => {
-                _theoController.loadChannel("0nhw9z5zaz6bek27vdng81be5")
+                _theoController.loadChannel("38yyniscxeglzr8n0lbku57b0")
               });
             }
             )

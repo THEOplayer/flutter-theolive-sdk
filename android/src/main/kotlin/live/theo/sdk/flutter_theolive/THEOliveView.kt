@@ -5,38 +5,42 @@ import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.platform.ViewCompositionStrategy
-import com.theolive.player.api.*
-import com.theoplayer.android.api.event.player.PlayerEventTypes
+import com.theolive.player.EventListener
+import com.theolive.player.PlayerView
 import io.flutter.plugin.common.BinaryMessenger
-import io.flutter.plugin.common.MethodCall
-import io.flutter.plugin.common.MethodChannel
-import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.platform.PlatformView
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import live.theo.sdk.flutter_theolive.pigeon.THEOliveFlutterAPI
 import live.theo.sdk.flutter_theolive.pigeon.THEOliveNativeAPI
 
 
 class THEOliveView(context: Context, viewId: Int, args: Any?, messenger: BinaryMessenger) : PlatformView,
-    MethodChannel.MethodCallHandler, EventListener, THEOliveNativeAPI {
+    EventListener, THEOliveNativeAPI {
 
-    private val cv: ComposeView
-    private lateinit var player: THEOlivePlayer
+    private var playerView: PlayerView
+
     private val constraintLayout: LinearLayout
 
-    private val methodChannel: MethodChannel
     private val flutterApi: THEOliveFlutterAPI
 
+    private val id : Int
 
+
+    // Workaround to eliminate the inital transparent layout with initExpensiveAndroidView
+    // TODO: remove it once initExpensiveAndroidView is not used.
+    private var isFirstPlaying: Boolean = false
+        set(value) {
+            if (value) {
+                playerView.visibility = View.VISIBLE
+            } else {
+                playerView.visibility = View.INVISIBLE
+            }
+            field = value
+        }
     init {
+        Log.d("THEOliveView_$viewId", "init $viewId");
 
         THEOliveNativeAPI.setUp(messenger, this);
         flutterApi = THEOliveFlutterAPI(messenger);
@@ -47,96 +51,114 @@ class THEOliveView(context: Context, viewId: Int, args: Any?, messenger: BinaryM
             ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.MATCH_PARENT)
         constraintLayout.layoutParams = layoutParams
+        //constraintLayout.setBackgroundColor(android.graphics.Color.BLUE)
 
+        id = viewId
         constraintLayout.id = viewId
-        cv = ComposeView(context)
-        cv.id = View.generateViewId();
-        constraintLayout.addView(cv)
+        playerView = PlayerView(context)
+        playerView.id = View.generateViewId()
+        playerView.layoutParams = layoutParams
+        //playerView.setBackgroundColor(android.graphics.Color.RED)
+        constraintLayout.addView(playerView)
 
-        cv.setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-        cv.setContent {
-            val scope = rememberCoroutineScope()
-            val player = rememberTHEOlivePlayer()
-            Log.d("THEOliveView", "player: $player");
-            this.player = player
+        playerView.player.addEventListener(this)
 
-            THEOliveChromeless(modifier = Modifier.fillMaxSize(), player = player)
-            //TODO: move this into a MethodChannel call
-            /*
-            LaunchedEffect(key1 = player) {
-                scope.launch {
-                    player.loadChannel(channelId = "0nhw9z5zaz6bek27vdng81be5")
-                }
-            }
-             */
+    }
 
-            player.addEventListener(this);
+    override fun onChannelLoadStart(channelId: String) {
+        Log.d("THEOliveView_$id", "onChannelLoadStart: $channelId");
+        isFirstPlaying = false
 
+    }
+    override fun onChannelLoaded(channelId: String) {
+        Log.d("THEOliveView_$id", "onChannelLoaded:");
+        isFirstPlaying = false
+        CoroutineScope(Dispatchers.Main).launch {
+            flutterApi.onChannelLoadedEvent(channelId, callback = {
+                Log.d("THEOliveView_$id", "JAVA onChannelLoaded ack received: " +  channelId)
+            });
+        }
+    }
+
+    override fun onChannelOffline(channelId: String) {
+        Log.d("THEOliveView_$id", "onChannelOffline: $channelId");
+        isFirstPlaying = false
+    }
+
+    override fun onPlaying() {
+        Log.d("THEOliveView_$id", "onPlaying");
+
+        if (!isFirstPlaying) {
+            isFirstPlaying = true
         }
 
-        methodChannel = MethodChannel(messenger, "THEOliveView/$viewId")
-        methodChannel.setMethodCallHandler(this)
-
+        CoroutineScope(Dispatchers.Main).launch {
+            flutterApi.onPlaying {
+                Log.d("THEOliveView_$id", "JAVA onPlaying ack received: ")
+            }
+        }
     }
 
-    override fun onChannelLoaded(channelInfo: ChannelInfo) {
-        super.onChannelLoaded(channelInfo)
-        //TODO: instead of null, we can pass a result callback, if we care about a response from the receiver side too
-        //methodChannel.invokeMethod("onChannelLoaded", channelInfo.channelId, null)
-        flutterApi.onChannelLoadedEvent(channelInfo.channelId, callback = {
-            Log.d("THEOliveView", "JAVA onChannelLoaded ack received: " + (channelInfo.channelId))
-
-        });
+    override fun onWaiting() {
+        Log.d("THEOliveView_$id", "onWaiting");
     }
 
+    override fun onPause() {
+        Log.d("THEOliveView_$id", "onPause");
+    }
+
+    override fun onPlay() {
+        Log.d("THEOliveView_$id", "onPlay");
+    }
+
+    override fun onIntentToFallback() {
+        Log.d("THEOliveView_$id", "onIntentToFallback");
+        isFirstPlaying = false
+    }
+
+    override fun onReset() {
+        Log.d("THEOliveView_$id", "onReset");
+        isFirstPlaying = false
+    }
+
+    override fun onError(message: String) {
+        Log.d("THEOliveView_$id", "error: $message");
+        isFirstPlaying = false
+    }
 
     override fun getView(): View? {
         return constraintLayout
     }
 
     override fun dispose() {
-        //TODO("Not yet implemented")
+        Log.d("THEOliveView_$id", "dispose");
+
+        playerView.player.removeEventListener(this);
+        constraintLayout.removeView(playerView)
+        playerView.player.destroy()
+        playerView.onDestroy()
     }
 
-    override fun onMethodCall(call: MethodCall, result: Result) {
-        // receive calls from Dart
-        Log.d("THEOliveView", "onMethodCall: $call.method");
-
-        when (call.method) {
-            "play" -> {
-                this.player.play();
-                result.success(true);
-            }
-            "pause" -> {
-                this.player.pause();
-                result.success(true);
-            }
-            "loadChannel" -> {
-                val channelId = call.argument<String>("channelId");
-                Log.d("THEOliveView", "channelId: $channelId");
-                Log.d("THEOliveView", "player: $player");
-                channelId?.let {
-                    //TODO: check this
-                    runBlocking {
-                        Log.d("THEOliveView", "player: $player");
-                        player.loadChannel(channelId = it)
-                    }
-                    result.success(null)
-                } ?: {
-                    result.error("ERROR_1", "Missing channelId!", null)
-                }
-            }
-            else -> { // Note the block
-                result.notImplemented()
-            }
-        }
+    override fun loadChannel(channelID: String, callback: (Result<Unit>) -> Unit) {
+        Log.d("THEOliveView_$id", "loadChannel called, $channelID");
+        playerView.player.loadChannel(channelID);
     }
 
-    override fun loadChannel(channelID: String) {
-        runBlocking {
-            Log.d("THEOliveView", "loadChannel: $channelID, player: $player");
-            player.loadChannel(channelID)
-        }
+    override fun manualDispose() {
+        Log.d("THEOliveView_$id", "manualDispose");
+        //DO NOTHING, normal dispose() flow should be called by Flutter
+    }
+
+    override fun preloadChannels(channelIDs: List<String>) {
+        this.playerView.player.preloadChannels(channelIDs.toTypedArray());
+    }
+
+    override fun play() {
+        this.playerView.player.play();
+    }
+
+    override fun pause() {
+        this.playerView.player.pause()
     }
 
 }

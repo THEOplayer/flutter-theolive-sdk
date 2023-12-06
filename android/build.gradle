@@ -6,8 +6,10 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-        maven { url 'https://mvn.theoplayer.com/snapshots' }
-        maven { url = uri("https://maven.theoplayer.com/releases") }
+
+        maven { url 'https://mvn.theoplayer.com/releases' }
+        // for THEOplayer Android Core dependencies:
+        maven { url 'https://jitpack.io' }
 
     }
 
@@ -17,12 +19,14 @@ buildscript {
     }
 }
 
-allprojects {
+rootProject.allprojects {
     repositories {
         google()
         mavenCentral()
-        maven { url 'https://mvn.theoplayer.com/snapshots' }
-        maven { url = uri("https://maven.theoplayer.com/releases") }
+
+        maven { url 'https://mvn.theoplayer.com/releases' }
+        // for THEOplayer Android Core dependencies:
+        maven { url 'https://jitpack.io' }
 
     }
 }
@@ -50,17 +54,7 @@ android {
         minSdkVersion 24
     }
 
-    buildFeatures {
-        compose true
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.8"
-    }
-
     dependencies {
-        implementation "com.theolive:player:0.1.1"
-        implementation "androidx.compose.ui:ui:1.4.3"
-        implementation 'androidx.compose.material3:material3'
+        implementation "com.theolive:player:3.8.1"
     }
 }
