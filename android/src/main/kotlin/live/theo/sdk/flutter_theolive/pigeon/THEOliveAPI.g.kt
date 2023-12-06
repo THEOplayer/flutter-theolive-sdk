@@ -42,9 +42,14 @@ class FlutterError (
   override val message: String? = null,
   val details: Any? = null
 ) : Throwable()
+
 /** Generated interface from Pigeon that represents a handler of messages from Flutter. */
 interface THEOliveNativeAPI {
-  fun loadChannel(channelID: String)
+  fun loadChannel(channelID: String, callback: (Result<Unit>) -> Unit)
+  fun play()
+  fun pause()
+  fun manualDispose()
+  fun preloadChannels(channelIDs: List<String>)
 
   companion object {
     /** The codec used by THEOliveNativeAPI. */
@@ -60,9 +65,79 @@ interface THEOliveNativeAPI {
           channel.setMessageHandler { message, reply ->
             val args = message as List<Any?>
             val channelIDArg = args[0] as String
+            api.loadChannel(channelIDArg) { result: Result<Unit> ->
+              val error = result.exceptionOrNull()
+              if (error != null) {
+                reply.reply(wrapError(error))
+              } else {
+                reply.reply(wrapResult(null))
+              }
+            }
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.play", codec)
+        if (api != null) {
+          channel.setMessageHandler { _, reply ->
             var wrapped: List<Any?>
             try {
-              api.loadChannel(channelIDArg)
+              api.play()
+              wrapped = listOf<Any?>(null)
+            } catch (exception: Throwable) {
+              wrapped = wrapError(exception)
+            }
+            reply.reply(wrapped)
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.pause", codec)
+        if (api != null) {
+          channel.setMessageHandler { _, reply ->
+            var wrapped: List<Any?>
+            try {
+              api.pause()
+              wrapped = listOf<Any?>(null)
+            } catch (exception: Throwable) {
+              wrapped = wrapError(exception)
+            }
+            reply.reply(wrapped)
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.manualDispose", codec)
+        if (api != null) {
+          channel.setMessageHandler { _, reply ->
+            var wrapped: List<Any?>
+            try {
+              api.manualDispose()
+              wrapped = listOf<Any?>(null)
+            } catch (exception: Throwable) {
+              wrapped = wrapError(exception)
+            }
+            reply.reply(wrapped)
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.preloadChannels", codec)
+        if (api != null) {
+          channel.setMessageHandler { message, reply ->
+            val args = message as List<Any?>
+            val channelIDsArg = args[0] as List<String>
+            var wrapped: List<Any?>
+            try {
+              api.preloadChannels(channelIDsArg)
               wrapped = listOf<Any?>(null)
             } catch (exception: Throwable) {
               wrapped = wrapError(exception)
@@ -88,6 +163,12 @@ class THEOliveFlutterAPI(private val binaryMessenger: BinaryMessenger) {
   fun onChannelLoadedEvent(channelIDArg: String, callback: () -> Unit) {
     val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onChannelLoadedEvent", codec)
     channel.send(listOf(channelIDArg)) {
+      callback()
+    }
+  }
+  fun onPlaying(callback: () -> Unit) {
+    val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onPlaying", codec)
+    channel.send(null) {
       callback()
     }
   }

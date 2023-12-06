@@ -33,9 +33,14 @@ private func nilOrValue<T>(_ value: Any?) -> T? {
   if value is NSNull { return nil }
   return value as! T?
 }
+
 /// Generated protocol from Pigeon that represents a handler of messages from Flutter.
 protocol THEOliveNativeAPI {
-  func loadChannel(channelID: String) throws
+  func loadChannel(channelID: String, completion: @escaping (Result<Void, Error>) -> Void)
+  func play() throws
+  func pause() throws
+  func manualDispose() throws
+  func preloadChannels(channelIDs: [String]) throws
 }
 
 /// Generated setup class from Pigeon to handle messages through the `binaryMessenger`.
@@ -48,15 +53,71 @@ class THEOliveNativeAPISetup {
       loadChannelChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let channelIDArg = args[0] as! String
+        api.loadChannel(channelID: channelIDArg) { result in
+          switch result {
+            case .success:
+              reply(wrapResult(nil))
+            case .failure(let error):
+              reply(wrapError(error))
+          }
+        }
+      }
+    } else {
+      loadChannelChannel.setMessageHandler(nil)
+    }
+    let playChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.play", binaryMessenger: binaryMessenger)
+    if let api = api {
+      playChannel.setMessageHandler { _, reply in
         do {
-          try api.loadChannel(channelID: channelIDArg)
+          try api.play()
           reply(wrapResult(nil))
         } catch {
           reply(wrapError(error))
         }
       }
     } else {
-      loadChannelChannel.setMessageHandler(nil)
+      playChannel.setMessageHandler(nil)
+    }
+    let pauseChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.pause", binaryMessenger: binaryMessenger)
+    if let api = api {
+      pauseChannel.setMessageHandler { _, reply in
+        do {
+          try api.pause()
+          reply(wrapResult(nil))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      pauseChannel.setMessageHandler(nil)
+    }
+    let manualDisposeChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.manualDispose", binaryMessenger: binaryMessenger)
+    if let api = api {
+      manualDisposeChannel.setMessageHandler { _, reply in
+        do {
+          try api.manualDispose()
+          reply(wrapResult(nil))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      manualDisposeChannel.setMessageHandler(nil)
+    }
+    let preloadChannelsChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.preloadChannels", binaryMessenger: binaryMessenger)
+    if let api = api {
+      preloadChannelsChannel.setMessageHandler { message, reply in
+        let args = message as! [Any?]
+        let channelIDsArg = args[0] as! [String]
+        do {
+          try api.preloadChannels(channelIDs: channelIDsArg)
+          reply(wrapResult(nil))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      preloadChannelsChannel.setMessageHandler(nil)
     }
   }
 }
@@ -69,6 +130,12 @@ class THEOliveFlutterAPI {
   func onChannelLoadedEvent(channelID channelIDArg: String, completion: @escaping () -> Void) {
     let channel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onChannelLoadedEvent", binaryMessenger: binaryMessenger)
     channel.sendMessage([channelIDArg] as [Any?]) { _ in
+      completion()
+    }
+  }
+  func onPlaying(completion: @escaping () -> Void) {
+    let channel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onPlaying", binaryMessenger: binaryMessenger)
+    channel.sendMessage(nil) { _ in
       completion()
     }
   }

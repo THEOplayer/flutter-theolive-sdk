@@ -1,5 +1,6 @@
 import 'package:pigeon/pigeon.dart';
 
+//run in the root folder: flutter pub run pigeon --input pigeons/theolive_api.dart
 
 @ConfigurePigeon(PigeonOptions(
   dartOut: 'lib/pigeon/theolive_api.g.dart',
@@ -17,7 +18,17 @@ import 'package:pigeon/pigeon.dart';
 //Talking to the native
 @HostApi()
 abstract class THEOliveNativeAPI {
+
+  @async
   void loadChannel(String channelID);
+
+  void play();
+
+  void pause();
+
+  void manualDispose();
+
+  void preloadChannels(List<String> channelIDs);
 }
 
 //Native talks to Dart
@@ -25,4 +36,6 @@ abstract class THEOliveNativeAPI {
 @FlutterApi()
 abstract class THEOliveFlutterAPI {
   void onChannelLoadedEvent(String channelID);
+  void onPlaying();
 }
+
