@@ -1,5 +1,5 @@
 //
-//  THEOliveNativeViewFactory.swift
+//  THEOliveViewFactory.swift
 //  flutter_theolive
 //
 //  Created by Daniel on 16/07/2023.
@@ -9,7 +9,7 @@ import Foundation
 import Flutter
 import UIKit
 
-class THEOliveNativeViewFactory: NSObject, FlutterPlatformViewFactory {
+class THEOliveViewFactory: NSObject, FlutterPlatformViewFactory {
     private var messenger: FlutterBinaryMessenger
 
     init(messenger: FlutterBinaryMessenger) {
@@ -22,7 +22,7 @@ class THEOliveNativeViewFactory: NSObject, FlutterPlatformViewFactory {
         viewIdentifier viewId: Int64,
         arguments args: Any?
     ) -> FlutterPlatformView {
-        return THEOliveNativeView(
+        return THEOliveView(
             frame: frame,
             viewIdentifier: viewId,
             arguments: args,

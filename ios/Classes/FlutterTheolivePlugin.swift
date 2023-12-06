@@ -7,8 +7,8 @@ public class FlutterTheolivePlugin: NSObject, FlutterPlugin {
     let instance = FlutterTheolivePlugin()
     registrar.addMethodCallDelegate(instance, channel: channel)
       
-    // register theoplayerview
-    let factory = THEOliveNativeViewFactory(messenger: registrar.messenger())
+    // register theoliveview
+    let factory = THEOliveViewFactory(messenger: registrar.messenger())
     registrar.register(factory, withId: "theoliveview")
   }
 
