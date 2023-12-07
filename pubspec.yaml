@@ -1,7 +1,8 @@
 name: flutter_theolive
-description: THEOlive Flutter project
+description: THEOlive Flutter SDK
 version: 0.0.1
-homepage:
+homepage: 'https://theo.live'
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 environment:
   sdk: '>=2.19.6 <3.0.0'
