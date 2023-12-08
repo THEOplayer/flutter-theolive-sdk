@@ -18,7 +18,7 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> implements THEOliveViewControllerEventListener {
+class _MyAppState extends State<MyApp> {
   String _platformVersion = 'Unknown';
   final _flutterTheolivePlugin = FlutterTheolive();
 
@@ -33,7 +33,8 @@ class _MyAppState extends State<MyApp> implements THEOliveViewControllerEventLis
       theoLiveView = THEOliveView(key: playerUniqueKey, onTHEOliveViewCreated:(THEOliveViewController controller) {
         // assign the controller to interact with the player
         _theoController = controller;
-        _theoController.eventListener = this;
+        //_theoController.eventListener = this;
+
         //_theoController.preloadChannels(["38yyniscxeglzr8n0lbku57b0"]);
 
         // automatically load the channel once the view is ready
@@ -87,13 +88,4 @@ class _MyAppState extends State<MyApp> implements THEOliveViewControllerEventLis
     );
   }
 
-  @override
-  void onChannelLoadedEvent(String channelID) {
-    // TODO: implement onChannelLoadedEvent
-  }
-
-  @override
-  void onPlaying() {
-    // TODO: implement onPlaying
-  }
 }

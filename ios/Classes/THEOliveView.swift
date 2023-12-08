@@ -20,9 +20,11 @@ class THEOliveView: NSObject, FlutterPlatformView, THEOlivePlayerEventListener, 
     private let _viewId: Int64
     private let _flutterAPI: THEOliveFlutterAPI
     private let player = THEOliveSDK.THEOlivePlayer()
-
+    
     var newPlayerView: THEOliveSDK.THEOliveChromelessPlayerView?
-
+    
+    private let emptyCompletion: () -> Void = {}
+    
     init(
         frame: CGRect,
         viewIdentifier viewId: Int64,
@@ -72,10 +74,9 @@ class THEOliveView: NSObject, FlutterPlatformView, THEOlivePlayerEventListener, 
     }
 
     // THEOliveNativeAPI
-    func loadChannel(channelID: String, completion: @escaping (Result<Void, Error>) -> Void) {
-        os_log("loadChannel API call", log: log, type: .debug)
+    func loadChannel(channelID: String) throws {
+        os_log("loadChannel: %@", log: log, type: .debug, channelID)
         self.player.loadChannel(channelID)
-        completion(Result.success({}()))
     }
 
     func play() throws {
@@ -104,44 +105,53 @@ class THEOliveView: NSObject, FlutterPlatformView, THEOlivePlayerEventListener, 
     // THEOlivePlayerEventListener
     func onChannelLoaded(channelId: String) {
         os_log("onChannelLoaded: %@", log: log, type: .debug, channelId)
-        _flutterAPI.onChannelLoadedEvent(channelID: channelId) {
-            os_log("onChannelLoaded ack received: %@", log: log, type: .debug, channelId)
-        }
+        _flutterAPI.onChannelLoadedEvent(channelID: channelId, completion: emptyCompletion)
+    }
+    
+    
+    func goLive() throws {
+        os_log("onPlaying", log: log, type: .debug)
+        player.goLive()
     }
 
     func onPlaying() {
         os_log("onPlaying", log: log, type: .debug)
-        _flutterAPI.onPlaying {
-           os_log("onPlaying ack received", log: log, type: .debug)
-        }
+        _flutterAPI.onPlaying(completion: emptyCompletion);
     }
 
     func onError(message: String) {
         os_log("onError: %@" , log: log, type: .debug, message)
+        _flutterAPI.onError(message: message, completion: emptyCompletion)
     }
 
     func onChannelOffline(channelId: String) {
         os_log("onChannelOffline: %@" , log: log, type: .debug, channelId)
+        _flutterAPI.onChannelOfflineEvent(channelID: channelId, completion: emptyCompletion)
     }
 
     func onChannelLoadStart(channelId: String) {
         os_log("onChannelLoadStart: %@" , log: log, type: .debug, channelId)
+        _flutterAPI.onChannelLoadStartEvent(channelID: channelId, completion: emptyCompletion)
     }
 
     func onWaiting() {
         os_log("onWaiting", log: log, type: .debug)
+        _flutterAPI.onWaiting(completion: emptyCompletion);
     }
 
     func onPlay() {
         os_log("onPlay", log: log, type: .debug)
+        _flutterAPI.onPlay(completion: emptyCompletion);
     }
 
     func onPause() {
         os_log("onPause", log: log, type: .debug)
+        _flutterAPI.onPause(completion: emptyCompletion)
     }
 
     func onIntentToFallback() {
         os_log("onIntentToFallback", log: log, type: .debug)
+        _flutterAPI.onIntentToFallback(completion: emptyCompletion)
     }
 
     deinit {

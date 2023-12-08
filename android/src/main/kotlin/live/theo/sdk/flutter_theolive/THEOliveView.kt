@@ -27,6 +27,7 @@ class THEOliveView(context: Context, viewId: Int, args: Any?, messenger: BinaryM
 
     private val id : Int
 
+    private val emptyCallback: () -> Unit = {}
 
     // Workaround to eliminate the inital transparent layout with initExpensiveAndroidView
     // TODO: remove it once initExpensiveAndroidView is not used.
@@ -68,21 +69,25 @@ class THEOliveView(context: Context, viewId: Int, args: Any?, messenger: BinaryM
     override fun onChannelLoadStart(channelId: String) {
         Log.d("THEOliveView_$id", "onChannelLoadStart: $channelId");
         isFirstPlaying = false
+        CoroutineScope(Dispatchers.Main).launch {
+            flutterApi.onChannelLoadStartEvent(channelId, emptyCallback);
+        }
 
     }
     override fun onChannelLoaded(channelId: String) {
         Log.d("THEOliveView_$id", "onChannelLoaded:");
         isFirstPlaying = false
         CoroutineScope(Dispatchers.Main).launch {
-            flutterApi.onChannelLoadedEvent(channelId, callback = {
-                Log.d("THEOliveView_$id", "JAVA onChannelLoaded ack received: " +  channelId)
-            });
+            flutterApi.onChannelLoadedEvent(channelId, emptyCallback);
         }
     }
 
     override fun onChannelOffline(channelId: String) {
         Log.d("THEOliveView_$id", "onChannelOffline: $channelId");
         isFirstPlaying = false
+        CoroutineScope(Dispatchers.Main).launch {
+            flutterApi.onChannelOfflineEvent(channelId, emptyCallback);
+        }
     }
 
     override fun onPlaying() {
@@ -93,37 +98,53 @@ class THEOliveView(context: Context, viewId: Int, args: Any?, messenger: BinaryM
         }
 
         CoroutineScope(Dispatchers.Main).launch {
-            flutterApi.onPlaying {
-                Log.d("THEOliveView_$id", "JAVA onPlaying ack received: ")
-            }
+            flutterApi.onPlaying(emptyCallback)
         }
     }
 
     override fun onWaiting() {
         Log.d("THEOliveView_$id", "onWaiting");
+        CoroutineScope(Dispatchers.Main).launch {
+            flutterApi.onWaiting(emptyCallback)
+        }
     }
 
     override fun onPause() {
         Log.d("THEOliveView_$id", "onPause");
+        CoroutineScope(Dispatchers.Main).launch {
+            flutterApi.onPause(emptyCallback)
+        }
     }
 
     override fun onPlay() {
         Log.d("THEOliveView_$id", "onPlay");
+        CoroutineScope(Dispatchers.Main).launch {
+            flutterApi.onPlay(emptyCallback)
+        }
     }
 
     override fun onIntentToFallback() {
         Log.d("THEOliveView_$id", "onIntentToFallback");
         isFirstPlaying = false
+        CoroutineScope(Dispatchers.Main).launch {
+            flutterApi.onIntentToFallback(emptyCallback)
+        }
     }
 
     override fun onReset() {
         Log.d("THEOliveView_$id", "onReset");
         isFirstPlaying = false
+        CoroutineScope(Dispatchers.Main).launch {
+            flutterApi.onReset(emptyCallback)
+        }
     }
 
     override fun onError(message: String) {
         Log.d("THEOliveView_$id", "error: $message");
         isFirstPlaying = false
+        CoroutineScope(Dispatchers.Main).launch {
+            flutterApi.onError(message, emptyCallback)
+        }
     }
 
     override fun getView(): View? {
@@ -139,7 +160,7 @@ class THEOliveView(context: Context, viewId: Int, args: Any?, messenger: BinaryM
         playerView.onDestroy()
     }
 
-    override fun loadChannel(channelID: String, callback: (Result<Unit>) -> Unit) {
+    override fun loadChannel(channelID: String) {
         Log.d("THEOliveView_$id", "loadChannel called, $channelID");
         playerView.player.loadChannel(channelID);
     }
@@ -148,6 +169,7 @@ class THEOliveView(context: Context, viewId: Int, args: Any?, messenger: BinaryM
         Log.d("THEOliveView_$id", "manualDispose");
         //DO NOTHING, normal dispose() flow should be called by Flutter
     }
+
 
     override fun preloadChannels(channelIDs: List<String>) {
         this.playerView.player.preloadChannels(channelIDs.toTypedArray());
@@ -159,6 +181,10 @@ class THEOliveView(context: Context, viewId: Int, args: Any?, messenger: BinaryM
 
     override fun pause() {
         this.playerView.player.pause()
+    }
+
+    override fun goLive() {
+        this.playerView.player.goLive()
     }
 
 }

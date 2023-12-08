@@ -47,9 +47,66 @@ class THEOliveViewController implements  THEOliveFlutterAPI{
   void preloadChannels(List<String> list) {
     _nativeAPI.preloadChannels(list);
   }
+
+  @override
+  void onChannelLoadStartEvent(String channelID) {
+    print("$_TAG  onChannelLoadStart received: $channelID");
+    eventListener?.onChannelLoadStartEvent(channelID);
+  }
+
+  @override
+  void onChannelOfflineEvent(String channelID) {
+    print("$_TAG  onChannelOfflineEvent received: $channelID");
+    eventListener?.onChannelOfflineEvent(channelID);
+  }
+
+  @override
+  void onError(String message) {
+    print("$_TAG  onError received: $message");
+    eventListener?.onError(message);
+  }
+
+  @override
+  void onIntentToFallback() {
+    print("$_TAG  onIntentToFallback received");
+    eventListener?.onIntentToFallback();
+  }
+
+  @override
+  void onPause() {
+    print("$_TAG  onPause received");
+    eventListener?.onPause();
+  }
+
+  @override
+  void onPlay() {
+    print("$_TAG  onPlay received");
+    eventListener?.onPlay();
+  }
+
+  @override
+  void onReset() {
+    print("$_TAG  onReset received");
+    eventListener?.onReset();
+  }
+
+  @override
+  void onWaiting() {
+    print("$_TAG  onWaiting received");
+    eventListener?.onWaiting();
+  }
 }
 
 abstract class THEOliveViewControllerEventListener {
   void onChannelLoadedEvent(String channelID);
+  void onChannelLoadStartEvent(String channelID);
+  void onChannelOfflineEvent(String channelID);
+  void onIntentToFallback();
+  void onError(String message);
+
   void onPlaying();
+  void onPause();
+  void onPlay();
+  void onReset();
+  void onWaiting();
 }
