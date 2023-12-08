@@ -19,16 +19,15 @@ import 'package:pigeon/pigeon.dart';
 @HostApi()
 abstract class THEOliveNativeAPI {
 
-  @async
   void loadChannel(String channelID);
-
+  void preloadChannels(List<String> channelIDs);
   void play();
-
   void pause();
+  void goLive();
 
+  // helper APIs
   void manualDispose();
 
-  void preloadChannels(List<String> channelIDs);
 }
 
 //Native talks to Dart
@@ -36,6 +35,14 @@ abstract class THEOliveNativeAPI {
 @FlutterApi()
 abstract class THEOliveFlutterAPI {
   void onChannelLoadedEvent(String channelID);
+  void onChannelLoadStartEvent(String channelID);
+  void onChannelOfflineEvent(String channelID);
   void onPlaying();
+  void onWaiting();
+  void onPause();
+  void onPlay();
+  void onIntentToFallback();
+  void onReset();
+  void onError(String message);
 }
 

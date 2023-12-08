@@ -42,14 +42,14 @@ class FlutterError (
   override val message: String? = null,
   val details: Any? = null
 ) : Throwable()
-
 /** Generated interface from Pigeon that represents a handler of messages from Flutter. */
 interface THEOliveNativeAPI {
-  fun loadChannel(channelID: String, callback: (Result<Unit>) -> Unit)
+  fun loadChannel(channelID: String)
+  fun preloadChannels(channelIDs: List<String>)
   fun play()
   fun pause()
+  fun goLive()
   fun manualDispose()
-  fun preloadChannels(channelIDs: List<String>)
 
   companion object {
     /** The codec used by THEOliveNativeAPI. */
@@ -65,14 +65,33 @@ interface THEOliveNativeAPI {
           channel.setMessageHandler { message, reply ->
             val args = message as List<Any?>
             val channelIDArg = args[0] as String
-            api.loadChannel(channelIDArg) { result: Result<Unit> ->
-              val error = result.exceptionOrNull()
-              if (error != null) {
-                reply.reply(wrapError(error))
-              } else {
-                reply.reply(wrapResult(null))
-              }
+            var wrapped: List<Any?>
+            try {
+              api.loadChannel(channelIDArg)
+              wrapped = listOf<Any?>(null)
+            } catch (exception: Throwable) {
+              wrapped = wrapError(exception)
             }
+            reply.reply(wrapped)
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.preloadChannels", codec)
+        if (api != null) {
+          channel.setMessageHandler { message, reply ->
+            val args = message as List<Any?>
+            val channelIDsArg = args[0] as List<String>
+            var wrapped: List<Any?>
+            try {
+              api.preloadChannels(channelIDsArg)
+              wrapped = listOf<Any?>(null)
+            } catch (exception: Throwable) {
+              wrapped = wrapError(exception)
+            }
+            reply.reply(wrapped)
           }
         } else {
           channel.setMessageHandler(null)
@@ -113,12 +132,12 @@ interface THEOliveNativeAPI {
         }
       }
       run {
-        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.manualDispose", codec)
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.goLive", codec)
         if (api != null) {
           channel.setMessageHandler { _, reply ->
             var wrapped: List<Any?>
             try {
-              api.manualDispose()
+              api.goLive()
               wrapped = listOf<Any?>(null)
             } catch (exception: Throwable) {
               wrapped = wrapError(exception)
@@ -130,14 +149,12 @@ interface THEOliveNativeAPI {
         }
       }
       run {
-        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.preloadChannels", codec)
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.manualDispose", codec)
         if (api != null) {
-          channel.setMessageHandler { message, reply ->
-            val args = message as List<Any?>
-            val channelIDsArg = args[0] as List<String>
+          channel.setMessageHandler { _, reply ->
             var wrapped: List<Any?>
             try {
-              api.preloadChannels(channelIDsArg)
+              api.manualDispose()
               wrapped = listOf<Any?>(null)
             } catch (exception: Throwable) {
               wrapped = wrapError(exception)
@@ -166,9 +183,57 @@ class THEOliveFlutterAPI(private val binaryMessenger: BinaryMessenger) {
       callback()
     }
   }
+  fun onChannelLoadStartEvent(channelIDArg: String, callback: () -> Unit) {
+    val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onChannelLoadStartEvent", codec)
+    channel.send(listOf(channelIDArg)) {
+      callback()
+    }
+  }
+  fun onChannelOfflineEvent(channelIDArg: String, callback: () -> Unit) {
+    val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onChannelOfflineEvent", codec)
+    channel.send(listOf(channelIDArg)) {
+      callback()
+    }
+  }
   fun onPlaying(callback: () -> Unit) {
     val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onPlaying", codec)
     channel.send(null) {
+      callback()
+    }
+  }
+  fun onWaiting(callback: () -> Unit) {
+    val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onWaiting", codec)
+    channel.send(null) {
+      callback()
+    }
+  }
+  fun onPause(callback: () -> Unit) {
+    val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onPause", codec)
+    channel.send(null) {
+      callback()
+    }
+  }
+  fun onPlay(callback: () -> Unit) {
+    val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onPlay", codec)
+    channel.send(null) {
+      callback()
+    }
+  }
+  fun onIntentToFallback(callback: () -> Unit) {
+    val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onIntentToFallback", codec)
+    channel.send(null) {
+      callback()
+    }
+  }
+  fun onReset(callback: () -> Unit) {
+    val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onReset", codec)
+    channel.send(null) {
+      callback()
+    }
+  }
+  fun onError(messageArg: String, callback: () -> Unit) {
+    val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onError", codec)
+    channel.send(listOf(messageArg)) {
       callback()
     }
   }
