@@ -3,12 +3,12 @@ import 'dart:async';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_theolive/flutter_theolive.dart';
-import 'package:flutter_theolive/theolive_view.dart';
-import 'package:flutter_theolive/theolive_viewcontroller.dart';
+
+import 'movie_page.dart';
 
 
 void main() {
-  runApp(const MyApp());
+  runApp(const MaterialApp( home: MyApp(),));
 }
 
 class MyApp extends StatefulWidget {
@@ -22,30 +22,10 @@ class _MyAppState extends State<MyApp> {
   String _platformVersion = 'Unknown';
   final _flutterTheolivePlugin = FlutterTheolive();
 
-  late THEOliveView theoLiveView;
-  GlobalKey playerUniqueKey = GlobalKey(debugLabel: "playerUniqueKey");
-
   @override
   void initState() {
     super.initState();
     initPlatformState();
-
-      theoLiveView = THEOliveView(key: playerUniqueKey, onTHEOliveViewCreated:(THEOliveViewController controller) {
-        // assign the controller to interact with the player
-        _theoController = controller;
-        //_theoController.eventListener = this;
-
-        //_theoController.preloadChannels(["38yyniscxeglzr8n0lbku57b0"]);
-
-        // automatically load the channel once the view is ready
-        _callLoadChannel();
-      }
-      );
-
-  }
-
-  void _callLoadChannel() {
-    _theoController.loadChannel("38yyniscxeglzr8n0lbku57b0");
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.
@@ -70,22 +50,25 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  late THEOliveViewController _theoController;
-
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
+    return Scaffold(
         appBar: AppBar(
-          title: const Text('Plugin example app'),
+          title: const Text('THEOlive SDK Sample app'),
         ),
         body: Column(mainAxisAlignment: MainAxisAlignment.center,children: [
-          Container(width: 300, height: 300, child: theoLiveView),
+          const Text(
+            'THEOlive',
+          ),
+
+          FilledButton(onPressed: (){
+            Navigator.push(context, MaterialPageRoute(builder: (context) =>  const MoviePage(title: "Movie",)));
+          }, child: Text("Open Movie")),
+
           Center(child: Text('Running on: $_platformVersion\n'),),
         ],)
 
-      ),
-    );
+      );
   }
 
 }
