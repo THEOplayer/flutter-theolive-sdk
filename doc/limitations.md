@@ -26,7 +26,7 @@ If you see no difference mentioned in behaviour, please consult with the native 
 
 ### Version limitations
 
-THEOlive Flutter SDK only compatible with THEOlive 3.8 and above.
+THEOlive Flutter SDK only compatible with THEOlive 3.9 and above.
 
 ### Fullscreen and Picture-in-picture
 
