@@ -1,3 +1,3 @@
 ## 0.0.1
 
-* TODO: Describe initial release.
+* Initial release based on [sample app](https://github.com/THEOplayer/theolive-flutter-sample-app)
