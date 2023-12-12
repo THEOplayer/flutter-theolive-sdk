@@ -3,13 +3,17 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_theolive/theolive_playerconfig.dart';
 import 'package:flutter_theolive/theolive_viewcontroller.dart';
 
 class THEOliveView extends StatefulWidget {
 
   final Function(THEOliveViewController) onTHEOliveViewCreated;
+  late final PlayerConfig _playerConfig;
 
-  THEOliveView({required Key key, required this.onTHEOliveViewCreated,}) : super(key: key);
+  THEOliveView({required Key key, required this.onTHEOliveViewCreated, playerConfig}) : super(key: key) {
+    _playerConfig = playerConfig ?? PlayerConfig(AndroidConfig());
+  }
 
   late THEOliveViewController viewController;
 
@@ -48,10 +52,15 @@ class _THEOliveViewState extends State<THEOliveView> {
     // This is used in the platform side to register the view.
     const String viewType = 'theoliveview';
     // Pass parameters to the platform side.
-    const Map<String, dynamic> creationParams = <String, dynamic>{};
+    Map<String, dynamic> creationParams = <String, dynamic>{};
 
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
+
+        //TODO: use single object
+        creationParams["nativeRenderingTarget"] = widget._playerConfig.androidConfig.nativeRenderingTarget.name;
+        creationParams["useHybridComposition"] = widget._playerConfig.androidConfig.useHybridComposition;
+
         return PlatformViewLink(
           viewType: viewType,
           surfaceFactory:
@@ -64,17 +73,33 @@ class _THEOliveViewState extends State<THEOliveView> {
             );
           },
           onCreatePlatformView: (params) {
-            return PlatformViewsService.initExpensiveAndroidView(
-              id: params.id,
-              viewType: viewType,
-              layoutDirection: TextDirection.ltr,
-              creationParams: creationParams,
-              creationParamsCodec: const StandardMessageCodec(),
-              onFocus: () {
-                params.onFocusChanged(true);
-              },
-            )
-              ..addOnPlatformViewCreatedListener((id) {
+            late AndroidViewController androidViewController;
+
+            if (widget._playerConfig.androidConfig.useHybridComposition) {
+              androidViewController = PlatformViewsService.initExpensiveAndroidView(
+                id: params.id,
+                viewType: viewType,
+                layoutDirection: TextDirection.ltr,
+                creationParams: creationParams,
+                creationParamsCodec: const StandardMessageCodec(),
+                onFocus: () {
+                  params.onFocusChanged(true);
+                },
+              );
+            } else {
+              androidViewController = PlatformViewsService.initAndroidView(
+                id: params.id,
+                viewType: viewType,
+                layoutDirection: TextDirection.ltr,
+                creationParams: creationParams,
+                creationParamsCodec: const StandardMessageCodec(),
+                onFocus: () {
+                  params.onFocusChanged(true);
+                },
+              );
+            }
+
+            return androidViewController..addOnPlatformViewCreatedListener((id) {
                 print("_THEOliveViewState OnPlatformViewCreatedListener");
                 params.onPlatformViewCreated(id);
                 viewController = THEOliveViewController(id);

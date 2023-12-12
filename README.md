@@ -61,5 +61,6 @@ A minimal example application (used during development) including a basic user i
     - [Getting started on iOS](./doc/creating-minimal-app.md#getting-started-on-ios-and-tvos)
 
 - Knowledge Base
+  - [Using different rendering targets on Android](./doc/android_rendering.md)
   - TBD
 - [Limitations and known issues](./doc/limitations.md)

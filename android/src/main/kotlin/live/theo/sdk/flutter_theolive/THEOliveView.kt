@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import com.theolive.player.EventListener
 import com.theolive.player.PlayerView
+import com.theolive.player.RenderingTarget
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.platform.PlatformView
 import kotlinx.coroutines.CoroutineScope
@@ -16,8 +17,11 @@ import live.theo.sdk.flutter_theolive.pigeon.THEOliveFlutterAPI
 import live.theo.sdk.flutter_theolive.pigeon.THEOliveNativeAPI
 
 
+
 class THEOliveView(context: Context, viewId: Int, args: Any?, messenger: BinaryMessenger) : PlatformView,
     EventListener, THEOliveNativeAPI {
+
+    private val RENDERINGTARGET_SURFACE_VIEW = "surfaceView"
 
     private var playerView: PlayerView
 
@@ -29,10 +33,16 @@ class THEOliveView(context: Context, viewId: Int, args: Any?, messenger: BinaryM
 
     private val emptyCallback: () -> Unit = {}
 
+    private val nativeRenderingTarget: String
     // Workaround to eliminate the inital transparent layout with initExpensiveAndroidView
     // TODO: remove it once initExpensiveAndroidView is not used.
+    private var useHybridComposition: Boolean = false
     private var isFirstPlaying: Boolean = false
         set(value) {
+            if (!useHybridComposition) {
+                return
+            }
+
             if (value) {
                 playerView.visibility = View.VISIBLE
             } else {
@@ -42,6 +52,9 @@ class THEOliveView(context: Context, viewId: Int, args: Any?, messenger: BinaryM
         }
     init {
         Log.d("THEOliveView_$viewId", "init $viewId");
+
+        useHybridComposition = (args as? Map<*, *>)?.get("useHybridComposition") as? Boolean == true
+        nativeRenderingTarget = ((args as? Map<*, *>)?.get("nativeRenderingTarget") as? String) ?: RENDERINGTARGET_SURFACE_VIEW //TODO: use enum and pigeon
 
         THEOliveNativeAPI.setUp(messenger, this);
         flutterApi = THEOliveFlutterAPI(messenger);
@@ -60,7 +73,17 @@ class THEOliveView(context: Context, viewId: Int, args: Any?, messenger: BinaryM
         playerView.id = View.generateViewId()
         playerView.layoutParams = layoutParams
         //playerView.setBackgroundColor(android.graphics.Color.RED)
+
+        if (nativeRenderingTarget == RENDERINGTARGET_SURFACE_VIEW) {
+            Log.d("THEOliveView_$id", "nativeRenderingTarget: surfaceView");
+            playerView.setRenderingTarget(RenderingTarget.SURFACE_VIEW);
+        } else {
+            Log.d("THEOliveView_$id", "nativeRenderingTarget: textureView");
+            playerView.setRenderingTarget(RenderingTarget.TEXTURE_VIEW);
+        }
+
         constraintLayout.addView(playerView)
+
 
         playerView.player.addEventListener(this)
 
