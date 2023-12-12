@@ -54,6 +54,7 @@ please reach out to us for support.
 
 This section starts with creating a minimal demo app that integrates the `flutter_theolive` package.
 
+A minimal example application (used during development) including a basic user interface and a demo source is included in [this git repository](https://github.com/THEOplayer/theolive-flutter-sdk/tree/main/example), and parts of it are discussed in the next section.
 
 - [Creating a minimal demo app](./doc/creating-minimal-app.md)
     - [Getting started on Android](./doc/creating-minimal-app.md#getting-started-on-android)

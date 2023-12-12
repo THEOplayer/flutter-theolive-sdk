@@ -207,3 +207,6 @@ platform :ios, '12.0'
 
 By using the `flutter run ios` command, you can try out your applicaiton on an iOS device.
 
+### Demo project
+
+A separate minimal demo project is also available on [https://github.com/THEOplayer/theolive-flutter-sdk-sample-app](https://github.com/THEOplayer/theolive-flutter-sdk-sample-app) that was built by following this guide.
