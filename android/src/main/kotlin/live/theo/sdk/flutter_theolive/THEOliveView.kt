@@ -29,6 +29,8 @@ class THEOliveView(context: Context, viewId: Int, args: Any?, messenger: BinaryM
 
     private val flutterApi: THEOliveFlutterAPI
 
+    private val pigeonMessenger: PigeonMultiInstanceBinaryMessengerWrapper
+
     private val id : Int
 
     private val emptyCallback: () -> Unit = {}
@@ -56,8 +58,10 @@ class THEOliveView(context: Context, viewId: Int, args: Any?, messenger: BinaryM
         useHybridComposition = (args as? Map<*, *>)?.get("useHybridComposition") as? Boolean == true
         nativeRenderingTarget = ((args as? Map<*, *>)?.get("nativeRenderingTarget") as? String) ?: RENDERINGTARGET_SURFACE_VIEW //TODO: use enum and pigeon
 
-        THEOliveNativeAPI.setUp(messenger, this);
-        flutterApi = THEOliveFlutterAPI(messenger);
+        //setup pigeon
+        pigeonMessenger = PigeonMultiInstanceBinaryMessengerWrapper(messenger, "id_$viewId");
+        THEOliveNativeAPI.setUp(pigeonMessenger, this)
+        flutterApi = THEOliveFlutterAPI(pigeonMessenger)
 
         constraintLayout = LinearLayout(context)
 

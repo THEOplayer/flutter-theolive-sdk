@@ -19,6 +19,8 @@ class THEOliveView: NSObject, FlutterPlatformView, THEOlivePlayerEventListener, 
     private var _view: UIView
     private let _viewId: Int64
     private let _flutterAPI: THEOliveFlutterAPI
+    private let _pigeonMessenger: PigeonMultiInstanceBinaryMessengerWrapper
+
     private let player = THEOliveSDK.THEOlivePlayer()
     
     var newPlayerView: THEOliveSDK.THEOliveChromelessPlayerView?
@@ -34,11 +36,14 @@ class THEOliveView: NSObject, FlutterPlatformView, THEOlivePlayerEventListener, 
         _viewId = viewId
         _view = UIView()
         _view.frame = frame
-        _flutterAPI = THEOliveFlutterAPI(binaryMessenger: messenger!)
+
+        //setup pigeon
+        _pigeonMessenger = PigeonMultiInstanceBinaryMessengerWrapper(with: messenger!, channelSuffix: "id_\(viewId)")
+        _flutterAPI = THEOliveFlutterAPI(binaryMessenger: _pigeonMessenger)
 
         super.init()
 
-        THEOliveNativeAPISetup.setUp(binaryMessenger: messenger!, api: self)
+        THEOliveNativeAPISetup.setUp(binaryMessenger: _pigeonMessenger, api: self)
 
         // iOS views can be created here
         createNativeView(view: _view)

@@ -1,4 +1,5 @@
 import 'package:flutter_theolive/pigeon/theolive_api.g.dart';
+import 'package:flutter_theolive/pigeon_multi_instance_wrapper.dart';
 
 class THEOliveViewController implements  THEOliveFlutterAPI{
   static const String _TAG = "FL_DART_THEOliveViewController";
@@ -6,11 +7,13 @@ class THEOliveViewController implements  THEOliveFlutterAPI{
   int _id;
   THEOliveViewControllerEventListener? eventListener;
 
-  final THEOliveNativeAPI _nativeAPI = THEOliveNativeAPI();
-
+  late final THEOliveNativeAPI _nativeAPI;
+  late final PigeonMultiInstanceBinaryMessengerWrapper _pigeonMessenger;
 
   THEOliveViewController(this._id) {
-    THEOliveFlutterAPI.setup(this);
+    _pigeonMessenger = PigeonMultiInstanceBinaryMessengerWrapper(suffix: 'id_$_id');
+    _nativeAPI = THEOliveNativeAPI(binaryMessenger: _pigeonMessenger);
+    THEOliveFlutterAPI.setup(this, binaryMessenger: _pigeonMessenger);
   }
 
   void loadChannel(String channelId) {
