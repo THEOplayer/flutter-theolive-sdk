@@ -57,7 +57,7 @@ class THEOliveView: NSObject, FlutterPlatformView, THEOlivePlayerEventListener, 
     }
 
     func createNativeView(view _view: UIView){
-        _view.backgroundColor = UIColor.yellow
+        _view.backgroundColor = UIColor.black
 
         let newPlayerView = THEOliveSDK.THEOliveChromelessPlayerView(player: player)
 
