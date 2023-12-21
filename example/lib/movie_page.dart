@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_theolive/theolive_playerconfig.dart';
 import 'package:flutter_theolive/theolive_view.dart';
 import 'package:flutter_theolive/theolive_viewcontroller.dart';
 import 'package:flutter_theolive_example/fullscreen_page.dart';
@@ -27,8 +28,8 @@ class _MoviePageState extends State<MoviePage> implements THEOliveViewController
   late THEOliveViewController _theoController;
   GlobalKey playerUniqueKey = GlobalKey(debugLabel: "playerUniqueKey");
 
-  void _callLoadChannel() {
-    _theoController.loadChannel("38yyniscxeglzr8n0lbku57b0");
+  void _callLoadChannel(String channelID) {
+    _theoController.loadChannel(channelID);
 
   }
 
@@ -42,15 +43,23 @@ class _MoviePageState extends State<MoviePage> implements THEOliveViewController
   void initState() {
     print("_MoviePageState with THEOliveView: initState ");
     super.initState();
-    theoLiveView = THEOliveView(key: playerUniqueKey, onTHEOliveViewCreated:(THEOliveViewController controller) {
-      // assign the controller to interact with the player
-      _theoController = controller;
-      _theoController.eventListener = this;
-      //_theoController.preloadChannels(["38yyniscxeglzr8n0lbku57b0"]);
+    theoLiveView = THEOliveView(
+      key: playerUniqueKey,
+      playerConfig: PlayerConfig(
+          AndroidConfig(
+              useHybridComposition: false,
+              nativeRenderingTarget: AndroidNativeRenderingTarget.textureView
+          )
+      ),
+      onTHEOliveViewCreated:(THEOliveViewController controller) {
+        // assign the controller to interact with the player
+        _theoController = controller;
+        _theoController.eventListener = this;
+        //_theoController.preloadChannels(["38yyniscxeglzr8n0lbku57b0"]);
 
-      // automatically load the channel once the view is ready
-      _callLoadChannel();
-    }
+        // automatically load the channel once the view is ready
+        _callLoadChannel("38yyniscxeglzr8n0lbku57b0");
+      },
     );
 
   }
@@ -156,6 +165,9 @@ class _MoviePageState extends State<MoviePage> implements THEOliveViewController
                   });
 
                 }, child: Text("Open Fullscreen")) : Container(),
+                !landscape ? FilledButton(onPressed: (){
+                  _callLoadChannel("38yyniscxeglzr8n0lbku57b0");
+                }, child: Text("Change channel")) : Container(),
               ],
             ),
           );
