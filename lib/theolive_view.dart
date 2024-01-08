@@ -3,6 +3,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_theolive/debug_helpers.dart';
 import 'package:flutter_theolive/theolive_playerconfig.dart';
 import 'package:flutter_theolive/theolive_viewcontroller.dart';
 
@@ -30,13 +31,13 @@ class _THEOliveViewState extends State<THEOliveView> {
 
   @override
   void initState() {
-    print("_THEOliveViewState initState");
+    dprint("_THEOliveViewState initState");
     super.initState();
   }
 
   @override
   void dispose() {
-    print("_THEOliveViewState dispose");
+    dprint("_THEOliveViewState dispose");
     // NOTE: this would be nicer, if we move it inside the THEOliveView that's a StatefulWidget
     // FIX for https://github.com/flutter/flutter/issues/97499
     if (defaultTargetPlatform == TargetPlatform.iOS) {
@@ -47,7 +48,7 @@ class _THEOliveViewState extends State<THEOliveView> {
 
   @override
   Widget build(BuildContext context) {
-    print("_THEOliveViewState build");
+    dprint("_THEOliveViewState build");
 
     // This is used in the platform side to register the view.
     const String viewType = 'theoliveview';
@@ -100,7 +101,7 @@ class _THEOliveViewState extends State<THEOliveView> {
             }
 
             return androidViewController..addOnPlatformViewCreatedListener((id) {
-                print("_THEOliveViewState OnPlatformViewCreatedListener");
+                dprint("_THEOliveViewState OnPlatformViewCreatedListener");
                 params.onPlatformViewCreated(id);
                 viewController = THEOliveViewController(id);
                 widget.viewController = viewController;
@@ -116,7 +117,7 @@ class _THEOliveViewState extends State<THEOliveView> {
             creationParams: creationParams,
             creationParamsCodec: const StandardMessageCodec(),
             onPlatformViewCreated: (id) {
-              print("_THEOliveViewState OnPlatformViewCreatedListener");
+              dprint("_THEOliveViewState OnPlatformViewCreatedListener");
               viewController = THEOliveViewController(id);
               widget.viewController = viewController;
               widget.onTHEOliveViewCreated(viewController);
@@ -129,25 +130,25 @@ class _THEOliveViewState extends State<THEOliveView> {
 
   @override
   void didChangeDependencies() {
-    print("_THEOliveViewState didChangeDependencies");
+    dprint("_THEOliveViewState didChangeDependencies");
     super.didChangeDependencies();
   }
 
   @override
   void activate() {
-    print("_THEOliveViewState activate");
+    dprint("_THEOliveViewState activate");
     super.activate();
   }
 
   @override
   void deactivate() {
-    print("_THEOliveViewState deactivate");
+    dprint("_THEOliveViewState deactivate");
     super.deactivate();
   }
 
   @override
   void reassemble() {
-    print("_THEOliveViewState reassemble");
+    dprint("_THEOliveViewState reassemble");
     super.reassemble();
   }
 }
