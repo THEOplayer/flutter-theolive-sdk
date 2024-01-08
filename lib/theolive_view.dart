@@ -7,6 +7,8 @@ import 'package:flutter_theolive/debug_helpers.dart';
 import 'package:flutter_theolive/theolive_playerconfig.dart';
 import 'package:flutter_theolive/theolive_viewcontroller.dart';
 
+//TODO: eliminate the need for this after refactoring
+//ignore: must_be_immutable
 class THEOliveView extends StatefulWidget {
 
   final Function(THEOliveViewController) onTHEOliveViewCreated;
