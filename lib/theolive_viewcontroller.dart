@@ -5,7 +5,7 @@ import 'package:flutter_theolive/pigeon_multi_instance_wrapper.dart';
 class THEOliveViewController implements  THEOliveFlutterAPI{
   static const String _TAG = "FL_DART_THEOliveViewController";
 
-  int _id;
+  final int _id;
   THEOliveViewControllerEventListener? eventListener;
 
   late final THEOliveNativeAPI _nativeAPI;
