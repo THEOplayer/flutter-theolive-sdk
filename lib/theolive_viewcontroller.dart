@@ -3,7 +3,7 @@ import 'package:flutter_theolive/pigeon/theolive_api.g.dart';
 import 'package:flutter_theolive/pigeon_multi_instance_wrapper.dart';
 
 class THEOliveViewController implements  THEOliveFlutterAPI{
-  static const String _TAG = "FL_DART_THEOliveViewController";
+  static const String _debugTag = "FL_DART_THEOliveViewController";
 
   final int _id;
   THEOliveViewControllerEventListener? eventListener;
@@ -38,13 +38,13 @@ class THEOliveViewController implements  THEOliveFlutterAPI{
 
   @override
   void onChannelLoadedEvent(String channelID) {
-    dprint("$_TAG  onChannelLoaded received: $channelID");
+    dprint("$_debugTag  onChannelLoaded received: $channelID");
     eventListener?.onChannelLoadedEvent(channelID);
   }
 
   @override
   void onPlaying() {
-    dprint("$_TAG  onPlaying received");
+    dprint("$_debugTag  onPlaying received");
     eventListener?.onPlaying();
   }
 
@@ -54,49 +54,49 @@ class THEOliveViewController implements  THEOliveFlutterAPI{
 
   @override
   void onChannelLoadStartEvent(String channelID) {
-    dprint("$_TAG  onChannelLoadStart received: $channelID");
+    dprint("$_debugTag  onChannelLoadStart received: $channelID");
     eventListener?.onChannelLoadStartEvent(channelID);
   }
 
   @override
   void onChannelOfflineEvent(String channelID) {
-    dprint("$_TAG  onChannelOfflineEvent received: $channelID");
+    dprint("$_debugTag  onChannelOfflineEvent received: $channelID");
     eventListener?.onChannelOfflineEvent(channelID);
   }
 
   @override
   void onError(String message) {
-    dprint("$_TAG  onError received: $message");
+    dprint("$_debugTag  onError received: $message");
     eventListener?.onError(message);
   }
 
   @override
   void onIntentToFallback() {
-    dprint("$_TAG  onIntentToFallback received");
+    dprint("$_debugTag  onIntentToFallback received");
     eventListener?.onIntentToFallback();
   }
 
   @override
   void onPause() {
-    dprint("$_TAG  onPause received");
+    dprint("$_debugTag  onPause received");
     eventListener?.onPause();
   }
 
   @override
   void onPlay() {
-    dprint("$_TAG  onPlay received");
+    dprint("$_debugTag  onPlay received");
     eventListener?.onPlay();
   }
 
   @override
   void onReset() {
-    dprint("$_TAG  onReset received");
+    dprint("$_debugTag  onReset received");
     eventListener?.onReset();
   }
 
   @override
   void onWaiting() {
-    dprint("$_TAG  onWaiting received");
+    dprint("$_debugTag  onWaiting received");
     eventListener?.onWaiting();
   }
 }
