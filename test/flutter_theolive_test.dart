@@ -4,10 +4,7 @@ import 'package:flutter_theolive/flutter_theolive_platform_interface.dart';
 import 'package:flutter_theolive/flutter_theolive_method_channel.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
-class MockFlutterTheolivePlatform
-    with MockPlatformInterfaceMixin
-    implements FlutterTheolivePlatform {
-
+class MockFlutterTheolivePlatform with MockPlatformInterfaceMixin implements FlutterTheolivePlatform {
   @override
   Future<String?> getPlatformVersion() => Future.value('42');
 }

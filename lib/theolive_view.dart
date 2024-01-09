@@ -10,7 +10,6 @@ import 'package:flutter_theolive/theolive_viewcontroller.dart';
 //TODO: eliminate the need for this after refactoring
 //ignore: must_be_immutable
 class THEOliveView extends StatefulWidget {
-
   final Function(THEOliveViewController) onTHEOliveViewCreated;
   late final PlayerConfig _playerConfig;
 
@@ -24,11 +23,9 @@ class THEOliveView extends StatefulWidget {
   State<StatefulWidget> createState() {
     return _THEOliveViewState();
   }
-
 }
 
 class _THEOliveViewState extends State<THEOliveView> {
-
   late THEOliveViewController viewController;
 
   @override
@@ -59,19 +56,16 @@ class _THEOliveViewState extends State<THEOliveView> {
 
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
-
         //TODO: use single object
         creationParams["nativeRenderingTarget"] = widget._playerConfig.androidConfig.nativeRenderingTarget.name;
         creationParams["useHybridComposition"] = widget._playerConfig.androidConfig.useHybridComposition;
 
         return PlatformViewLink(
           viewType: viewType,
-          surfaceFactory:
-              (context, controller) {
+          surfaceFactory: (context, controller) {
             return AndroidViewSurface(
               controller: controller as AndroidViewController,
-              gestureRecognizers: const <Factory<OneSequenceGestureRecognizer>>{
-              },
+              gestureRecognizers: const <Factory<OneSequenceGestureRecognizer>>{},
               hitTestBehavior: PlatformViewHitTestBehavior.opaque,
             );
           },
@@ -102,7 +96,8 @@ class _THEOliveViewState extends State<THEOliveView> {
               );
             }
 
-            return androidViewController..addOnPlatformViewCreatedListener((id) {
+            return androidViewController
+              ..addOnPlatformViewCreatedListener((id) {
                 dprint("_THEOliveViewState OnPlatformViewCreatedListener");
                 params.onPlatformViewCreated(id);
                 viewController = THEOliveViewController(id);
@@ -123,8 +118,7 @@ class _THEOliveViewState extends State<THEOliveView> {
               viewController = THEOliveViewController(id);
               widget.viewController = viewController;
               widget.onTHEOliveViewCreated(viewController);
-            }
-        );
+            });
       default:
         return Text("Unsupported platform $defaultTargetPlatform");
     }

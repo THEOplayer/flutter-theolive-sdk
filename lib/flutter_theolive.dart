@@ -1,4 +1,3 @@
-
 import 'flutter_theolive_platform_interface.dart';
 
 class FlutterTheolive {

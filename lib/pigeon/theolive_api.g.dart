@@ -12,18 +12,15 @@ class THEOliveNativeAPI {
   /// Constructor for [THEOliveNativeAPI].  The [binaryMessenger] named argument is
   /// available for dependency injection.  If it is left null, the default
   /// BinaryMessenger will be used which routes to the host platform.
-  THEOliveNativeAPI({BinaryMessenger? binaryMessenger})
-      : _binaryMessenger = binaryMessenger;
+  THEOliveNativeAPI({BinaryMessenger? binaryMessenger}) : _binaryMessenger = binaryMessenger;
   final BinaryMessenger? _binaryMessenger;
 
   static const MessageCodec<Object?> codec = StandardMessageCodec();
 
   Future<void> loadChannel(String arg_channelID) async {
-    final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.loadChannel', codec,
-        binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(<Object?>[arg_channelID]) as List<Object?>?;
+    final BasicMessageChannel<Object?> channel =
+        BasicMessageChannel<Object?>('dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.loadChannel', codec, binaryMessenger: _binaryMessenger);
+    final List<Object?>? replyList = await channel.send(<Object?>[arg_channelID]) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -44,8 +41,7 @@ class THEOliveNativeAPI {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.preloadChannels', codec,
         binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(<Object?>[arg_channelIDs]) as List<Object?>?;
+    final List<Object?>? replyList = await channel.send(<Object?>[arg_channelIDs]) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -63,11 +59,9 @@ class THEOliveNativeAPI {
   }
 
   Future<void> play() async {
-    final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.play', codec,
-        binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(null) as List<Object?>?;
+    final BasicMessageChannel<Object?> channel =
+        BasicMessageChannel<Object?>('dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.play', codec, binaryMessenger: _binaryMessenger);
+    final List<Object?>? replyList = await channel.send(null) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -85,11 +79,9 @@ class THEOliveNativeAPI {
   }
 
   Future<void> pause() async {
-    final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.pause', codec,
-        binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(null) as List<Object?>?;
+    final BasicMessageChannel<Object?> channel =
+        BasicMessageChannel<Object?>('dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.pause', codec, binaryMessenger: _binaryMessenger);
+    final List<Object?>? replyList = await channel.send(null) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -107,11 +99,9 @@ class THEOliveNativeAPI {
   }
 
   Future<void> goLive() async {
-    final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.goLive', codec,
-        binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(null) as List<Object?>?;
+    final BasicMessageChannel<Object?> channel =
+        BasicMessageChannel<Object?>('dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.goLive', codec, binaryMessenger: _binaryMessenger);
+    final List<Object?>? replyList = await channel.send(null) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -129,11 +119,9 @@ class THEOliveNativeAPI {
   }
 
   Future<void> manualDispose() async {
-    final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.manualDispose', codec,
-        binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(null) as List<Object?>?;
+    final BasicMessageChannel<Object?> channel =
+        BasicMessageChannel<Object?>('dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.manualDispose', codec, binaryMessenger: _binaryMessenger);
+    final List<Object?>? replyList = await channel.send(null) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -183,8 +171,7 @@ abstract class THEOliveFlutterAPI {
         channel.setMessageHandler(null);
       } else {
         channel.setMessageHandler((Object? message) async {
-          assert(message != null,
-          'Argument for dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onChannelLoadedEvent was null.');
+          assert(message != null, 'Argument for dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onChannelLoadedEvent was null.');
           final List<Object?> args = (message as List<Object?>?)!;
           final String? arg_channelID = (args[0] as String?);
           assert(arg_channelID != null,
@@ -202,8 +189,7 @@ abstract class THEOliveFlutterAPI {
         channel.setMessageHandler(null);
       } else {
         channel.setMessageHandler((Object? message) async {
-          assert(message != null,
-          'Argument for dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onChannelLoadStartEvent was null.');
+          assert(message != null, 'Argument for dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onChannelLoadStartEvent was null.');
           final List<Object?> args = (message as List<Object?>?)!;
           final String? arg_channelID = (args[0] as String?);
           assert(arg_channelID != null,
@@ -221,8 +207,7 @@ abstract class THEOliveFlutterAPI {
         channel.setMessageHandler(null);
       } else {
         channel.setMessageHandler((Object? message) async {
-          assert(message != null,
-          'Argument for dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onChannelOfflineEvent was null.');
+          assert(message != null, 'Argument for dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onChannelOfflineEvent was null.');
           final List<Object?> args = (message as List<Object?>?)!;
           final String? arg_channelID = (args[0] as String?);
           assert(arg_channelID != null,
@@ -233,9 +218,8 @@ abstract class THEOliveFlutterAPI {
       }
     }
     {
-      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-          'dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onPlaying', codec,
-          binaryMessenger: binaryMessenger);
+      final BasicMessageChannel<Object?> channel =
+          BasicMessageChannel<Object?>('dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onPlaying', codec, binaryMessenger: binaryMessenger);
       if (api == null) {
         channel.setMessageHandler(null);
       } else {
@@ -247,9 +231,8 @@ abstract class THEOliveFlutterAPI {
       }
     }
     {
-      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-          'dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onWaiting', codec,
-          binaryMessenger: binaryMessenger);
+      final BasicMessageChannel<Object?> channel =
+          BasicMessageChannel<Object?>('dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onWaiting', codec, binaryMessenger: binaryMessenger);
       if (api == null) {
         channel.setMessageHandler(null);
       } else {
@@ -261,9 +244,8 @@ abstract class THEOliveFlutterAPI {
       }
     }
     {
-      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-          'dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onPause', codec,
-          binaryMessenger: binaryMessenger);
+      final BasicMessageChannel<Object?> channel =
+          BasicMessageChannel<Object?>('dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onPause', codec, binaryMessenger: binaryMessenger);
       if (api == null) {
         channel.setMessageHandler(null);
       } else {
@@ -275,9 +257,8 @@ abstract class THEOliveFlutterAPI {
       }
     }
     {
-      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-          'dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onPlay', codec,
-          binaryMessenger: binaryMessenger);
+      final BasicMessageChannel<Object?> channel =
+          BasicMessageChannel<Object?>('dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onPlay', codec, binaryMessenger: binaryMessenger);
       if (api == null) {
         channel.setMessageHandler(null);
       } else {
@@ -303,9 +284,8 @@ abstract class THEOliveFlutterAPI {
       }
     }
     {
-      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-          'dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onReset', codec,
-          binaryMessenger: binaryMessenger);
+      final BasicMessageChannel<Object?> channel =
+          BasicMessageChannel<Object?>('dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onReset', codec, binaryMessenger: binaryMessenger);
       if (api == null) {
         channel.setMessageHandler(null);
       } else {
@@ -317,19 +297,17 @@ abstract class THEOliveFlutterAPI {
       }
     }
     {
-      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-          'dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onError', codec,
-          binaryMessenger: binaryMessenger);
+      final BasicMessageChannel<Object?> channel =
+          BasicMessageChannel<Object?>('dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onError', codec, binaryMessenger: binaryMessenger);
       if (api == null) {
         channel.setMessageHandler(null);
       } else {
         channel.setMessageHandler((Object? message) async {
-          assert(message != null,
-          'Argument for dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onError was null.');
+          assert(message != null, 'Argument for dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onError was null.');
           final List<Object?> args = (message as List<Object?>?)!;
           final String? arg_message = (args[0] as String?);
-          assert(arg_message != null,
-              'Argument for dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onError was null, expected non-null String.');
+          assert(
+              arg_message != null, 'Argument for dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onError was null, expected non-null String.');
           api.onError(arg_message!);
           return;
         });

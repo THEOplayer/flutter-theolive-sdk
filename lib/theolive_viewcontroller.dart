@@ -2,7 +2,7 @@ import 'package:flutter_theolive/debug_helpers.dart';
 import 'package:flutter_theolive/pigeon/theolive_api.g.dart';
 import 'package:flutter_theolive/pigeon_multi_instance_wrapper.dart';
 
-class THEOliveViewController implements  THEOliveFlutterAPI{
+class THEOliveViewController implements THEOliveFlutterAPI {
   static const String _debugTag = "FL_DART_THEOliveViewController";
 
   final int _id;
@@ -19,9 +19,8 @@ class THEOliveViewController implements  THEOliveFlutterAPI{
 
   void loadChannel(String channelId) {
     _nativeAPI.loadChannel(channelId).onError(
-      //consume the exception, it is irrelevant to the flow, just for information
-            (error, stackTrace) => dprint("ERROR during loadChannel: $error")
-    );
+        //consume the exception, it is irrelevant to the flow, just for information
+        (error, stackTrace) => dprint("ERROR during loadChannel: $error"));
   }
 
   void play() {
@@ -103,14 +102,22 @@ class THEOliveViewController implements  THEOliveFlutterAPI{
 
 abstract class THEOliveViewControllerEventListener {
   void onChannelLoadedEvent(String channelID);
+
   void onChannelLoadStartEvent(String channelID);
+
   void onChannelOfflineEvent(String channelID);
+
   void onIntentToFallback();
+
   void onError(String message);
 
   void onPlaying();
+
   void onPause();
+
   void onPlay();
+
   void onReset();
+
   void onWaiting();
 }
