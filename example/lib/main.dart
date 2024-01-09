@@ -63,7 +63,7 @@ class _MyAppState extends State<MyApp> {
 
           FilledButton(onPressed: (){
             Navigator.push(context, MaterialPageRoute(builder: (context) =>  const MoviePage(title: "Movie",)));
-          }, child: Text("Open Movie")),
+          }, child: const Text("Open Movie")),
 
           Center(child: Text('Running on: $_platformVersion\n'),),
         ],)

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_theolive/theolive_view.dart';
 import 'package:flutter_theolive/theolive_viewcontroller.dart';
+import 'package:flutter_theolive_example/debug_tools.dart';
 
 class FullscreenPage extends StatefulWidget {
   const FullscreenPage({super.key, required this.playerWidget});
@@ -34,7 +35,7 @@ class _FullscreenPageState extends State<FullscreenPage> {
 
   @override
   void initState() {
-    print("_FullscreenPageState with THEOliveView: initState ");
+    dprint("_FullscreenPageState with THEOliveView: initState ");
     super.initState();
 
     /*
@@ -57,7 +58,7 @@ class _FullscreenPageState extends State<FullscreenPage> {
 
   @override
   void dispose() {
-    print("_FullscreenPageState with THEOliveView: dispose ");
+    dprint("_FullscreenPageState with THEOliveView: dispose ");
     // TODO: implement dispose
     super.dispose();
   }
@@ -89,7 +90,7 @@ class _FullscreenPageState extends State<FullscreenPage> {
 
     return CustomWillPopScope(
       onWillPop: () async {
-        print("_FullscreenPageState with THEOliveView: onWillPop ");
+        dprint("_FullscreenPageState with THEOliveView: onWillPop ");
         setState(() {
           willPop = true;
         });
@@ -122,7 +123,7 @@ class _FullscreenPageState extends State<FullscreenPage> {
 
 // Custom WillPopScope, because the original WillPopScope breaks the back navigation on iOS
 class CustomWillPopScope extends StatelessWidget {
-  CustomWillPopScope({required this.child, required this.onWillPop, Key? key})
+  const CustomWillPopScope({required this.child, required this.onWillPop, Key? key})
       : super(key: key);
 
   final Widget child;
