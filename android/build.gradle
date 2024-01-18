@@ -55,6 +55,6 @@ android {
     }
 
     dependencies {
-        implementation "com.theolive:player:3.9.0"
+        implementation "com.theolive:player:3.12.1"
     }
 }
