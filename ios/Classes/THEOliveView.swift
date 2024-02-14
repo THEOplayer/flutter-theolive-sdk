@@ -96,7 +96,7 @@ class THEOliveView: NSObject, FlutterPlatformView, THEOlivePlayerEventListener, 
         self.player.preloadChannels(channelIDs)
     }
 
-    func updateConfiguration(configuration: NativePlayerConfiguration) throws {
+    func updateConfiguration(configuration: PigeonNativePlayerConfiguration) throws {
         let nativeConfig = THEOlivePlayer.Configuration(sessionId: configuration.sessionId)
         self.player.updateConfiguration(nativeConfig)
     }

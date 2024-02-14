@@ -44,15 +44,15 @@ class FlutterError (
 ) : Throwable()
 
 /** Generated class from Pigeon that represents data sent in messages. */
-data class NativePlayerConfiguration (
+data class PigeonNativePlayerConfiguration (
   val sessionId: String? = null
 
 ) {
   companion object {
     @Suppress("UNCHECKED_CAST")
-    fun fromList(list: List<Any?>): NativePlayerConfiguration {
+    fun fromList(list: List<Any?>): PigeonNativePlayerConfiguration {
       val sessionId = list[0] as String?
-      return NativePlayerConfiguration(sessionId)
+      return PigeonNativePlayerConfiguration(sessionId)
     }
   }
   fun toList(): List<Any?> {
@@ -67,7 +67,7 @@ private object THEOliveNativeAPICodec : StandardMessageCodec() {
     return when (type) {
       128.toByte() -> {
         return (readValue(buffer) as? List<Any?>)?.let {
-          NativePlayerConfiguration.fromList(it)
+          PigeonNativePlayerConfiguration.fromList(it)
         }
       }
       else -> super.readValueOfType(type, buffer)
@@ -75,7 +75,7 @@ private object THEOliveNativeAPICodec : StandardMessageCodec() {
   }
   override fun writeValue(stream: ByteArrayOutputStream, value: Any?)   {
     when (value) {
-      is NativePlayerConfiguration -> {
+      is PigeonNativePlayerConfiguration -> {
         stream.write(128)
         writeValue(stream, value.toList())
       }
@@ -91,7 +91,7 @@ interface THEOliveNativeAPI {
   fun play()
   fun pause()
   fun goLive()
-  fun updateConfiguration(configuration: NativePlayerConfiguration)
+  fun updateConfiguration(configuration: PigeonNativePlayerConfiguration)
   fun manualDispose()
 
   companion object {
@@ -196,7 +196,7 @@ interface THEOliveNativeAPI {
         if (api != null) {
           channel.setMessageHandler { message, reply ->
             val args = message as List<Any?>
-            val configurationArg = args[0] as NativePlayerConfiguration
+            val configurationArg = args[0] as PigeonNativePlayerConfiguration
             var wrapped: List<Any?>
             try {
               api.updateConfiguration(configurationArg)

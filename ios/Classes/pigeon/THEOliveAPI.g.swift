@@ -35,13 +35,13 @@ private func nilOrValue<T>(_ value: Any?) -> T? {
 }
 
 /// Generated class from Pigeon that represents data sent in messages.
-struct NativePlayerConfiguration {
+struct PigeonNativePlayerConfiguration {
   var sessionId: String? = nil
 
-  static func fromList(_ list: [Any?]) -> NativePlayerConfiguration? {
+  static func fromList(_ list: [Any?]) -> PigeonNativePlayerConfiguration? {
     let sessionId: String? = nilOrValue(list[0])
 
-    return NativePlayerConfiguration(
+    return PigeonNativePlayerConfiguration(
       sessionId: sessionId
     )
   }
@@ -55,7 +55,7 @@ private class THEOliveNativeAPICodecReader: FlutterStandardReader {
   override func readValue(ofType type: UInt8) -> Any? {
     switch type {
       case 128:
-        return NativePlayerConfiguration.fromList(self.readValue() as! [Any?])
+        return PigeonNativePlayerConfiguration.fromList(self.readValue() as! [Any?])
       default:
         return super.readValue(ofType: type)
     }
@@ -64,7 +64,7 @@ private class THEOliveNativeAPICodecReader: FlutterStandardReader {
 
 private class THEOliveNativeAPICodecWriter: FlutterStandardWriter {
   override func writeValue(_ value: Any) {
-    if let value = value as? NativePlayerConfiguration {
+    if let value = value as? PigeonNativePlayerConfiguration {
       super.writeByte(128)
       super.writeValue(value.toList())
     } else {
@@ -94,7 +94,7 @@ protocol THEOliveNativeAPI {
   func play() throws
   func pause() throws
   func goLive() throws
-  func updateConfiguration(configuration: NativePlayerConfiguration) throws
+  func updateConfiguration(configuration: PigeonNativePlayerConfiguration) throws
   func manualDispose() throws
 }
 
@@ -177,7 +177,7 @@ class THEOliveNativeAPISetup {
     if let api = api {
       updateConfigurationChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
-        let configurationArg = args[0] as! NativePlayerConfiguration
+        let configurationArg = args[0] as! PigeonNativePlayerConfiguration
         do {
           try api.updateConfiguration(configuration: configurationArg)
           reply(wrapResult(nil))

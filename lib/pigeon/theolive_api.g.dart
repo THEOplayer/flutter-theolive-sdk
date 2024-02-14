@@ -8,8 +8,8 @@ import 'dart:typed_data' show Float64List, Int32List, Int64List, Uint8List;
 import 'package:flutter/foundation.dart' show ReadBuffer, WriteBuffer;
 import 'package:flutter/services.dart';
 
-class NativePlayerConfiguration {
-  NativePlayerConfiguration({
+class PigeonNativePlayerConfiguration {
+  PigeonNativePlayerConfiguration({
     this.sessionId,
   });
 
@@ -21,9 +21,9 @@ class NativePlayerConfiguration {
     ];
   }
 
-  static NativePlayerConfiguration decode(Object result) {
+  static PigeonNativePlayerConfiguration decode(Object result) {
     result as List<Object?>;
-    return NativePlayerConfiguration(
+    return PigeonNativePlayerConfiguration(
       sessionId: result[0] as String?,
     );
   }
@@ -33,7 +33,7 @@ class _THEOliveNativeAPICodec extends StandardMessageCodec {
   const _THEOliveNativeAPICodec();
   @override
   void writeValue(WriteBuffer buffer, Object? value) {
-    if (value is NativePlayerConfiguration) {
+    if (value is PigeonNativePlayerConfiguration) {
       buffer.putUint8(128);
       writeValue(buffer, value.encode());
     } else {
@@ -45,7 +45,7 @@ class _THEOliveNativeAPICodec extends StandardMessageCodec {
   Object? readValueOfType(int type, ReadBuffer buffer) {
     switch (type) {
       case 128: 
-        return NativePlayerConfiguration.decode(readValue(buffer)!);
+        return PigeonNativePlayerConfiguration.decode(readValue(buffer)!);
       default:
         return super.readValueOfType(type, buffer);
     }
@@ -172,7 +172,7 @@ class THEOliveNativeAPI {
     }
   }
 
-  Future<void> updateConfiguration(NativePlayerConfiguration arg_configuration) async {
+  Future<void> updateConfiguration(PigeonNativePlayerConfiguration arg_configuration) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.updateConfiguration', codec,
         binaryMessenger: _binaryMessenger);
