@@ -96,6 +96,10 @@ class THEOliveView: NSObject, FlutterPlatformView, THEOlivePlayerEventListener, 
         self.player.preloadChannels(channelIDs)
     }
 
+    func updateConfiguration(configuration: NativePlayerConfiguration) throws {
+        let nativeConfig = THEOlivePlayer.Configuration(sessionId: configuration.sessionId)
+        self.player.updateConfiguration(nativeConfig)
+    }
 
     // Fix for https://github.com/flutter/flutter/issues/97499
     // The PlatformViews are not deallocated in time, so we clean up upfront.

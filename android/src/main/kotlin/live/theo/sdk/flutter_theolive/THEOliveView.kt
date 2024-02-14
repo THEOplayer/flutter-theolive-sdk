@@ -13,6 +13,7 @@ import io.flutter.plugin.platform.PlatformView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import live.theo.sdk.flutter_theolive.pigeon.NativePlayerConfiguration
 import live.theo.sdk.flutter_theolive.pigeon.THEOliveFlutterAPI
 import live.theo.sdk.flutter_theolive.pigeon.THEOliveNativeAPI
 
@@ -212,6 +213,10 @@ class THEOliveView(context: Context, viewId: Int, args: Any?, messenger: BinaryM
 
     override fun goLive() {
         this.playerView.player.goLive()
+    }
+
+    override fun updateConfiguration(configuration: NativePlayerConfiguration) {
+        this.playerView.player.updateConfig(configuration.sessionId)
     }
 
 }
