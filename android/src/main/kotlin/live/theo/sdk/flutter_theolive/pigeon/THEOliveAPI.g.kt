@@ -42,6 +42,48 @@ class FlutterError (
   override val message: String? = null,
   val details: Any? = null
 ) : Throwable()
+
+/** Generated class from Pigeon that represents data sent in messages. */
+data class PigeonNativePlayerConfiguration (
+  val sessionId: String? = null
+
+) {
+  companion object {
+    @Suppress("UNCHECKED_CAST")
+    fun fromList(list: List<Any?>): PigeonNativePlayerConfiguration {
+      val sessionId = list[0] as String?
+      return PigeonNativePlayerConfiguration(sessionId)
+    }
+  }
+  fun toList(): List<Any?> {
+    return listOf<Any?>(
+      sessionId,
+    )
+  }
+}
+@Suppress("UNCHECKED_CAST")
+private object THEOliveNativeAPICodec : StandardMessageCodec() {
+  override fun readValueOfType(type: Byte, buffer: ByteBuffer): Any? {
+    return when (type) {
+      128.toByte() -> {
+        return (readValue(buffer) as? List<Any?>)?.let {
+          PigeonNativePlayerConfiguration.fromList(it)
+        }
+      }
+      else -> super.readValueOfType(type, buffer)
+    }
+  }
+  override fun writeValue(stream: ByteArrayOutputStream, value: Any?)   {
+    when (value) {
+      is PigeonNativePlayerConfiguration -> {
+        stream.write(128)
+        writeValue(stream, value.toList())
+      }
+      else -> super.writeValue(stream, value)
+    }
+  }
+}
+
 /** Generated interface from Pigeon that represents a handler of messages from Flutter. */
 interface THEOliveNativeAPI {
   fun loadChannel(channelID: String)
@@ -49,12 +91,13 @@ interface THEOliveNativeAPI {
   fun play()
   fun pause()
   fun goLive()
+  fun updateConfiguration(configuration: PigeonNativePlayerConfiguration)
   fun manualDispose()
 
   companion object {
     /** The codec used by THEOliveNativeAPI. */
     val codec: MessageCodec<Any?> by lazy {
-      StandardMessageCodec()
+      THEOliveNativeAPICodec
     }
     /** Sets up an instance of `THEOliveNativeAPI` to handle messages through the `binaryMessenger`. */
     @Suppress("UNCHECKED_CAST")
@@ -138,6 +181,25 @@ interface THEOliveNativeAPI {
             var wrapped: List<Any?>
             try {
               api.goLive()
+              wrapped = listOf<Any?>(null)
+            } catch (exception: Throwable) {
+              wrapped = wrapError(exception)
+            }
+            reply.reply(wrapped)
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.updateConfiguration", codec)
+        if (api != null) {
+          channel.setMessageHandler { message, reply ->
+            val args = message as List<Any?>
+            val configurationArg = args[0] as PigeonNativePlayerConfiguration
+            var wrapped: List<Any?>
+            try {
+              api.updateConfiguration(configurationArg)
               wrapped = listOf<Any?>(null)
             } catch (exception: Throwable) {
               wrapped = wrapError(exception)
