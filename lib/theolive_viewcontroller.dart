@@ -51,6 +51,7 @@ class THEOliveViewController implements THEOliveFlutterAPI {
     _nativeAPI.preloadChannels(list);
   }
 
+  /// Updates the config of the player, make sure to call this before loading a channel.
   void updateNativePlayerConfiguration(NativePlayerConfiguration configuration) {
     final nativeConfig = PigeonNativePlayerConfiguration(sessionId: configuration.sessionId);
     _nativeAPI.updateConfiguration(nativeConfig);
