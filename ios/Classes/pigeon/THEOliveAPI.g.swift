@@ -33,6 +33,60 @@ private func nilOrValue<T>(_ value: Any?) -> T? {
   if value is NSNull { return nil }
   return value as! T?
 }
+
+/// Generated class from Pigeon that represents data sent in messages.
+struct NativePlayerConfiguration {
+  var sessionId: String? = nil
+
+  static func fromList(_ list: [Any?]) -> NativePlayerConfiguration? {
+    let sessionId: String? = nilOrValue(list[0])
+
+    return NativePlayerConfiguration(
+      sessionId: sessionId
+    )
+  }
+  func toList() -> [Any?] {
+    return [
+      sessionId,
+    ]
+  }
+}
+private class THEOliveNativeAPICodecReader: FlutterStandardReader {
+  override func readValue(ofType type: UInt8) -> Any? {
+    switch type {
+      case 128:
+        return NativePlayerConfiguration.fromList(self.readValue() as! [Any?])
+      default:
+        return super.readValue(ofType: type)
+    }
+  }
+}
+
+private class THEOliveNativeAPICodecWriter: FlutterStandardWriter {
+  override func writeValue(_ value: Any) {
+    if let value = value as? NativePlayerConfiguration {
+      super.writeByte(128)
+      super.writeValue(value.toList())
+    } else {
+      super.writeValue(value)
+    }
+  }
+}
+
+private class THEOliveNativeAPICodecReaderWriter: FlutterStandardReaderWriter {
+  override func reader(with data: Data) -> FlutterStandardReader {
+    return THEOliveNativeAPICodecReader(data: data)
+  }
+
+  override func writer(with data: NSMutableData) -> FlutterStandardWriter {
+    return THEOliveNativeAPICodecWriter(data: data)
+  }
+}
+
+class THEOliveNativeAPICodec: FlutterStandardMessageCodec {
+  static let shared = THEOliveNativeAPICodec(readerWriter: THEOliveNativeAPICodecReaderWriter())
+}
+
 /// Generated protocol from Pigeon that represents a handler of messages from Flutter.
 protocol THEOliveNativeAPI {
   func loadChannel(channelID: String) throws
@@ -40,15 +94,17 @@ protocol THEOliveNativeAPI {
   func play() throws
   func pause() throws
   func goLive() throws
+  func updateConfiguration(configuration: NativePlayerConfiguration) throws
   func manualDispose() throws
 }
 
 /// Generated setup class from Pigeon to handle messages through the `binaryMessenger`.
 class THEOliveNativeAPISetup {
   /// The codec used by THEOliveNativeAPI.
+  static var codec: FlutterStandardMessageCodec { THEOliveNativeAPICodec.shared }
   /// Sets up an instance of `THEOliveNativeAPI` to handle messages through the `binaryMessenger`.
   static func setUp(binaryMessenger: FlutterBinaryMessenger, api: THEOliveNativeAPI?) {
-    let loadChannelChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.loadChannel", binaryMessenger: binaryMessenger)
+    let loadChannelChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.loadChannel", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       loadChannelChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
@@ -63,7 +119,7 @@ class THEOliveNativeAPISetup {
     } else {
       loadChannelChannel.setMessageHandler(nil)
     }
-    let preloadChannelsChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.preloadChannels", binaryMessenger: binaryMessenger)
+    let preloadChannelsChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.preloadChannels", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       preloadChannelsChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
@@ -78,7 +134,7 @@ class THEOliveNativeAPISetup {
     } else {
       preloadChannelsChannel.setMessageHandler(nil)
     }
-    let playChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.play", binaryMessenger: binaryMessenger)
+    let playChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.play", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       playChannel.setMessageHandler { _, reply in
         do {
@@ -91,7 +147,7 @@ class THEOliveNativeAPISetup {
     } else {
       playChannel.setMessageHandler(nil)
     }
-    let pauseChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.pause", binaryMessenger: binaryMessenger)
+    let pauseChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.pause", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       pauseChannel.setMessageHandler { _, reply in
         do {
@@ -104,7 +160,7 @@ class THEOliveNativeAPISetup {
     } else {
       pauseChannel.setMessageHandler(nil)
     }
-    let goLiveChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.goLive", binaryMessenger: binaryMessenger)
+    let goLiveChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.goLive", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       goLiveChannel.setMessageHandler { _, reply in
         do {
@@ -117,7 +173,22 @@ class THEOliveNativeAPISetup {
     } else {
       goLiveChannel.setMessageHandler(nil)
     }
-    let manualDisposeChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.manualDispose", binaryMessenger: binaryMessenger)
+    let updateConfigurationChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.updateConfiguration", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      updateConfigurationChannel.setMessageHandler { message, reply in
+        let args = message as! [Any?]
+        let configurationArg = args[0] as! NativePlayerConfiguration
+        do {
+          try api.updateConfiguration(configuration: configurationArg)
+          reply(wrapResult(nil))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      updateConfigurationChannel.setMessageHandler(nil)
+    }
+    let manualDisposeChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.manualDispose", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       manualDisposeChannel.setMessageHandler { _, reply in
         do {

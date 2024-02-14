@@ -25,6 +25,9 @@ abstract class THEOliveNativeAPI {
   void pause();
   void goLive();
 
+  // Update the config of the player, make sure to call this before loading a channel.
+  void updateConfiguration(NativePlayerConfiguration configuration);
+
   // helper APIs
   void manualDispose();
 
@@ -46,3 +49,6 @@ abstract class THEOliveFlutterAPI {
   void onError(String message);
 }
 
+class NativePlayerConfiguration {
+  String? sessionId;
+}
