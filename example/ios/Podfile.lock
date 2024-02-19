@@ -2,8 +2,8 @@ PODS:
   - Flutter (1.0.0)
   - flutter_theolive (0.0.1):
     - Flutter
-    - THEOliveSDK (= 3.13.0)
-  - THEOliveSDK (3.13.0)
+    - THEOliveSDK (= 3.13.1)
+  - THEOliveSDK (3.13.1)
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
@@ -21,8 +21,8 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
-  flutter_theolive: 3aa0d15a34afa0055ad2ad04f823253686cb6832
-  THEOliveSDK: de5883dcd175e7c766549d3bbe8826297a909eb6
+  flutter_theolive: 0b810788246f5a1f5a2f0a65c8a6a3be07ddfb97
+  THEOliveSDK: 37f625222047a9da4a471db45bbb26bfd8768dee
 
 PODFILE CHECKSUM: 8ae5c35a5cecf3f61034d5617181e61ad4d19544
 
