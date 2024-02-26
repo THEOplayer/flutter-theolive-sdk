@@ -93,6 +93,8 @@ interface THEOliveNativeAPI {
   fun goLive()
   fun updateConfiguration(configuration: PigeonNativePlayerConfiguration)
   fun manualDispose()
+  fun onLifecycleResume()
+  fun onLifecyclePause()
 
   companion object {
     /** The codec used by THEOliveNativeAPI. */
@@ -217,6 +219,40 @@ interface THEOliveNativeAPI {
             var wrapped: List<Any?>
             try {
               api.manualDispose()
+              wrapped = listOf<Any?>(null)
+            } catch (exception: Throwable) {
+              wrapped = wrapError(exception)
+            }
+            reply.reply(wrapped)
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.onLifecycleResume", codec)
+        if (api != null) {
+          channel.setMessageHandler { _, reply ->
+            var wrapped: List<Any?>
+            try {
+              api.onLifecycleResume()
+              wrapped = listOf<Any?>(null)
+            } catch (exception: Throwable) {
+              wrapped = wrapError(exception)
+            }
+            reply.reply(wrapped)
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.onLifecyclePause", codec)
+        if (api != null) {
+          channel.setMessageHandler { _, reply ->
+            var wrapped: List<Any?>
+            try {
+              api.onLifecyclePause()
               wrapped = listOf<Any?>(null)
             } catch (exception: Throwable) {
               wrapped = wrapError(exception)

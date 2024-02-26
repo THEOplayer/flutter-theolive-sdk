@@ -96,6 +96,8 @@ protocol THEOliveNativeAPI {
   func goLive() throws
   func updateConfiguration(configuration: PigeonNativePlayerConfiguration) throws
   func manualDispose() throws
+  func onLifecycleResume() throws
+  func onLifecyclePause() throws
 }
 
 /// Generated setup class from Pigeon to handle messages through the `binaryMessenger`.
@@ -200,6 +202,32 @@ class THEOliveNativeAPISetup {
       }
     } else {
       manualDisposeChannel.setMessageHandler(nil)
+    }
+    let onLifecycleResumeChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.onLifecycleResume", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      onLifecycleResumeChannel.setMessageHandler { _, reply in
+        do {
+          try api.onLifecycleResume()
+          reply(wrapResult(nil))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      onLifecycleResumeChannel.setMessageHandler(nil)
+    }
+    let onLifecyclePauseChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.onLifecyclePause", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      onLifecyclePauseChannel.setMessageHandler { _, reply in
+        do {
+          try api.onLifecyclePause()
+          reply(wrapResult(nil))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      onLifecyclePauseChannel.setMessageHandler(nil)
     }
   }
 }
