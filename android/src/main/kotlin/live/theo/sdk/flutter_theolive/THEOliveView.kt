@@ -53,6 +53,11 @@ class THEOliveView(context: Context, viewId: Int, args: Any?, messenger: BinaryM
             }
             field = value
         }
+
+    // sync behavior with native iOS SDK
+    // TODO: this logic should move to application level. The SDK should always stay paused after a "background to foreground" switch.
+    private var wasPlayingBeforeActivityOnPause: Boolean = false;
+
     init {
         Log.d("THEOliveView_$viewId", "init $viewId");
 
@@ -196,6 +201,21 @@ class THEOliveView(context: Context, viewId: Int, args: Any?, messenger: BinaryM
     override fun manualDispose() {
         Log.d("THEOliveView_$id", "manualDispose");
         //DO NOTHING, normal dispose() flow should be called by Flutter
+    }
+
+    override fun onLifecycleResume() {
+        Log.d("THEOliveView_$id", "onLifecycleResume");
+        playerView.onResume();
+        if (wasPlayingBeforeActivityOnPause) {
+            wasPlayingBeforeActivityOnPause = false;
+            play();
+        }
+    }
+
+    override fun onLifecyclePause() {
+        Log.d("THEOliveView_$id", "onLifecyclePause");
+        wasPlayingBeforeActivityOnPause = !playerView.player.paused
+        playerView.onPause();
     }
 
 
