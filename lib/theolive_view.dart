@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_theolive/debug_helpers.dart';
 import 'package:flutter_theolive/theolive_playerconfig.dart';
@@ -28,15 +29,33 @@ class THEOliveView extends StatefulWidget {
 class _THEOliveViewState extends State<THEOliveView> {
   late THEOliveViewController viewController;
 
+  late AppLifecycleListener _lifecycleListener;
+
   @override
   void initState() {
     dprint("_THEOliveViewState initState");
     super.initState();
   }
+  
+  void setupLifeCycleListeners() {
+    _lifecycleListener = AppLifecycleListener(
+      onResume: (){
+        viewController.onLifecycleResume();
+      },
+      onPause: () {
+        viewController.onLifecyclePause();
+      },
+      onStateChange: (state) {
+        dprint("_THEOliveViewState lifecycle change: $state");
+      }
+    );
+  }
 
   @override
   void dispose() {
     dprint("_THEOliveViewState dispose");
+
+    _lifecycleListener.dispose();
     // NOTE: this would be nicer, if we move it inside the THEOliveView that's a StatefulWidget
     // FIX for https://github.com/flutter/flutter/issues/97499
     if (defaultTargetPlatform == TargetPlatform.iOS) {
@@ -101,6 +120,7 @@ class _THEOliveViewState extends State<THEOliveView> {
                 dprint("_THEOliveViewState OnPlatformViewCreatedListener");
                 params.onPlatformViewCreated(id);
                 viewController = THEOliveViewController(id);
+                setupLifeCycleListeners();
                 widget.viewController = viewController;
                 widget.onTHEOliveViewCreated(viewController);
               })
@@ -116,6 +136,7 @@ class _THEOliveViewState extends State<THEOliveView> {
             onPlatformViewCreated: (id) {
               dprint("_THEOliveViewState OnPlatformViewCreatedListener");
               viewController = THEOliveViewController(id);
+              setupLifeCycleListeners();
               widget.viewController = viewController;
               widget.onTHEOliveViewCreated(viewController);
             });

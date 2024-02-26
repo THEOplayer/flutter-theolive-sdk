@@ -35,6 +35,15 @@ class THEOliveViewController implements THEOliveFlutterAPI {
     _nativeAPI.manualDispose();
   }
 
+  //app lifecycle
+  void onLifecycleResume() {
+    _nativeAPI.onLifecycleResume();
+  }
+
+  void onLifecyclePause() {
+    _nativeAPI.onLifecyclePause();
+  }
+
   @override
   void onChannelLoadedEvent(String channelID) {
     dprint("$_debugTag  onChannelLoaded received: $channelID");
@@ -104,6 +113,7 @@ class THEOliveViewController implements THEOliveFlutterAPI {
     dprint("$_debugTag  onWaiting received");
     eventListener?.onWaiting();
   }
+
 }
 
 abstract class THEOliveViewControllerEventListener {
