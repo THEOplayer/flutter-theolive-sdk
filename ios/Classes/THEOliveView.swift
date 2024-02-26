@@ -111,6 +111,12 @@ class THEOliveView: NSObject, FlutterPlatformView, THEOlivePlayerEventListener, 
 
     }
 
+    func onLifecycleResume() {
+    }
+
+    func onLifecyclePause() {
+    }
+
     // THEOlivePlayerEventListener
     func onChannelLoaded(channelId: String) {
         os_log("onChannelLoaded: %@", log: log, type: .debug, channelId)

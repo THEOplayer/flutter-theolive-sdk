@@ -31,6 +31,10 @@ abstract class THEOliveNativeAPI {
   // helper APIs
   void manualDispose();
 
+  // application lifecycle listeners
+  void onLifecycleResume();
+  void onLifecyclePause();
+
 }
 
 //Native talks to Dart
