@@ -1,6 +1,6 @@
-name: flutter_theolive
+name: theolive
 description: THEOlive Flutter SDK
-version: 0.0.1
+version: 1.0.0
 homepage: 'https://theo.live'
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
@@ -12,6 +12,9 @@ dependencies:
   flutter:
     sdk: flutter
   plugin_platform_interface: ^2.0.2
+  theolive_platform_interface: 1.0.0
+  theolive_android: 1.0.0
+  theolive_ios: 1.0.0
 
 dev_dependencies:
   flutter_test:
@@ -37,11 +40,9 @@ flutter:
   plugin:
     platforms:
       android:
-        package: live.theo.sdk.flutter_theolive
-        pluginClass: FlutterTheolivePlugin
+        default_package: flutter_theolive_sdk_android
       ios:
-        pluginClass: FlutterTheolivePlugin
-
+        default_package: flutter_theolive_sdk_ios
   # To add assets to your plugin package, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

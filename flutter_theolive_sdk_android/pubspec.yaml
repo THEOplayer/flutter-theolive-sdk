@@ -1,0 +1,34 @@
+name: theolive_android
+description: THEOlive Flutter SDK for Android. Used by `theolive` to support ultra low-latency video playback on Android platforms.
+version: 1.0.0
+homepage: https://theo.live
+repository: https://github.com/THEOplayer/theolive-flutter-sdk
+
+environment:
+  sdk: '>=2.19.6 <3.0.0'
+  flutter: ">=2.5.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  theolive_platform_interface: 1.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+flutter:
+  plugin:
+    implements: theolive
+    platforms:
+      android:
+        package: live.theo.sdk.flutter_theolive
+        pluginClass: FlutterTheolivePlugin
+        dartPluginClass: THEOliveAndroid
+
+topics:
+  - theolive
+  - low-latency
+  - video
+  
