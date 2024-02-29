@@ -1,17 +1,19 @@
-import 'package:theolive/pigeon/theolive_api.g.dart';
-import 'package:theolive/pigeon_multi_instance_wrapper.dart';
-import 'package:theolive/debug_helpers.dart';
+import 'package:theolive_platform_interface/debug_helpers.dart';
+import 'package:theolive_platform_interface/pigeon/theolive_api.g.dart';
+import 'package:theolive_platform_interface/pigeon_multi_instance_wrapper.dart';
+import 'package:theolive_platform_interface/theolive_view_controller_interface.dart';
 
-class THEOliveViewController implements THEOliveFlutterAPI {
+class THEOliveViewControllerMobile extends THEOliveViewController implements THEOliveFlutterAPI {
   static const String _debugTag = "FL_DART_THEOliveViewController";
 
-  final int _id;
+  late final int _id;
   THEOliveViewControllerEventListener? eventListener;
 
   late final THEOliveNativeAPI _nativeAPI;
   late final PigeonMultiInstanceBinaryMessengerWrapper _pigeonMessenger;
 
-  THEOliveViewController(this._id) {
+  THEOliveViewControllerMobile(int id) : super(id) {
+    this._id = id;
     _pigeonMessenger = PigeonMultiInstanceBinaryMessengerWrapper(suffix: 'id_$_id');
     _nativeAPI = THEOliveNativeAPI(binaryMessenger: _pigeonMessenger);
     THEOliveFlutterAPI.setup(this, binaryMessenger: _pigeonMessenger);
@@ -114,30 +116,4 @@ class THEOliveViewController implements THEOliveFlutterAPI {
     eventListener?.onWaiting();
   }
 
-}
-
-abstract class THEOliveViewControllerEventListener {
-  void onChannelLoadedEvent(String channelID);
-
-  void onChannelLoadStartEvent(String channelID);
-
-  void onChannelOfflineEvent(String channelID);
-
-  void onIntentToFallback();
-
-  void onError(String message);
-
-  void onPlaying();
-
-  void onPause();
-
-  void onPlay();
-
-  void onReset();
-
-  void onWaiting();
-}
-
-class NativePlayerConfiguration {
-  String? sessionId;
 }
