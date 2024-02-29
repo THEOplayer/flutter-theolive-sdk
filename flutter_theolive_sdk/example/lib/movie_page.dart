@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_theolive/theolive_playerconfig.dart';
-import 'package:flutter_theolive/theolive_view.dart';
-import 'package:flutter_theolive/theolive_viewcontroller.dart';
 import 'package:flutter_theolive_example/debug_tools.dart';
 import 'package:flutter_theolive_example/fullscreen_page.dart';
+import 'package:theolive/theolive_playerconfig.dart';
+import 'package:theolive/theolive_view.dart';
+import 'package:theolive/theolive_viewcontroller.dart';
 
 
 class MoviePage extends StatefulWidget {

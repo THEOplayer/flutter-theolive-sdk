@@ -1,6 +1,6 @@
-import 'package:flutter_theolive/debug_helpers.dart';
-import 'package:flutter_theolive/pigeon/theolive_api.g.dart';
-import 'package:flutter_theolive/pigeon_multi_instance_wrapper.dart';
+import 'package:theolive/pigeon/theolive_api.g.dart';
+import 'package:theolive/pigeon_multi_instance_wrapper.dart';
+import 'package:theolive/debug_helpers.dart';
 
 class THEOliveViewController implements THEOliveFlutterAPI {
   static const String _debugTag = "FL_DART_THEOliveViewController";

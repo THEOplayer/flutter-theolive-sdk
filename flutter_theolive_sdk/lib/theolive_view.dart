@@ -2,11 +2,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_theolive/debug_helpers.dart';
-import 'package:flutter_theolive/theolive_playerconfig.dart';
-import 'package:flutter_theolive/theolive_viewcontroller.dart';
+import 'package:theolive/theolive_playerconfig.dart';
+import 'package:theolive/theolive_viewcontroller.dart';
+import 'package:theolive/debug_helpers.dart';
+
 
 //TODO: eliminate the need for this after refactoring
 //ignore: must_be_immutable
