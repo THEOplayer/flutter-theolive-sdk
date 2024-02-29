@@ -1,11 +1,9 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
-import 'package:theolive/theolive_playerconfig.dart';
-import 'package:theolive/theolive_viewcontroller.dart';
-import 'package:theolive/debug_helpers.dart';
+import 'package:theolive_platform_interface/theolive_platform_interface.dart';
+import 'package:theolive_platform_interface/theolive_playerconfig.dart';
+import 'package:theolive_platform_interface/debug_helpers.dart';
+import 'package:theolive_platform_interface/theolive_view_controller_interface.dart';
 
 
 //TODO: eliminate the need for this after refactoring
@@ -36,7 +34,7 @@ class _THEOliveViewState extends State<THEOliveView> {
     dprint("_THEOliveViewState initState");
     super.initState();
   }
-  
+
   void setupLifeCycleListeners() {
     _lifecycleListener = AppLifecycleListener(
       onResume: (){
@@ -68,81 +66,12 @@ class _THEOliveViewState extends State<THEOliveView> {
   Widget build(BuildContext context) {
     dprint("_THEOliveViewState build");
 
-    // This is used in the platform side to register the view.
-    const String viewType = 'theoliveview';
-    // Pass parameters to the platform side.
-    Map<String, dynamic> creationParams = <String, dynamic>{};
-
-    switch (defaultTargetPlatform) {
-      case TargetPlatform.android:
-        //TODO: use single object
-        creationParams["nativeRenderingTarget"] = widget._playerConfig.androidConfig.nativeRenderingTarget.name;
-        creationParams["useHybridComposition"] = widget._playerConfig.androidConfig.useHybridComposition;
-
-        return PlatformViewLink(
-          viewType: viewType,
-          surfaceFactory: (context, controller) {
-            return AndroidViewSurface(
-              controller: controller as AndroidViewController,
-              gestureRecognizers: const <Factory<OneSequenceGestureRecognizer>>{},
-              hitTestBehavior: PlatformViewHitTestBehavior.opaque,
-            );
-          },
-          onCreatePlatformView: (params) {
-            late AndroidViewController androidViewController;
-
-            if (widget._playerConfig.androidConfig.useHybridComposition) {
-              androidViewController = PlatformViewsService.initExpensiveAndroidView(
-                id: params.id,
-                viewType: viewType,
-                layoutDirection: TextDirection.ltr,
-                creationParams: creationParams,
-                creationParamsCodec: const StandardMessageCodec(),
-                onFocus: () {
-                  params.onFocusChanged(true);
-                },
-              );
-            } else {
-              androidViewController = PlatformViewsService.initAndroidView(
-                id: params.id,
-                viewType: viewType,
-                layoutDirection: TextDirection.ltr,
-                creationParams: creationParams,
-                creationParamsCodec: const StandardMessageCodec(),
-                onFocus: () {
-                  params.onFocusChanged(true);
-                },
-              );
-            }
-
-            return androidViewController
-              ..addOnPlatformViewCreatedListener((id) {
-                dprint("_THEOliveViewState OnPlatformViewCreatedListener");
-                params.onPlatformViewCreated(id);
-                viewController = THEOliveViewController(id);
-                setupLifeCycleListeners();
-                widget.viewController = viewController;
-                widget.onTHEOliveViewCreated(viewController);
-              })
-              ..create();
-          },
-        );
-      case TargetPlatform.iOS:
-        return UiKitView(
-            viewType: viewType,
-            layoutDirection: TextDirection.ltr,
-            creationParams: creationParams,
-            creationParamsCodec: const StandardMessageCodec(),
-            onPlatformViewCreated: (id) {
-              dprint("_THEOliveViewState OnPlatformViewCreatedListener");
-              viewController = THEOliveViewController(id);
-              setupLifeCycleListeners();
-              widget.viewController = viewController;
-              widget.onTHEOliveViewCreated(viewController);
-            });
-      default:
-        return Text("Unsupported platform $defaultTargetPlatform");
-    }
+    return TheolivePlatform.instance.buildView(context, widget._playerConfig, (THEOliveViewController viewController) {
+      this.viewController = viewController;
+      setupLifeCycleListeners();
+      widget.viewController = viewController;
+      widget.onTHEOliveViewCreated(viewController);
+    });
   }
 
   @override
