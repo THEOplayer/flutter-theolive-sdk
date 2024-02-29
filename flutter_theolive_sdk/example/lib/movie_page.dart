@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_theolive/theolive_playerconfig.dart';
-import 'package:flutter_theolive/theolive_view.dart';
-import 'package:flutter_theolive/theolive_viewcontroller.dart';
 import 'package:flutter_theolive_example/debug_tools.dart';
 import 'package:flutter_theolive_example/fullscreen_page.dart';
-
+import 'package:theolive/flutter_theolive.dart';
+import 'package:theolive/theolive_view.dart';
 
 class MoviePage extends StatefulWidget {
   const MoviePage({super.key, required this.title});
@@ -55,7 +53,8 @@ class _MoviePageState extends State<MoviePage> implements THEOliveViewController
       onTHEOliveViewCreated:(THEOliveViewController controller) {
         // assign the controller to interact with the player
         _theoController = controller;
-        _theoController.eventListener = this;
+        //TODO: check this!
+        (_theoController as THEOliveViewControllerMobile).eventListener = this;
 
         NativePlayerConfiguration nativePlayerConfiguration = NativePlayerConfiguration();
         nativePlayerConfiguration.sessionId = "sessionIdForTracking";

@@ -3,7 +3,7 @@
 # Run `pod lib lint flutter_theolive.podspec` to validate before publishing.
 #
 Pod::Spec.new do |s|
-  s.name             = 'flutter_theolive'
+  s.name             = 'theolive_ios'
   s.version          = '0.0.1'
   s.summary          = 'THEOlive Flutter project'
   s.description      = <<-DESC

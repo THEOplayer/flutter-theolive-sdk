@@ -5,11 +5,11 @@ import 'package:pigeon/pigeon.dart';
 @ConfigurePigeon(PigeonOptions(
   dartOut: 'lib/pigeon/theolive_api.g.dart',
   dartOptions: DartOptions(),
-  kotlinOut: 'android/src/main/kotlin/live/theo/sdk/flutter_theolive/pigeon/THEOliveAPI.g.kt',
+  kotlinOut: '../flutter_theolive_sdk_android/android/src/main/kotlin/live/theo/sdk/flutter_theolive/pigeon/THEOliveAPI.g.kt',
   kotlinOptions: KotlinOptions(
     package: 'live.theo.sdk.flutter_theolive.pigeon'
   ),
-  swiftOut: 'ios/Classes/pigeon/THEOliveAPI.g.swift',
+  swiftOut: '../flutter_theolive_sdk_ios/ios/Classes/pigeon/THEOliveAPI.g.swift',
   swiftOptions: SwiftOptions(),
   dartPackageName: 'flutter_theolive',
 ))

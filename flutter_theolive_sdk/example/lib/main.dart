@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:flutter/services.dart';
-import 'package:flutter_theolive/flutter_theolive.dart';
+import 'package:theolive/flutter_theolive.dart';
 
 import 'movie_page.dart';
 
