@@ -23,7 +23,7 @@ flutter:
     platforms:
       ios:
         pluginClass: FlutterTheolivePlugin
-        dartPluginClass: THEOplayerIOS
+        dartPluginClass: THEOliveIOS
 
 topics:
   - theolive
