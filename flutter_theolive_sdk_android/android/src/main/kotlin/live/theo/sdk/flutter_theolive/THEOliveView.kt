@@ -34,7 +34,7 @@ class THEOliveView(context: Context, viewId: Int, args: Any?, messenger: BinaryM
 
     private val id : Int
 
-    private val emptyCallback: () -> Unit = {}
+    private val emptyCallback: (Result<Unit>) -> Unit = {}
 
     private val nativeRenderingTarget: String
     // Workaround to eliminate the inital transparent layout with initExpensiveAndroidView
