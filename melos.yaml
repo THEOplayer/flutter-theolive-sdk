@@ -12,10 +12,6 @@ command:
     environment:
       sdk: '>=2.19.6 <3.0.0'
       flutter: ">=2.5.0"
-    dependencies:
-      theolive_platform_interface: 1.0.0
-      theolive_android: 1.0.0
-      theolive_ios: 1.0.0
 
 scripts:
   analyze:
