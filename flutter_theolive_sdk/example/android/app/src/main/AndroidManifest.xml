@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="live.theo.sdk.flutter_theolive_example">
+    package="com.theolive.theolive_example">
    <application
         android:label="flutter_theolive_example"
         android:name="${applicationName}"

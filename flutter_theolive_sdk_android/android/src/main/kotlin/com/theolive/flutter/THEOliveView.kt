@@ -1,10 +1,13 @@
-package live.theo.sdk.flutter_theolive
+package com.theolive.flutter
 
 import android.content.Context
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import com.theolive.flutter.pigeon.PigeonNativePlayerConfiguration
+import com.theolive.flutter.pigeon.THEOliveFlutterAPI
+import com.theolive.flutter.pigeon.THEOliveNativeAPI
 import com.theolive.player.EventListener
 import com.theolive.player.PlayerView
 import com.theolive.player.RenderingTarget
@@ -13,14 +16,9 @@ import io.flutter.plugin.platform.PlatformView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import live.theo.sdk.flutter_theolive.pigeon.PigeonNativePlayerConfiguration
-import live.theo.sdk.flutter_theolive.pigeon.THEOliveFlutterAPI
-import live.theo.sdk.flutter_theolive.pigeon.THEOliveNativeAPI
 
-
-
-class THEOliveView(context: Context, viewId: Int, args: Any?, messenger: BinaryMessenger) : PlatformView,
-    EventListener, THEOliveNativeAPI {
+class THEOliveView(context: Context, viewId: Int, args: Any?, messenger: BinaryMessenger) :
+    PlatformView, EventListener, THEOliveNativeAPI {
 
     private val RENDERINGTARGET_SURFACE_VIEW = "surfaceView"
 
@@ -32,11 +30,12 @@ class THEOliveView(context: Context, viewId: Int, args: Any?, messenger: BinaryM
 
     private val pigeonMessenger: PigeonMultiInstanceBinaryMessengerWrapper
 
-    private val id : Int
+    private val id: Int
 
     private val emptyCallback: (Result<Unit>) -> Unit = {}
 
     private val nativeRenderingTarget: String
+
     // Workaround to eliminate the inital transparent layout with initExpensiveAndroidView
     // TODO: remove it once initExpensiveAndroidView is not used.
     private var useHybridComposition: Boolean = false
@@ -56,24 +55,22 @@ class THEOliveView(context: Context, viewId: Int, args: Any?, messenger: BinaryM
 
     // sync behavior with native iOS SDK
     // TODO: this logic should move to application level. The SDK should always stay paused after a "background to foreground" switch.
-    private var wasPlayingBeforeActivityOnPause: Boolean = false;
+    private var wasPlayingBeforeActivityOnPause: Boolean = false
 
     init {
-        Log.d("THEOliveView_$viewId", "init $viewId");
+        Log.d("THEOliveView_$viewId", "init $viewId")
 
         useHybridComposition = (args as? Map<*, *>)?.get("useHybridComposition") as? Boolean == true
         nativeRenderingTarget = ((args as? Map<*, *>)?.get("nativeRenderingTarget") as? String) ?: RENDERINGTARGET_SURFACE_VIEW //TODO: use enum and pigeon
 
         //setup pigeon
-        pigeonMessenger = PigeonMultiInstanceBinaryMessengerWrapper(messenger, "id_$viewId");
+        pigeonMessenger = PigeonMultiInstanceBinaryMessengerWrapper(messenger, "id_$viewId")
         THEOliveNativeAPI.setUp(pigeonMessenger, this)
         flutterApi = THEOliveFlutterAPI(pigeonMessenger)
 
         constraintLayout = LinearLayout(context)
 
-        val layoutParams = ViewGroup.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.MATCH_PARENT)
+        val layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         constraintLayout.layoutParams = layoutParams
         //constraintLayout.setBackgroundColor(android.graphics.Color.BLUE)
 
@@ -85,11 +82,11 @@ class THEOliveView(context: Context, viewId: Int, args: Any?, messenger: BinaryM
         //playerView.setBackgroundColor(android.graphics.Color.RED)
 
         if (nativeRenderingTarget == RENDERINGTARGET_SURFACE_VIEW) {
-            Log.d("THEOliveView_$id", "nativeRenderingTarget: surfaceView");
-            playerView.setRenderingTarget(RenderingTarget.SURFACE_VIEW);
+            Log.d("THEOliveView_$id", "nativeRenderingTarget: surfaceView")
+            playerView.setRenderingTarget(RenderingTarget.SURFACE_VIEW)
         } else {
-            Log.d("THEOliveView_$id", "nativeRenderingTarget: textureView");
-            playerView.setRenderingTarget(RenderingTarget.TEXTURE_VIEW);
+            Log.d("THEOliveView_$id", "nativeRenderingTarget: textureView")
+            playerView.setRenderingTarget(RenderingTarget.TEXTURE_VIEW)
         }
 
         constraintLayout.addView(playerView)
@@ -100,31 +97,32 @@ class THEOliveView(context: Context, viewId: Int, args: Any?, messenger: BinaryM
     }
 
     override fun onChannelLoadStart(channelId: String) {
-        Log.d("THEOliveView_$id", "onChannelLoadStart: $channelId");
+        Log.d("THEOliveView_$id", "onChannelLoadStart: $channelId")
         isFirstPlaying = false
         CoroutineScope(Dispatchers.Main).launch {
-            flutterApi.onChannelLoadStartEvent(channelId, emptyCallback);
+            flutterApi.onChannelLoadStartEvent(channelId, emptyCallback)
         }
 
     }
+
     override fun onChannelLoaded(channelId: String) {
-        Log.d("THEOliveView_$id", "onChannelLoaded:");
+        Log.d("THEOliveView_$id", "onChannelLoaded:")
         isFirstPlaying = false
         CoroutineScope(Dispatchers.Main).launch {
-            flutterApi.onChannelLoadedEvent(channelId, emptyCallback);
+            flutterApi.onChannelLoadedEvent(channelId, emptyCallback)
         }
     }
 
     override fun onChannelOffline(channelId: String) {
-        Log.d("THEOliveView_$id", "onChannelOffline: $channelId");
+        Log.d("THEOliveView_$id", "onChannelOffline: $channelId")
         isFirstPlaying = false
         CoroutineScope(Dispatchers.Main).launch {
-            flutterApi.onChannelOfflineEvent(channelId, emptyCallback);
+            flutterApi.onChannelOfflineEvent(channelId, emptyCallback)
         }
     }
 
     override fun onPlaying() {
-        Log.d("THEOliveView_$id", "onPlaying");
+        Log.d("THEOliveView_$id", "onPlaying")
 
         if (!isFirstPlaying) {
             isFirstPlaying = true
@@ -136,28 +134,28 @@ class THEOliveView(context: Context, viewId: Int, args: Any?, messenger: BinaryM
     }
 
     override fun onWaiting() {
-        Log.d("THEOliveView_$id", "onWaiting");
+        Log.d("THEOliveView_$id", "onWaiting")
         CoroutineScope(Dispatchers.Main).launch {
             flutterApi.onWaiting(emptyCallback)
         }
     }
 
     override fun onPause() {
-        Log.d("THEOliveView_$id", "onPause");
+        Log.d("THEOliveView_$id", "onPause")
         CoroutineScope(Dispatchers.Main).launch {
             flutterApi.onPause(emptyCallback)
         }
     }
 
     override fun onPlay() {
-        Log.d("THEOliveView_$id", "onPlay");
+        Log.d("THEOliveView_$id", "onPlay")
         CoroutineScope(Dispatchers.Main).launch {
             flutterApi.onPlay(emptyCallback)
         }
     }
 
     override fun onIntentToFallback() {
-        Log.d("THEOliveView_$id", "onIntentToFallback");
+        Log.d("THEOliveView_$id", "onIntentToFallback")
         isFirstPlaying = false
         CoroutineScope(Dispatchers.Main).launch {
             flutterApi.onIntentToFallback(emptyCallback)
@@ -165,7 +163,7 @@ class THEOliveView(context: Context, viewId: Int, args: Any?, messenger: BinaryM
     }
 
     override fun onReset() {
-        Log.d("THEOliveView_$id", "onReset");
+        Log.d("THEOliveView_$id", "onReset")
         isFirstPlaying = false
         CoroutineScope(Dispatchers.Main).launch {
             flutterApi.onReset(emptyCallback)
@@ -173,7 +171,7 @@ class THEOliveView(context: Context, viewId: Int, args: Any?, messenger: BinaryM
     }
 
     override fun onError(message: String) {
-        Log.d("THEOliveView_$id", "error: $message");
+        Log.d("THEOliveView_$id", "error: $message")
         isFirstPlaying = false
         CoroutineScope(Dispatchers.Main).launch {
             flutterApi.onError(message, emptyCallback)
@@ -185,46 +183,46 @@ class THEOliveView(context: Context, viewId: Int, args: Any?, messenger: BinaryM
     }
 
     override fun dispose() {
-        Log.d("THEOliveView_$id", "dispose");
+        Log.d("THEOliveView_$id", "dispose")
 
-        playerView.player.removeEventListener(this);
+        playerView.player.removeEventListener(this)
         constraintLayout.removeView(playerView)
         playerView.player.destroy()
         playerView.onDestroy()
     }
 
     override fun loadChannel(channelID: String) {
-        Log.d("THEOliveView_$id", "loadChannel called, $channelID");
-        playerView.player.loadChannel(channelID);
+        Log.d("THEOliveView_$id", "loadChannel called, $channelID")
+        playerView.player.loadChannel(channelID)
     }
 
     override fun manualDispose() {
-        Log.d("THEOliveView_$id", "manualDispose");
+        Log.d("THEOliveView_$id", "manualDispose")
         //DO NOTHING, normal dispose() flow should be called by Flutter
     }
 
     override fun onLifecycleResume() {
-        Log.d("THEOliveView_$id", "onLifecycleResume");
-        playerView.onResume();
+        Log.d("THEOliveView_$id", "onLifecycleResume")
+        playerView.onResume()
         if (wasPlayingBeforeActivityOnPause) {
-            wasPlayingBeforeActivityOnPause = false;
-            play();
+            wasPlayingBeforeActivityOnPause = false
+            play()
         }
     }
 
     override fun onLifecyclePause() {
-        Log.d("THEOliveView_$id", "onLifecyclePause");
+        Log.d("THEOliveView_$id", "onLifecyclePause")
         wasPlayingBeforeActivityOnPause = !playerView.player.paused
-        playerView.onPause();
+        playerView.onPause()
     }
 
 
     override fun preloadChannels(channelIDs: List<String>) {
-        this.playerView.player.preloadChannels(channelIDs.toTypedArray());
+        this.playerView.player.preloadChannels(channelIDs.toTypedArray())
     }
 
     override fun play() {
-        this.playerView.player.play();
+        this.playerView.player.play()
     }
 
     override fun pause() {

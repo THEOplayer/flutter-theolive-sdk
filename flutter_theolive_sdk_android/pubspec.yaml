@@ -23,7 +23,7 @@ flutter:
     implements: theolive
     platforms:
       android:
-        package: live.theo.sdk.flutter_theolive
+        package: com.theolive.flutter
         pluginClass: FlutterTheolivePlugin
         dartPluginClass: THEOliveAndroid
 
