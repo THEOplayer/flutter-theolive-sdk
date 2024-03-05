@@ -1,4 +1,4 @@
-package live.theo.sdk.flutter_theolive
+package com.theolive.flutter
 
 import android.content.Context
 import io.flutter.plugin.common.BinaryMessenger
@@ -7,8 +7,7 @@ import io.flutter.plugin.common.StandardMessageCodec
 import io.flutter.plugin.platform.PlatformView
 import io.flutter.plugin.platform.PlatformViewFactory
 
-class THEOliveViewFactory(createArgsCodec: MessageCodec<Any>?) :
-    PlatformViewFactory(createArgsCodec) {
+class THEOliveViewFactory(createArgsCodec: MessageCodec<Any>?) : PlatformViewFactory(createArgsCodec) {
 
     lateinit var messenger: BinaryMessenger
 
@@ -17,6 +16,6 @@ class THEOliveViewFactory(createArgsCodec: MessageCodec<Any>?) :
     }
 
     override fun create(context: Context?, viewId: Int, args: Any?): PlatformView {
-        return THEOliveView(context!!, viewId, args, messenger);
+        return THEOliveView(context!!, viewId, args, messenger)
     }
 }

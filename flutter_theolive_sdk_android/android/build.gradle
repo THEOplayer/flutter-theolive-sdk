@@ -1,4 +1,4 @@
-group 'live.theo.sdk.flutter_theolive'
+group 'com.theolive.flutter.pigeon'
 version '1.0-SNAPSHOT'
 
 buildscript {
