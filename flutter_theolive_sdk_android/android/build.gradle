@@ -33,6 +33,7 @@ rootProject.allprojects {
 
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
+def theoliveVersion ='3.13.1'
 
 android {
     compileSdkVersion 31
@@ -55,6 +56,6 @@ android {
     }
 
     dependencies {
-        implementation "com.theolive:player:3.13.1"
+        implementation "com.theolive:player:$theoliveVersion"
     }
 }

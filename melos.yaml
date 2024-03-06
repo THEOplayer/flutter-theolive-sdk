@@ -23,3 +23,9 @@ scripts:
     description: |
       Run `dart analyze` in all packages.
        - Note: you can also rely on your IDEs Dart Analysis / Issues window.
+  update:theolive:native:
+    description: |
+      Updates the versions of all the THEOlive packages to the passed `VERSION` env, also committing the changes to the branch. 
+      To run the script set the version env before the command. Example:
+      `melos update:theolive:native -- --all 3.13.1`
+    run: ./scripts/update_theolive_native.sh
