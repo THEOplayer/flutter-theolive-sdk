@@ -2,8 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_theolive_example/debug_tools.dart';
-import 'package:theolive/flutter_theolive.dart';
-import 'package:theolive/theolive_view.dart';
+import 'package:theolive/theolive.dart';
 
 class FullscreenPage extends StatefulWidget {
   const FullscreenPage({super.key, required this.playerWidget});
