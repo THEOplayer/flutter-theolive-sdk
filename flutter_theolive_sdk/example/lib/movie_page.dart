@@ -12,10 +12,8 @@ class MoviePage extends StatefulWidget {
   State<MoviePage> createState() => _MoviePageState();
 }
 
-class _MoviePageState extends State<MoviePage> implements THEOliveViewControllerEventListener {
+class _MoviePageState extends State<MoviePage> {
   late THEOlive _theoLive;
-  late THEOliveView _theoLiveView;
-  late THEOliveViewController _theoController;
 
   bool playing = false;
   bool loaded = false;
@@ -33,21 +31,15 @@ class _MoviePageState extends State<MoviePage> implements THEOliveViewController
           ),
         ),
         onCreate: () {
-          _theoLiveView = _theoLive.getView() as THEOliveView;
-          // assign the controller to interact with the player
-          _theoController = _theoLive.viewController;
-          //TODO: check this!
-          (_theoController as THEOliveViewControllerMobile).eventListener = this;
-
           NativePlayerConfiguration nativePlayerConfiguration = NativePlayerConfiguration();
           nativePlayerConfiguration.sessionId = "sessionIdForTracking";
 
           // Updates the config of the player, make sure to call this before loading a channel.
-          _theoController.updateNativePlayerConfiguration(nativePlayerConfiguration);
-          //_theoController.preloadChannels(["38yyniscxeglzr8n0lbku57b0"]);
+          _theoLive.updateNativePlayerConfiguration(nativePlayerConfiguration);
 
           // automatically load the channel once the view is ready
-          _theoController.loadChannel("38yyniscxeglzr8n0lbku57b0");
+          // _theoLive.preloadChannels(["38yyniscxeglzr8n0lbku57b0"]);
+          _theoLive.loadChannel("38yyniscxeglzr8n0lbku57b0");
         });
   }
 
@@ -103,7 +95,7 @@ class _MoviePageState extends State<MoviePage> implements THEOliveViewController
                 ),
                 Stack(alignment: Alignment.center, children: [
                   !inFullscreen
-                      ? Container(width: w, height: h, color: Colors.black, child: _theoLiveView)
+                      ? Container(width: w, height: h, color: Colors.black, child: _theoLive.getView())
                       : Container(),
                   !loaded
                       ? Container(
@@ -145,7 +137,7 @@ class _MoviePageState extends State<MoviePage> implements THEOliveViewController
                 !landscape
                     ? FilledButton(
                         onPressed: () {
-                          _theoController.loadChannel("38yyniscxeglzr8n0lbku57b0");
+                          _theoLive.loadChannel("38yyniscxeglzr8n0lbku57b0");
                         },
                         child: const Text("Change channel"))
                     : Container(),
@@ -175,10 +167,10 @@ class _MoviePageState extends State<MoviePage> implements THEOliveViewController
   void _playPause() {
     bool newState = false;
     if (playing) {
-      _theoController.pause();
+      _theoLive.pause();
       newState = false;
     } else {
-      _theoController.play();
+      _theoLive.play();
       newState = true;
     }
     setState(() {
@@ -186,54 +178,11 @@ class _MoviePageState extends State<MoviePage> implements THEOliveViewController
     });
   }
 
-  // THEOliveViewControllerEventListener interface methods
-  @override
-  void onChannelLoadedEvent(String channelID) {}
-
-  @override
-  void onPlaying() {
-    setState(() {
-      loaded = true;
-    });
-  }
-
-  @override
-  void onChannelLoadStartEvent(String channelID) {
-    // TODO: implement onChannelLoadStartEvent
-  }
-
-  @override
-  void onChannelOfflineEvent(String channelID) {
-    // TODO: implement onChannelOfflineEvent
-  }
-
-  @override
-  void onError(String message) {
-    // TODO: implement onError
-  }
-
-  @override
-  void onIntentToFallback() {
-    // TODO: implement onIntentToFallback
-  }
-
-  @override
-  void onPause() {
-    // TODO: implement onPause
-  }
-
-  @override
-  void onPlay() {
-    // TODO: implement onPlay
-  }
-
-  @override
-  void onReset() {
-    // TODO: implement onReset
-  }
-
-  @override
-  void onWaiting() {
-    // TODO: implement onWaiting
-  }
+  // todo: handle loaded state when introducing StateChangeListener
+  // @override
+  // void onPlaying() {
+  //   setState(() {
+  //     loaded = true;
+  //   });
+  // }
 }
