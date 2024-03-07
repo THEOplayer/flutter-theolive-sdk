@@ -12,6 +12,9 @@ command:
     environment:
       sdk: '>=2.19.6 <3.0.0'
       flutter: ">=2.5.0"
+  version:
+    includeScopes: false
+    workspaceChangelog: false
 
 scripts:
   analyze:
@@ -23,3 +26,24 @@ scripts:
     description: |
       Run `dart analyze` in all packages.
        - Note: you can also rely on your IDEs Dart Analysis / Issues window.
+  update:theolive:flutter:
+    description: |
+      Updates the versions of all the THEOlive packages to the passed `VERSION` env, also committing the changes to the branch. 
+      To run the script set the version env before the command. Example:
+      `VERSION=1.0.0 melos run update:theolive:flutter`
+    run:
+      melos version
+      --yes
+      --no-git-tag-version
+      --no-changelog
+      --message="version bump to $VERSION"
+      -V theolive_platform_interface:$VERSION
+      -V theolive_android:$VERSION
+      -V theolive_ios:$VERSION
+      -V theolive:$VERSION
+  update:theolive:native:
+    description: |
+      Updates the versions of all the THEOlive packages to the passed `VERSION` env, also committing the changes to the branch. 
+      To run the script set the version env before the command. Example:
+      `melos update:theolive:native -- --all 3.13.1`
+    run: ./scripts/update_theolive_native.sh

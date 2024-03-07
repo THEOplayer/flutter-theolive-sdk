@@ -1,4 +1,4 @@
-package live.theo.sdk.flutter_theolive
+package com.theolive.flutter
 
 import io.flutter.plugin.common.BinaryMessenger
 import java.nio.ByteBuffer
