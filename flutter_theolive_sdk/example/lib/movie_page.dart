@@ -6,15 +6,6 @@ import 'package:theolive/theolive.dart';
 class MoviePage extends StatefulWidget {
   const MoviePage({super.key, required this.title});
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
   final String title;
 
   @override
@@ -22,75 +13,42 @@ class MoviePage extends StatefulWidget {
 }
 
 class _MoviePageState extends State<MoviePage> implements THEOliveViewControllerEventListener {
-
+  late THEOlive _theoLive;
+  late THEOliveView _theoLiveView;
   late THEOliveViewController _theoController;
-  GlobalKey playerUniqueKey = GlobalKey(debugLabel: "playerUniqueKey");
-
-  void _callLoadChannel(String channelID) {
-    _theoController.loadChannel(channelID);
-
-  }
 
   bool playing = false;
   bool loaded = false;
   bool inFullscreen = false;
 
-  late THEOliveView theoLiveView;
-
   @override
   void initState() {
     dprint("_MoviePageState with THEOliveView: initState ");
     super.initState();
-    theoLiveView = THEOliveView(
-      key: playerUniqueKey,
-      playerConfig: PlayerConfig(
+    _theoLive = THEOlive(
+        playerConfig: PlayerConfig(
           AndroidConfig(
-              useHybridComposition: false,
-              nativeRenderingTarget: AndroidNativeRenderingTarget.textureView
-          )
-      ),
-      onTHEOliveViewCreated:(THEOliveViewController controller) {
-        // assign the controller to interact with the player
-        _theoController = controller;
-        //TODO: check this!
-        (_theoController as THEOliveViewControllerMobile).eventListener = this;
+            useHybridComposition: false,
+            nativeRenderingTarget: AndroidNativeRenderingTarget.textureView,
+          ),
+        ),
+        onCreate: () {
+          _theoLiveView = _theoLive.getView() as THEOliveView;
+          // assign the controller to interact with the player
+          _theoController = _theoLive.viewController;
+          //TODO: check this!
+          (_theoController as THEOliveViewControllerMobile).eventListener = this;
 
-        NativePlayerConfiguration nativePlayerConfiguration = NativePlayerConfiguration();
-        nativePlayerConfiguration.sessionId = "sessionIdForTracking";
+          NativePlayerConfiguration nativePlayerConfiguration = NativePlayerConfiguration();
+          nativePlayerConfiguration.sessionId = "sessionIdForTracking";
 
-        // Updates the config of the player, make sure to call this before loading a channel.
-        _theoController.updateNativePlayerConfiguration(nativePlayerConfiguration);
-        //_theoController.preloadChannels(["38yyniscxeglzr8n0lbku57b0"]);
+          // Updates the config of the player, make sure to call this before loading a channel.
+          _theoController.updateNativePlayerConfiguration(nativePlayerConfiguration);
+          //_theoController.preloadChannels(["38yyniscxeglzr8n0lbku57b0"]);
 
-        // automatically load the channel once the view is ready
-        _callLoadChannel("38yyniscxeglzr8n0lbku57b0");
-      },
-    );
-
-  }
-
-  @override
-  void dispose() {
-    dprint("_MoviePageState with THEOliveView: dispose ");
-
-    // NOTE: this would be nicer, if we move it inside the THEOliveView that's a StatefulWidget
-    // FIX for https://github.com/flutter/flutter/issues/97499
-    //_theoController.manualDispose();
-    super.dispose();
-  }
-
-  void _playPause() {
-    bool newState = false;
-    if (playing) {
-      _theoController.pause();
-      newState = false;
-    } else {
-      _theoController.play();
-      newState = true;
-    }
-    setState(() {
-      playing = newState;
-    });
+          // automatically load the channel once the view is ready
+          _theoController.loadChannel("38yyniscxeglzr8n0lbku57b0");
+        });
   }
 
   @override
@@ -114,7 +72,7 @@ class _MoviePageState extends State<MoviePage> implements THEOliveViewController
           double h = 300;
           bool landscape = false;
 
-          if(orientation == Orientation.landscape){
+          if (orientation == Orientation.landscape) {
             dprint("The screen is on Landscape mode.");
             w = MediaQuery.of(context).size.width;
             h = MediaQuery.of(context).size.height * 0.5;
@@ -143,36 +101,54 @@ class _MoviePageState extends State<MoviePage> implements THEOliveViewController
                 const Text(
                   'THEOlive',
                 ),
-                Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      !inFullscreen ? Container(width: w, height: h, color: Colors.black, child: theoLiveView) : Container(),
-                      !loaded ? Container(width: w, height: h, color: Colors.black, child: const Center(child: SizedBox(width: 50, height: 50, child: RefreshProgressIndicator()))) : Container(),
-                    ]
-                ),
-                !landscape ? FilledButton(onPressed: (){
-                  Navigator.pop(context);
-                }, child: const Text("Go back")) : Container(),
-                !landscape ? FilledButton(onPressed: () {
-                  setState(() {
-                    inFullscreen = true;
-                  });
-
-                  //Navigator.push(context, MaterialPageRoute(builder: (context) =>  FullscreenPage(playerViewKey: playerUniqueKey,)));
-                  Navigator.push(context, MaterialPageRoute(builder: (context){
-                    return FullscreenPage(playerWidget: theoLiveView,);
-                    //return FullscreenPage(playerViewKey: playerUniqueKey);
-                  }, settings: null)).then((value){
-                    dprint("_MoviePageState with THEOliveView: return from fullscreen ");
-                    setState(() {
-                      inFullscreen = false;
-                    });
-                  });
-
-                }, child: const Text("Open Fullscreen")) : Container(),
-                !landscape ? FilledButton(onPressed: (){
-                  _callLoadChannel("38yyniscxeglzr8n0lbku57b0");
-                }, child: const Text("Change channel")) : Container(),
+                Stack(alignment: Alignment.center, children: [
+                  !inFullscreen
+                      ? Container(width: w, height: h, color: Colors.black, child: _theoLiveView)
+                      : Container(),
+                  !loaded
+                      ? Container(
+                          width: w,
+                          height: h,
+                          color: Colors.black,
+                          child:
+                              const Center(child: SizedBox(width: 50, height: 50, child: RefreshProgressIndicator())))
+                      : Container(),
+                ]),
+                !landscape
+                    ? FilledButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: const Text("Go back"))
+                    : Container(),
+                !landscape
+                    ? FilledButton(
+                        onPressed: () {
+                          setState(() {
+                            inFullscreen = true;
+                          });
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => FullscreenPage(theoLive: _theoLive),
+                              settings: null,
+                            ),
+                          ).then((value) {
+                            dprint("_MoviePageState with THEOliveView: return from fullscreen ");
+                            setState(() {
+                              inFullscreen = false;
+                            });
+                          });
+                        },
+                        child: const Text("Open Fullscreen"))
+                    : Container(),
+                !landscape
+                    ? FilledButton(
+                        onPressed: () {
+                          _theoController.loadChannel("38yyniscxeglzr8n0lbku57b0");
+                        },
+                        child: const Text("Change channel"))
+                    : Container(),
               ],
             ),
           );
@@ -186,6 +162,29 @@ class _MoviePageState extends State<MoviePage> implements THEOliveViewController
     );
   }
 
+  @override
+  void dispose() {
+    dprint("_MoviePageState with THEOliveView: dispose ");
+
+    // NOTE: this would be nicer, if we move it inside the THEOliveView that's a StatefulWidget
+    // FIX for https://github.com/flutter/flutter/issues/97499
+    //_theoController.manualDispose();
+    super.dispose();
+  }
+
+  void _playPause() {
+    bool newState = false;
+    if (playing) {
+      _theoController.pause();
+      newState = false;
+    } else {
+      _theoController.play();
+      newState = true;
+    }
+    setState(() {
+      playing = newState;
+    });
+  }
 
   // THEOliveViewControllerEventListener interface methods
   @override

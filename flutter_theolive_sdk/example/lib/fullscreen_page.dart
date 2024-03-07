@@ -5,21 +5,10 @@ import 'package:flutter_theolive_example/debug_tools.dart';
 import 'package:theolive/theolive.dart';
 
 class FullscreenPage extends StatefulWidget {
-  const FullscreenPage({super.key, required this.playerWidget});
-  //const FullscreenPage({super.key, required this.playerViewKey});
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
+  final THEOlive theoLive;
 
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  //TODO: check what's the best way of passing views.
-  //final Key playerViewKey;
-  final THEOliveView playerWidget;
+  const FullscreenPage({super.key, required this.theoLive});
 
   @override
   State<FullscreenPage> createState() => _FullscreenPageState();
@@ -30,7 +19,7 @@ class _FullscreenPageState extends State<FullscreenPage> {
 
   bool playing = false;
 
-  late THEOliveView theoLiveView;
+  late Widget _theoLiveView;
 
   @override
   void initState() {
@@ -49,10 +38,8 @@ class _FullscreenPageState extends State<FullscreenPage> {
     );
      */
 
-
-    theoLiveView = widget.playerWidget;
-    _theoController = theoLiveView.viewController;
-
+    _theoLiveView = widget.theoLive.getView();
+    _theoController = widget.theoLive.viewController;
   }
 
   @override
@@ -106,7 +93,7 @@ class _FullscreenPageState extends State<FullscreenPage> {
             return Center(
               // Center is a layout widget. It takes a single child and positions it
               // in the middle of the parent.
-                child: !willPop ? theoLiveView : Container());
+                child: !willPop ? _theoLiveView : Container());
           },
         ),
         floatingActionButton: FloatingActionButton(
