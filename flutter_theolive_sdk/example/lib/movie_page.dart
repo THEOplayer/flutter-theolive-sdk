@@ -14,9 +14,6 @@ class MoviePage extends StatefulWidget {
 
 class _MoviePageState extends State<MoviePage> {
   late THEOlive _theoLive;
-
-  bool playing = false;
-  bool loaded = false;
   bool inFullscreen = false;
 
   @override
@@ -33,6 +30,8 @@ class _MoviePageState extends State<MoviePage> {
         onCreate: () {
           NativePlayerConfiguration nativePlayerConfiguration = NativePlayerConfiguration();
           nativePlayerConfiguration.sessionId = "sessionIdForTracking";
+
+          _theoLive.setStateListener(() => setState(() {}));
 
           // Updates the config of the player, make sure to call this before loading a channel.
           _theoLive.updateNativePlayerConfiguration(nativePlayerConfiguration);
@@ -97,7 +96,7 @@ class _MoviePageState extends State<MoviePage> {
                   !inFullscreen
                       ? Container(width: w, height: h, color: Colors.black, child: _theoLive.getView())
                       : Container(),
-                  !loaded
+                  !_theoLive.isLoaded()
                       ? Container(
                           width: w,
                           height: h,
@@ -149,9 +148,17 @@ class _MoviePageState extends State<MoviePage> {
       floatingActionButton: FloatingActionButton(
         onPressed: _playPause,
         tooltip: 'Load',
-        child: playing ? const Icon(Icons.pause) : const Icon(Icons.play_arrow),
+        child: _theoLive.isPaused() ? const Icon(Icons.play_arrow) : const Icon(Icons.pause),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+
+  void _playPause() {
+    if (_theoLive.isPaused()) {
+      _theoLive.play();
+    } else {
+      _theoLive.pause();
+    }
   }
 
   @override
@@ -163,26 +170,4 @@ class _MoviePageState extends State<MoviePage> {
     //_theoController.manualDispose();
     super.dispose();
   }
-
-  void _playPause() {
-    bool newState = false;
-    if (playing) {
-      _theoLive.pause();
-      newState = false;
-    } else {
-      _theoLive.play();
-      newState = true;
-    }
-    setState(() {
-      playing = newState;
-    });
-  }
-
-  // todo: handle loaded state when introducing StateChangeListener
-  // @override
-  // void onPlaying() {
-  //   setState(() {
-  //     loaded = true;
-  //   });
-  // }
 }

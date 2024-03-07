@@ -115,5 +115,4 @@ class THEOliveViewControllerMobile extends THEOliveViewController implements THE
     dprint("$_debugTag  onWaiting received");
     eventListener?.onWaiting();
   }
-
 }

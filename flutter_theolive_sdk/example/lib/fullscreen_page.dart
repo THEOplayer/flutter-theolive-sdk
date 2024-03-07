@@ -14,7 +14,6 @@ class FullscreenPage extends StatefulWidget {
 }
 
 class _FullscreenPageState extends State<FullscreenPage> {
-  bool playing = false;
   bool willPop = false;
 
   @override
@@ -31,17 +30,11 @@ class _FullscreenPageState extends State<FullscreenPage> {
   }
 
   void _playPause() {
-    bool newState = false;
-    if (playing) {
-      widget.theoLive.pause();
-      newState = false;
-    } else {
+    if (widget.theoLive.isPaused()) {
       widget.theoLive.play();
-      newState = true;
+    } else {
+      widget.theoLive.pause();
     }
-    setState(() {
-      playing = newState;
-    });
   }
 
   @override
@@ -67,7 +60,7 @@ class _FullscreenPageState extends State<FullscreenPage> {
         floatingActionButton: FloatingActionButton(
           onPressed: _playPause,
           tooltip: 'Load',
-          child: playing ? const Icon(Icons.pause) : const Icon(Icons.play_arrow),
+          child: widget.theoLive.isPaused() ? const Icon(Icons.play_arrow) : const Icon(Icons.pause),
         ),
       ),
     );

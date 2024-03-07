@@ -1,10 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:theolive/theolive_state.dart';
 import 'package:theolive/theolive_view.dart';
 import 'package:theolive_platform_interface/debug_helpers.dart';
 import 'package:theolive_platform_interface/theolive_playerconfig.dart';
 import 'package:theolive_platform_interface/theolive_view_controller_interface.dart';
-import 'package:theolive_platform_interface/theolive_viewcontroller_mobile.dart';
 
 export 'package:theolive/theolive_view.dart';
 export 'package:theolive_platform_interface/theolive_playerconfig.dart';
@@ -12,24 +12,28 @@ export 'package:theolive_platform_interface/theolive_view_controller_interface.d
 export 'package:theolive_platform_interface/theolive_viewcontroller_mobile.dart';
 
 typedef PlayerCreatedCallback = void Function();
+typedef StateChangeListener = void Function();
 
-class THEOlive implements THEOliveViewControllerEventListener {
+class THEOlive {
   final PlayerConfig playerConfig;
   final PlayerCreatedCallback? onCreate;
+  late final PlayerState _playerState;
   late THEOliveViewController _viewController;
 
   late final THEOliveView _tlv;
   late AppLifecycleListener _lifecycleListener;
 
   THEOlive({required this.playerConfig, this.onCreate}) {
+    _playerState = PlayerState();
     _tlv = THEOliveView(
         key: GlobalKey(debugLabel: "playerUniqueKey"),
         playerConfig: playerConfig,
         onTHEOliveViewCreated: (THEOliveViewController viewController) {
           _viewController = viewController;
-          (_viewController as THEOliveViewControllerMobile).eventListener = this;
+          _playerState.setViewController(viewController);
           setupLifeCycleListeners();
           onCreate?.call();
+          _playerState.initialized();
         });
   }
 
@@ -51,14 +55,27 @@ class THEOlive implements THEOliveViewControllerEventListener {
     return _tlv;
   }
 
-  void updateNativePlayerConfiguration(NativePlayerConfiguration configuration){
+  void setStateListener(StateChangeListener listener) {
+    _playerState.setStateListener(listener);
+  }
+
+  /// Whether the player is loaded.
+  bool isLoaded() {
+    return _playerState.isLoaded;
+  }
+
+  /// Whether the player is paused.
+  bool isPaused() {
+    return _playerState.isPaused;
+  }
+
+  void updateNativePlayerConfiguration(NativePlayerConfiguration configuration) {
     _viewController.updateNativePlayerConfiguration(configuration);
   }
 
-  void preloadChannels(List<String> list){
+  void preloadChannels(List<String> list) {
     _viewController.preloadChannels(list);
   }
-
 
   void loadChannel(String channelId) {
     _viewController.loadChannel(channelId);
@@ -72,7 +89,7 @@ class THEOlive implements THEOliveViewControllerEventListener {
     _viewController.pause();
   }
 
-  void manualDispose(){
+  void manualDispose() {
     _viewController.manualDispose();
   }
 
@@ -85,55 +102,5 @@ class THEOlive implements THEOliveViewControllerEventListener {
     if (defaultTargetPlatform == TargetPlatform.iOS) {
       _viewController.manualDispose();
     }
-  }
-
-  @override
-  void onChannelLoadStartEvent(String channelID) {
-    // TODO: implement onChannelLoadStartEvent
-  }
-
-  @override
-  void onChannelLoadedEvent(String channelID) {
-    // TODO: implement onChannelLoadedEvent
-  }
-
-  @override
-  void onChannelOfflineEvent(String channelID) {
-    // TODO: implement onChannelOfflineEvent
-  }
-
-  @override
-  void onError(String message) {
-    // TODO: implement onError
-  }
-
-  @override
-  void onIntentToFallback() {
-    // TODO: implement onIntentToFallback
-  }
-
-  @override
-  void onPause() {
-    // TODO: implement onPause
-  }
-
-  @override
-  void onPlay() {
-    // TODO: implement onPlay
-  }
-
-  @override
-  void onPlaying() {
-    // TODO: implement onPlaying
-  }
-
-  @override
-  void onReset() {
-    // TODO: implement onReset
-  }
-
-  @override
-  void onWaiting() {
-    // TODO: implement onWaiting
   }
 }
