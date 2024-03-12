@@ -1,118 +1,161 @@
 import 'package:theolive_platform_interface/debug_helpers.dart';
 import 'package:theolive_platform_interface/pigeon/theolive_api.g.dart';
 import 'package:theolive_platform_interface/pigeon_multi_instance_wrapper.dart';
+import 'package:theolive_platform_interface/theolive_playerconfig.dart';
 import 'package:theolive_platform_interface/theolive_view_controller_interface.dart';
 
 class THEOliveViewControllerMobile extends THEOliveViewController implements THEOliveFlutterAPI {
-  static const String _debugTag = "FL_DART_THEOliveViewController";
-
   late final int _id;
+  late final PigeonMultiInstanceBinaryMessengerWrapper _pigeonMessenger;
+  late final THEOliveNativeAPI _nativeAPI;
   THEOliveViewControllerEventListener? eventListener;
 
-  late final THEOliveNativeAPI _nativeAPI;
-  late final PigeonMultiInstanceBinaryMessengerWrapper _pigeonMessenger;
-
   THEOliveViewControllerMobile(int id) : super(id) {
-    this._id = id;
+    _id = id;
     _pigeonMessenger = PigeonMultiInstanceBinaryMessengerWrapper(suffix: 'id_$_id');
     _nativeAPI = THEOliveNativeAPI(binaryMessenger: _pigeonMessenger);
     THEOliveFlutterAPI.setup(this, binaryMessenger: _pigeonMessenger);
   }
 
-  void loadChannel(String channelId) {
-    _nativeAPI.loadChannel(channelId).onError(
-        //consume the exception, it is irrelevant to the flow, just for information
-        (error, stackTrace) => dprint("ERROR during loadChannel: $error"));
-  }
-
-  void play() {
-    _nativeAPI.play();
-  }
-
-  void pause() {
-    _nativeAPI.pause();
-  }
-
-  void manualDispose() {
-    _nativeAPI.manualDispose();
-  }
-
-  //app lifecycle
-  void onLifecycleResume() {
-    _nativeAPI.onLifecycleResume();
-  }
-
-  void onLifecyclePause() {
-    _nativeAPI.onLifecyclePause();
-  }
-
   @override
-  void onChannelLoadedEvent(String channelID) {
-    dprint("$_debugTag  onChannelLoaded received: $channelID");
-    eventListener?.onChannelLoadedEvent(channelID);
-  }
-
-  @override
-  void onPlaying() {
-    dprint("$_debugTag  onPlaying received");
-    eventListener?.onPlaying();
-  }
-
   void preloadChannels(List<String> list) {
     _nativeAPI.preloadChannels(list);
   }
 
-  /// Updates the config of the player, make sure to call this before loading a channel.
+  @override
+  void loadChannel(String channelId) {
+    _nativeAPI.loadChannel(channelId).onError((error, stackTrace) =>
+        //consume the exception, it is irrelevant to the flow, just for information
+        dprint("ERROR during loadChannel: $error"));
+  }
+
+  @override
+  void play() {
+    _nativeAPI.play();
+  }
+
+  @override
+  void pause() {
+    _nativeAPI.pause();
+  }
+
+  @override
+  Future<bool> isAutoplay() {
+    return _nativeAPI.isAutoplay();
+  }
+
+  @override
+  void setMuted(bool muted) {
+    _nativeAPI.setMuted(muted);
+  }
+
+  @override
+  void setBadNetworkMode(bool badNetworkMode) {
+    _nativeAPI.setBadNetworkMode(badNetworkMode);
+  }
+
+  @override
+  void goLive() {
+    _nativeAPI.goLive();
+  }
+
+  @override
+  void addHeaderProvider(HeaderProvider headerProvider) {
+  }
+
+  @override
+  void removeHeaderProvider(HeaderProvider headerProvider) {
+  }
+
+  @override
+  void reset() {
+    _nativeAPI.reset();
+  }
+
+  @override
   void updateNativePlayerConfiguration(NativePlayerConfiguration configuration) {
     final nativeConfig = PigeonNativePlayerConfiguration(sessionId: configuration.sessionId);
     _nativeAPI.updateConfiguration(nativeConfig);
   }
 
   @override
-  void onChannelLoadStartEvent(String channelID) {
-    dprint("$_debugTag  onChannelLoadStart received: $channelID");
-    eventListener?.onChannelLoadStartEvent(channelID);
+  void manualDispose() {
+    _nativeAPI.manualDispose();
   }
 
   @override
-  void onChannelOfflineEvent(String channelID) {
-    dprint("$_debugTag  onChannelOfflineEvent received: $channelID");
-    eventListener?.onChannelOfflineEvent(channelID);
+  void onLifecycleResume() {
+    _nativeAPI.onLifecycleResume();
   }
 
   @override
-  void onError(String message) {
-    dprint("$_debugTag  onError received: $message");
-    eventListener?.onError(message);
+  void onLifecyclePause() {
+    _nativeAPI.onLifecyclePause();
   }
 
   @override
-  void onIntentToFallback() {
-    dprint("$_debugTag  onIntentToFallback received");
-    eventListener?.onIntentToFallback();
+  void onChannelLoadStart(String channelID) {
+    eventListener?.onChannelLoadStart(channelID);
   }
 
   @override
-  void onPause() {
-    dprint("$_debugTag  onPause received");
-    eventListener?.onPause();
+  void onChannelLoaded(String channelID) {
+    eventListener?.onChannelLoaded(channelID);
   }
 
   @override
-  void onPlay() {
-    dprint("$_debugTag  onPlay received");
-    eventListener?.onPlay();
-  }
-
-  @override
-  void onReset() {
-    dprint("$_debugTag  onReset received");
-    eventListener?.onReset();
+  void onChannelOffline(String channelID) {
+    eventListener?.onChannelOffline(channelID);
   }
 
   @override
   void onWaiting() {
-    dprint("$_debugTag  onWaiting received");
     eventListener?.onWaiting();
   }
+
+  @override
+  void onPlay() {
+    eventListener?.onPlay();
+  }
+
+  @override
+  void onPlaying() {
+    eventListener?.onPlaying();
+  }
+
+  @override
+  void onPause() {
+    eventListener?.onPause();
+  }
+
+  @override
+  void onMutedChange() {
+    eventListener?.onMutedChange();
+  }
+
+  @override
+  void onIntentToFallback() {
+    eventListener?.onIntentToFallback();
+  }
+
+  @override
+  void onEnterBadNetworkMode() {
+    eventListener?.onEnterBadNetworkMode();
+  }
+
+  @override
+  void onExitBadNetworkMode() {
+    eventListener?.onExitBadNetworkMode();
+  }
+
+  @override
+  void onReset() {
+    eventListener?.onReset();
+  }
+
+  @override
+  void onError(String message) {
+    eventListener?.onError(message);
+  }
+
 }

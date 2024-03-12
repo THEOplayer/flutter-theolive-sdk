@@ -25,23 +25,33 @@ class PigeonNativePlayerConfiguration {
 //Talking to the native
 @HostApi()
 abstract class THEOliveNativeAPI {
-  void loadChannel(String channelID);
 
   void preloadChannels(List<String> channelIDs);
+
+  void loadChannel(String channelID);
 
   void play();
 
   void pause();
 
+  bool isAutoplay();
+
+  void setMuted(bool muted);
+
+  void setBadNetworkMode(bool badNetworkMode);
+
   void goLive();
 
-  // Update the config of the player, make sure to call this before loading a channel.
+  // void addHeaderProvider(dynamic headerProvider);
+
+  // void removeHeaderProvider(dynamic headerProvider);
+
+  void reset();
+
   void updateConfiguration(PigeonNativePlayerConfiguration configuration);
 
-  // helper APIs
   void manualDispose();
 
-  // application lifecycle listeners
   void onLifecycleResume();
 
   void onLifecyclePause();
@@ -52,24 +62,31 @@ abstract class THEOliveNativeAPI {
 //Talking from Native to Dart
 @FlutterApi()
 abstract class THEOliveFlutterAPI {
-  void onChannelLoadedEvent(String channelID);
+  void onChannelLoadStart(String channelID);
 
-  void onChannelLoadStartEvent(String channelID);
+  void onChannelLoaded(String channelID);
 
-  void onChannelOfflineEvent(String channelID);
-
-  void onPlaying();
+  void onChannelOffline(String channelID);
 
   void onWaiting();
 
-  void onPause();
-
   void onPlay();
 
+  void onPlaying();
+
+  void onPause();
+
+  void onMutedChange();
+
   void onIntentToFallback();
+
+  void onEnterBadNetworkMode();
+
+  void onExitBadNetworkMode();
 
   void onReset();
 
   void onError(String message);
+
 }
 

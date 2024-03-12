@@ -86,11 +86,15 @@ private object THEOliveNativeAPICodec : StandardMessageCodec() {
 
 /** Generated interface from Pigeon that represents a handler of messages from Flutter. */
 interface THEOliveNativeAPI {
-  fun loadChannel(channelID: String)
   fun preloadChannels(channelIDs: List<String>)
+  fun loadChannel(channelID: String)
   fun play()
   fun pause()
+  fun isAutoplay(): Boolean
+  fun setMuted(muted: Boolean)
+  fun setBadNetworkMode(badNetworkMode: Boolean)
   fun goLive()
+  fun reset()
   fun updateConfiguration(configuration: PigeonNativePlayerConfiguration)
   fun manualDispose()
   fun onLifecycleResume()
@@ -105,14 +109,14 @@ interface THEOliveNativeAPI {
     @Suppress("UNCHECKED_CAST")
     fun setUp(binaryMessenger: BinaryMessenger, api: THEOliveNativeAPI?) {
       run {
-        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.loadChannel", codec)
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.preloadChannels", codec)
         if (api != null) {
           channel.setMessageHandler { message, reply ->
             val args = message as List<Any?>
-            val channelIDArg = args[0] as String
+            val channelIDsArg = args[0] as List<String>
             var wrapped: List<Any?>
             try {
-              api.loadChannel(channelIDArg)
+              api.preloadChannels(channelIDsArg)
               wrapped = listOf<Any?>(null)
             } catch (exception: Throwable) {
               wrapped = wrapError(exception)
@@ -124,14 +128,14 @@ interface THEOliveNativeAPI {
         }
       }
       run {
-        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.preloadChannels", codec)
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.loadChannel", codec)
         if (api != null) {
           channel.setMessageHandler { message, reply ->
             val args = message as List<Any?>
-            val channelIDsArg = args[0] as List<String>
+            val channelIDArg = args[0] as String
             var wrapped: List<Any?>
             try {
-              api.preloadChannels(channelIDsArg)
+              api.loadChannel(channelIDArg)
               wrapped = listOf<Any?>(null)
             } catch (exception: Throwable) {
               wrapped = wrapError(exception)
@@ -177,12 +181,83 @@ interface THEOliveNativeAPI {
         }
       }
       run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.isAutoplay", codec)
+        if (api != null) {
+          channel.setMessageHandler { _, reply ->
+            var wrapped: List<Any?>
+            try {
+              wrapped = listOf<Any?>(api.isAutoplay())
+            } catch (exception: Throwable) {
+              wrapped = wrapError(exception)
+            }
+            reply.reply(wrapped)
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.setMuted", codec)
+        if (api != null) {
+          channel.setMessageHandler { message, reply ->
+            val args = message as List<Any?>
+            val mutedArg = args[0] as Boolean
+            var wrapped: List<Any?>
+            try {
+              api.setMuted(mutedArg)
+              wrapped = listOf<Any?>(null)
+            } catch (exception: Throwable) {
+              wrapped = wrapError(exception)
+            }
+            reply.reply(wrapped)
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.setBadNetworkMode", codec)
+        if (api != null) {
+          channel.setMessageHandler { message, reply ->
+            val args = message as List<Any?>
+            val badNetworkModeArg = args[0] as Boolean
+            var wrapped: List<Any?>
+            try {
+              api.setBadNetworkMode(badNetworkModeArg)
+              wrapped = listOf<Any?>(null)
+            } catch (exception: Throwable) {
+              wrapped = wrapError(exception)
+            }
+            reply.reply(wrapped)
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
         val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.goLive", codec)
         if (api != null) {
           channel.setMessageHandler { _, reply ->
             var wrapped: List<Any?>
             try {
               api.goLive()
+              wrapped = listOf<Any?>(null)
+            } catch (exception: Throwable) {
+              wrapped = wrapError(exception)
+            }
+            reply.reply(wrapped)
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.reset", codec)
+        if (api != null) {
+          channel.setMessageHandler { _, reply ->
+            var wrapped: List<Any?>
+            try {
+              api.reset()
               wrapped = listOf<Any?>(null)
             } catch (exception: Throwable) {
               wrapped = wrapError(exception)
@@ -275,8 +350,8 @@ class THEOliveFlutterAPI(private val binaryMessenger: BinaryMessenger) {
       StandardMessageCodec()
     }
   }
-  fun onChannelLoadedEvent(channelIDArg: String, callback: (Result<Unit>) -> Unit) {
-    val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onChannelLoadedEvent", codec)
+  fun onChannelLoadStart(channelIDArg: String, callback: (Result<Unit>) -> Unit) {
+    val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onChannelLoadStart", codec)
     channel.send(listOf(channelIDArg)) {
       if (it is List<*>) {
         if (it.size > 1) {
@@ -289,8 +364,8 @@ class THEOliveFlutterAPI(private val binaryMessenger: BinaryMessenger) {
       } 
     }
   }
-  fun onChannelLoadStartEvent(channelIDArg: String, callback: (Result<Unit>) -> Unit) {
-    val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onChannelLoadStartEvent", codec)
+  fun onChannelLoaded(channelIDArg: String, callback: (Result<Unit>) -> Unit) {
+    val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onChannelLoaded", codec)
     channel.send(listOf(channelIDArg)) {
       if (it is List<*>) {
         if (it.size > 1) {
@@ -303,23 +378,9 @@ class THEOliveFlutterAPI(private val binaryMessenger: BinaryMessenger) {
       } 
     }
   }
-  fun onChannelOfflineEvent(channelIDArg: String, callback: (Result<Unit>) -> Unit) {
-    val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onChannelOfflineEvent", codec)
+  fun onChannelOffline(channelIDArg: String, callback: (Result<Unit>) -> Unit) {
+    val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onChannelOffline", codec)
     channel.send(listOf(channelIDArg)) {
-      if (it is List<*>) {
-        if (it.size > 1) {
-          callback(Result.failure(FlutterError(it[0] as String, it[1] as String, it[2] as String?)));
-        } else {
-          callback(Result.success(Unit));
-        }
-      } else {
-        callback(Result.failure(FlutterError("channel-error",  "Unable to establish connection on channel.", "")));
-      } 
-    }
-  }
-  fun onPlaying(callback: (Result<Unit>) -> Unit) {
-    val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onPlaying", codec)
-    channel.send(null) {
       if (it is List<*>) {
         if (it.size > 1) {
           callback(Result.failure(FlutterError(it[0] as String, it[1] as String, it[2] as String?)));
@@ -333,20 +394,6 @@ class THEOliveFlutterAPI(private val binaryMessenger: BinaryMessenger) {
   }
   fun onWaiting(callback: (Result<Unit>) -> Unit) {
     val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onWaiting", codec)
-    channel.send(null) {
-      if (it is List<*>) {
-        if (it.size > 1) {
-          callback(Result.failure(FlutterError(it[0] as String, it[1] as String, it[2] as String?)));
-        } else {
-          callback(Result.success(Unit));
-        }
-      } else {
-        callback(Result.failure(FlutterError("channel-error",  "Unable to establish connection on channel.", "")));
-      } 
-    }
-  }
-  fun onPause(callback: (Result<Unit>) -> Unit) {
-    val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onPause", codec)
     channel.send(null) {
       if (it is List<*>) {
         if (it.size > 1) {
@@ -373,8 +420,78 @@ class THEOliveFlutterAPI(private val binaryMessenger: BinaryMessenger) {
       } 
     }
   }
+  fun onPlaying(callback: (Result<Unit>) -> Unit) {
+    val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onPlaying", codec)
+    channel.send(null) {
+      if (it is List<*>) {
+        if (it.size > 1) {
+          callback(Result.failure(FlutterError(it[0] as String, it[1] as String, it[2] as String?)));
+        } else {
+          callback(Result.success(Unit));
+        }
+      } else {
+        callback(Result.failure(FlutterError("channel-error",  "Unable to establish connection on channel.", "")));
+      } 
+    }
+  }
+  fun onPause(callback: (Result<Unit>) -> Unit) {
+    val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onPause", codec)
+    channel.send(null) {
+      if (it is List<*>) {
+        if (it.size > 1) {
+          callback(Result.failure(FlutterError(it[0] as String, it[1] as String, it[2] as String?)));
+        } else {
+          callback(Result.success(Unit));
+        }
+      } else {
+        callback(Result.failure(FlutterError("channel-error",  "Unable to establish connection on channel.", "")));
+      } 
+    }
+  }
+  fun onMutedChange(callback: (Result<Unit>) -> Unit) {
+    val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onMutedChange", codec)
+    channel.send(null) {
+      if (it is List<*>) {
+        if (it.size > 1) {
+          callback(Result.failure(FlutterError(it[0] as String, it[1] as String, it[2] as String?)));
+        } else {
+          callback(Result.success(Unit));
+        }
+      } else {
+        callback(Result.failure(FlutterError("channel-error",  "Unable to establish connection on channel.", "")));
+      } 
+    }
+  }
   fun onIntentToFallback(callback: (Result<Unit>) -> Unit) {
     val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onIntentToFallback", codec)
+    channel.send(null) {
+      if (it is List<*>) {
+        if (it.size > 1) {
+          callback(Result.failure(FlutterError(it[0] as String, it[1] as String, it[2] as String?)));
+        } else {
+          callback(Result.success(Unit));
+        }
+      } else {
+        callback(Result.failure(FlutterError("channel-error",  "Unable to establish connection on channel.", "")));
+      } 
+    }
+  }
+  fun onEnterBadNetworkMode(callback: (Result<Unit>) -> Unit) {
+    val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onEnterBadNetworkMode", codec)
+    channel.send(null) {
+      if (it is List<*>) {
+        if (it.size > 1) {
+          callback(Result.failure(FlutterError(it[0] as String, it[1] as String, it[2] as String?)));
+        } else {
+          callback(Result.success(Unit));
+        }
+      } else {
+        callback(Result.failure(FlutterError("channel-error",  "Unable to establish connection on channel.", "")));
+      } 
+    }
+  }
+  fun onExitBadNetworkMode(callback: (Result<Unit>) -> Unit) {
+    val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onExitBadNetworkMode", codec)
     channel.send(null) {
       if (it is List<*>) {
         if (it.size > 1) {

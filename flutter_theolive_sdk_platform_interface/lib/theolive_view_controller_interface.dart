@@ -1,7 +1,11 @@
-abstract class THEOliveViewController {
-  static const String _debugTag = "FL_DART_THEOliveViewController";
+import 'package:theolive_platform_interface/theolive_playerconfig.dart';
 
+typedef HeaderProvider = Map<String, String> Function(String url);
+
+abstract class THEOliveViewController {
   THEOliveViewController(int id) {}
+
+  void preloadChannels(List<String> list);
 
   void loadChannel(String channelId);
 
@@ -9,41 +13,53 @@ abstract class THEOliveViewController {
 
   void pause();
 
+  Future<bool> isAutoplay();
+
+  void setMuted(bool muted);
+
+  void setBadNetworkMode(bool badNetworkMode);
+
+  void goLive();
+
+  void addHeaderProvider(HeaderProvider headerProvider);
+
+  void removeHeaderProvider(HeaderProvider headerProvider);
+
+  void updateNativePlayerConfiguration(NativePlayerConfiguration configuration);
+
+  void reset();
+
   void manualDispose();
 
-  //app lifecycle
   void onLifecycleResume();
 
   void onLifecyclePause();
-
-  void preloadChannels(List<String> list);
-
-  /// Updates the config of the player, make sure to call this before loading a channel.
-  void updateNativePlayerConfiguration(NativePlayerConfiguration configuration);
 }
 
 abstract class THEOliveViewControllerEventListener {
-  void onChannelLoadedEvent(String channelID);
+  void onChannelLoadStart(String channelID);
 
-  void onChannelLoadStartEvent(String channelID);
+  void onChannelLoaded(String channelID);
 
-  void onChannelOfflineEvent(String channelID);
+  void onChannelOffline(String channelID);
 
-  void onIntentToFallback();
+  void onWaiting();
 
-  void onError(String message);
+  void onPlay();
 
   void onPlaying();
 
   void onPause();
 
-  void onPlay();
+  void onMutedChange();
+
+  void onIntentToFallback();
+
+  void onEnterBadNetworkMode();
+
+  void onExitBadNetworkMode();
 
   void onReset();
 
-  void onWaiting();
-}
-
-class NativePlayerConfiguration {
-  String? sessionId;
+  void onError(String message);
 }

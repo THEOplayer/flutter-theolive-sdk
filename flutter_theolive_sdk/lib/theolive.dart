@@ -59,6 +59,37 @@ class THEOlive {
     _playerState.setStateListener(listener);
   }
 
+  /// Update the config of the player, make sure to call this before loading a channel.
+  void updateNativePlayerConfiguration(NativePlayerConfiguration configuration) {
+    _viewController.updateNativePlayerConfiguration(configuration);
+  }
+
+  /// Preload some channels to allow faster switching between channels. This will retrieve the metadata of all the
+  /// given channel ids and store it so next loadChannel calls are faster.
+  void preloadChannels(List<String> list) {
+    _viewController.preloadChannels(list);
+  }
+
+  /// Load a channel.
+  void loadChannel(String channelId) {
+    _viewController.loadChannel(channelId);
+  }
+
+  /// Start or resume playback.
+  void play() {
+    _viewController.play();
+  }
+
+  /// Pause playback.
+  void pause() {
+    _viewController.pause();
+  }
+
+  /// Seek to the live edge.
+  void goLive() {
+    _viewController.goLive();
+  }
+
   /// Whether the player is loaded.
   bool isLoaded() {
     return _playerState.isLoaded;
@@ -69,24 +100,59 @@ class THEOlive {
     return _playerState.isPaused;
   }
 
-  void updateNativePlayerConfiguration(NativePlayerConfiguration configuration) {
-    _viewController.updateNativePlayerConfiguration(configuration);
+  /// Whether the currently loaded channel has autoplay enabled.
+  bool isAutoplay() {
+    return _playerState.isAutoplay;
   }
 
-  void preloadChannels(List<String> list) {
-    _viewController.preloadChannels(list);
+  /// Set whether audio is muted.
+  void setMuted(bool muted) {
+    _playerState.muted = muted;
+    _viewController.setMuted(muted);
   }
 
-  void loadChannel(String channelId) {
-    _viewController.loadChannel(channelId);
+  /// Whether audio is muted.
+  bool isMuted() {
+    return _playerState.muted;
   }
 
-  void play() {
-    _viewController.play();
+  /// Set whether the player is in bad network mode.
+  ///
+  /// ABR functionality works best on qualities with a bitrate of 800Kbit/s or more. So by default the player filters
+  /// out qualities with a lower bandwidth as it has difficulty upswitching from those qualities. However, when the
+  /// player detects that the stream really isn't playable on the 800Kbit/s+ qualities, it enters bad network mode.
+  /// In this mode, the player will also select lower bitrate qualities with the risk of never upswitching. It might
+  /// still upswitch, but we can't give any guarantees. This mode can be exited by setting badNetworkMode to false.
+  void setBadNetworkMode(bool badNetworkMode) {
+    _viewController.setBadNetworkMode(badNetworkMode);
   }
 
-  void pause() {
-    _viewController.pause();
+  /// Whether the player is in bad network mode.
+  ///
+  /// ABR functionality works best on qualities with a bitrate of 800Kbit/s or more. So by default the player filters
+  /// out qualities with a lower bandwidth as it has difficulty upswitching from those qualities. However, when the
+  /// player detects that the stream really isn't playable on the 800Kbit/s+ qualities, it enters bad network mode.
+  /// In this mode, the player will also select lower bitrate qualities with the risk of never upswitching. It might
+  /// still upswitch, but we can't give any guarantees. This mode can be exited by setting badNetworkMode to false.
+  bool isBadNetworkMode() {
+    return _playerState.badNetworkMode;
+  }
+
+  /// Add a header provider which allows adding headers to the requests the player makes.
+  void addHeaderProvider(HeaderProvider headerProvider) {
+    _viewController.addHeaderProvider(headerProvider);
+  }
+
+  /// Remove a previously added header provider.
+  void removeHeaderProvider(HeaderProvider headerProvider) {
+    _viewController.removeHeaderProvider(headerProvider);
+  }
+
+  /// Resets the player.
+  /// This will stop playback and reset the state.
+  /// But unlike destroy, can be followed up with a new loadChannel call.
+  void reset() {
+    _viewController.reset();
   }
 
   void manualDispose() {

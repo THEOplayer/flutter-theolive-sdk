@@ -5,28 +5,13 @@ class PlayerState implements THEOliveViewControllerEventListener {
   late THEOliveViewController _viewController;
   StateChangeListener? _stateChangeListener;
 
+  ChannelState channelState = ChannelState.idle;
   bool isInitialized = false;
-
-  // SourceDescription? source;
-  // bool isAutoplay = false;
+  bool isAutoplay = false;
   bool isLoaded = false;
   bool isPaused = true;
-
-  // double currentTime = 0.0;
-  // DateTime? currentProgramDateTime;
-  // double duration = 0.0;
-  // double playbackRate = 0.0;
-  // double volume = 1.0;
-  // bool muted = false;
-  // PreloadType preload = PreloadType.none;
-  // ReadyState readyState = ReadyState.have_nothing;
-  // bool isSeeking = false;
-  // bool isEnded = false;
-  // int videoWidth = 0;
-  // int videoHeight = 0;
-  // List<TimeRange?> buffered = [];
-  // List<TimeRange?> seekable = [];
-  // List<TimeRange?> played = [];
+  bool muted = false;
+  bool badNetworkMode = false;
   String? error;
 
   PlayerState() {
@@ -51,34 +36,27 @@ class PlayerState implements THEOliveViewControllerEventListener {
   }
 
   @override
-  void onChannelLoadStartEvent(String channelID) {
+  void onChannelLoadStart(String channelID) {
+    channelState = ChannelState.loading;
     _stateChangeListener?.call();
   }
 
   @override
-  void onChannelLoadedEvent(String channelID) {
+  void onChannelLoaded(String channelID) {
+    _viewController.isAutoplay().then((value) => {isAutoplay = value});
+    channelState = ChannelState.loaded;
+    isLoaded = true;
     _stateChangeListener?.call();
   }
 
   @override
-  void onChannelOfflineEvent(String channelID) {
+  void onChannelOffline(String channelID) {
+    channelState = ChannelState.offline;
     _stateChangeListener?.call();
   }
 
   @override
-  void onError(String message) {
-    error = message;
-    _stateChangeListener?.call();
-  }
-
-  @override
-  void onIntentToFallback() {
-    _stateChangeListener?.call();
-  }
-
-  @override
-  void onPause() {
-    isPaused = true;
+  void onWaiting() {
     _stateChangeListener?.call();
   }
 
@@ -90,37 +68,57 @@ class PlayerState implements THEOliveViewControllerEventListener {
 
   @override
   void onPlaying() {
-    isLoaded = true;
+    _stateChangeListener?.call();
+  }
+
+  @override
+  void onPause() {
+    isPaused = true;
+    _stateChangeListener?.call();
+  }
+
+  @override
+  void onMutedChange() {
+    _stateChangeListener?.call();
+  }
+
+  @override
+  void onIntentToFallback() {
+    _stateChangeListener?.call();
+  }
+
+  @override
+  void onEnterBadNetworkMode() {
+    badNetworkMode = true;
+    _stateChangeListener?.call();
+  }
+
+  @override
+  void onExitBadNetworkMode() {
+    badNetworkMode = false;
     _stateChangeListener?.call();
   }
 
   @override
   void onReset() {
+    resetState();
     _stateChangeListener?.call();
   }
 
   @override
-  void onWaiting() {
+  void onError(String message) {
+    error = message;
     _stateChangeListener?.call();
   }
 
   /// Method to reset the player state.
   void resetState() {
-    // source = null;
+    channelState = ChannelState.idle;
+    isAutoplay = false;
     isLoaded = false;
     isPaused = true;
-    // currentTime = 0.0;
-    // currentProgramDateTime = null;
-    // duration = 0.0;
-    // volume = 1.0;
-    // readyState = ReadyState.have_nothing;
-    // isSeeking = false;
-    // isEnded = false;
-    // videoWidth = 0;
-    // videoHeight = 0;
-    // buffered = [];
-    // seekable = [];
-    // played = [];
+    muted = false;
+    badNetworkMode = false;
     error = null;
   }
 
