@@ -26,7 +26,7 @@ class THEOlive {
   THEOlive({required this.playerConfig, this.onCreate}) {
     _playerState = PlayerState();
     _tlv = THEOliveView(
-        key: GlobalKey(debugLabel: "playerUniqueKey"),
+        key: UniqueKey(),
         playerConfig: playerConfig,
         onTHEOliveViewCreated: (THEOliveViewController viewController) {
           _viewController = viewController;
