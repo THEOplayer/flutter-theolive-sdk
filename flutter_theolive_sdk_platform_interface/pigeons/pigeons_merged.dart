@@ -25,7 +25,6 @@ class PigeonNativePlayerConfiguration {
 //Talking to the native
 @HostApi()
 abstract class THEOliveNativeAPI {
-
   void preloadChannels(List<String> channelIDs);
 
   void loadChannel(String channelID);
@@ -87,6 +86,5 @@ abstract class THEOliveFlutterAPI {
   void onReset();
 
   void onError(String message);
-
 }
 

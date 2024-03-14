@@ -5,7 +5,6 @@ import '../models/player.dart';
 //Talking to the native
 @HostApi()
 abstract class THEOliveNativeAPI {
-
   void preloadChannels(List<String> channelIDs);
 
   void loadChannel(String channelID);
