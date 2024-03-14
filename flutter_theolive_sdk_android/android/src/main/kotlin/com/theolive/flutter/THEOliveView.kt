@@ -1,7 +1,6 @@
 package com.theolive.flutter
 
 import android.content.Context
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
@@ -17,24 +16,18 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class THEOliveView(context: Context, viewId: Int, args: Any?, messenger: BinaryMessenger) :
-    PlatformView, EventListener, THEOliveNativeAPI {
+class THEOliveView(context: Context, viewId: Int, args: Any?, messenger: BinaryMessenger) : PlatformView, EventListener, THEOliveNativeAPI {
 
     private val RENDERINGTARGET_SURFACE_VIEW = "surfaceView"
 
-    private var playerView: PlayerView
-
-    private val constraintLayout: LinearLayout
-
-    private val flutterApi: THEOliveFlutterAPI
-
-    private val pigeonMessenger: PigeonMultiInstanceBinaryMessengerWrapper
-
     private val id: Int
-
-    private val emptyCallback: (Result<Unit>) -> Unit = {}
-
+    private val pigeonMessenger: PigeonMultiInstanceBinaryMessengerWrapper
+    private val flutterApi: THEOliveFlutterAPI
+    private val linearLayout: LinearLayout
+    private val playerView: PlayerView
     private val nativeRenderingTarget: String
+    private val emptyCallback: (Result<Unit>) -> Unit = {}
+    private val mainScope = CoroutineScope(Dispatchers.Main)
 
     // Workaround to eliminate the inital transparent layout with initExpensiveAndroidView
     // TODO: remove it once initExpensiveAndroidView is not used.
@@ -53,188 +46,182 @@ class THEOliveView(context: Context, viewId: Int, args: Any?, messenger: BinaryM
             field = value
         }
 
-    // sync behavior with native iOS SDK
-    // TODO: this logic should move to application level. The SDK should always stay paused after a "background to foreground" switch.
-    private var wasPlayingBeforeActivityOnPause: Boolean = false
-
     init {
-        Log.d("THEOliveView_$viewId", "init $viewId")
-
+        id = viewId
         useHybridComposition = (args as? Map<*, *>)?.get("useHybridComposition") as? Boolean == true
         nativeRenderingTarget = ((args as? Map<*, *>)?.get("nativeRenderingTarget") as? String) ?: RENDERINGTARGET_SURFACE_VIEW //TODO: use enum and pigeon
 
-        //setup pigeon
         pigeonMessenger = PigeonMultiInstanceBinaryMessengerWrapper(messenger, "id_$viewId")
         THEOliveNativeAPI.setUp(pigeonMessenger, this)
         flutterApi = THEOliveFlutterAPI(pigeonMessenger)
 
-        constraintLayout = LinearLayout(context)
-
         val layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-        constraintLayout.layoutParams = layoutParams
-        //constraintLayout.setBackgroundColor(android.graphics.Color.BLUE)
-
-        id = viewId
-        constraintLayout.id = viewId
+        linearLayout = LinearLayout(context)
+        linearLayout.layoutParams = layoutParams
+        linearLayout.id = viewId
         playerView = PlayerView(context)
         playerView.id = View.generateViewId()
         playerView.layoutParams = layoutParams
-        //playerView.setBackgroundColor(android.graphics.Color.RED)
+        linearLayout.addView(playerView)
 
         if (nativeRenderingTarget == RENDERINGTARGET_SURFACE_VIEW) {
-            Log.d("THEOliveView_$id", "nativeRenderingTarget: surfaceView")
             playerView.setRenderingTarget(RenderingTarget.SURFACE_VIEW)
         } else {
-            Log.d("THEOliveView_$id", "nativeRenderingTarget: textureView")
             playerView.setRenderingTarget(RenderingTarget.TEXTURE_VIEW)
         }
 
-        constraintLayout.addView(playerView)
-
-
         playerView.player.addEventListener(this)
+    }
 
+    override fun getView(): View {
+        return linearLayout
+    }
+
+    override fun preloadChannels(channelIDs: List<String>) {
+        playerView.player.preloadChannels(channelIDs.toTypedArray())
+    }
+
+    override fun loadChannel(channelID: String) {
+        playerView.player.loadChannel(channelID)
+    }
+
+    override fun play() {
+        playerView.player.play()
+    }
+
+    override fun pause() {
+        playerView.player.pause()
+    }
+
+    override fun isAutoplay(): Boolean {
+        return playerView.player.isAutoplay
+    }
+
+    override fun setMuted(muted: Boolean) {
+        playerView.player.muted = muted
+    }
+
+    override fun setBadNetworkMode(badNetworkMode: Boolean) {
+        playerView.player.badNetworkMode = badNetworkMode
+    }
+
+    override fun goLive() {
+        playerView.player.goLive()
+    }
+
+    override fun reset() {
+        playerView.player.reset()
+    }
+
+    override fun updateConfiguration(configuration: PigeonNativePlayerConfiguration) {
+        playerView.player.updateConfig(configuration.sessionId)
+    }
+
+    override fun manualDispose() {
+        //DO NOTHING, normal dispose() flow should be called by Flutter
+    }
+
+    override fun onLifecycleResume() {
+        playerView.onResume()
+    }
+
+    override fun onLifecyclePause() {
+        playerView.onPause()
     }
 
     override fun onChannelLoadStart(channelId: String) {
-        Log.d("THEOliveView_$id", "onChannelLoadStart: $channelId")
         isFirstPlaying = false
-        CoroutineScope(Dispatchers.Main).launch {
-            flutterApi.onChannelLoadStartEvent(channelId, emptyCallback)
+        mainScope.launch {
+            flutterApi.onChannelLoadStart(channelId, emptyCallback)
         }
-
     }
 
     override fun onChannelLoaded(channelId: String) {
-        Log.d("THEOliveView_$id", "onChannelLoaded:")
         isFirstPlaying = false
-        CoroutineScope(Dispatchers.Main).launch {
-            flutterApi.onChannelLoadedEvent(channelId, emptyCallback)
+        mainScope.launch {
+            flutterApi.onChannelLoaded(channelId, emptyCallback)
         }
     }
 
     override fun onChannelOffline(channelId: String) {
-        Log.d("THEOliveView_$id", "onChannelOffline: $channelId")
         isFirstPlaying = false
-        CoroutineScope(Dispatchers.Main).launch {
-            flutterApi.onChannelOfflineEvent(channelId, emptyCallback)
-        }
-    }
-
-    override fun onPlaying() {
-        Log.d("THEOliveView_$id", "onPlaying")
-
-        if (!isFirstPlaying) {
-            isFirstPlaying = true
-        }
-
-        CoroutineScope(Dispatchers.Main).launch {
-            flutterApi.onPlaying(emptyCallback)
+        mainScope.launch {
+            flutterApi.onChannelOffline(channelId, emptyCallback)
         }
     }
 
     override fun onWaiting() {
-        Log.d("THEOliveView_$id", "onWaiting")
-        CoroutineScope(Dispatchers.Main).launch {
+        mainScope.launch {
             flutterApi.onWaiting(emptyCallback)
         }
     }
 
-    override fun onPause() {
-        Log.d("THEOliveView_$id", "onPause")
-        CoroutineScope(Dispatchers.Main).launch {
-            flutterApi.onPause(emptyCallback)
-        }
-    }
-
     override fun onPlay() {
-        Log.d("THEOliveView_$id", "onPlay")
-        CoroutineScope(Dispatchers.Main).launch {
+        mainScope.launch {
             flutterApi.onPlay(emptyCallback)
         }
     }
 
+    override fun onPlaying() {
+        if (!isFirstPlaying) {
+            isFirstPlaying = true
+        }
+
+        mainScope.launch {
+            flutterApi.onPlaying(emptyCallback)
+        }
+    }
+
+    override fun onPause() {
+        mainScope.launch {
+            flutterApi.onPause(emptyCallback)
+        }
+    }
+
+    override fun onMutedChange() {
+        mainScope.launch {
+            flutterApi.onMutedChange(emptyCallback)
+        }
+    }
+
     override fun onIntentToFallback() {
-        Log.d("THEOliveView_$id", "onIntentToFallback")
         isFirstPlaying = false
-        CoroutineScope(Dispatchers.Main).launch {
+        mainScope.launch {
             flutterApi.onIntentToFallback(emptyCallback)
         }
     }
 
+    override fun onEnterBadNetworkMode() {
+        mainScope.launch {
+            flutterApi.onEnterBadNetworkMode(emptyCallback)
+        }
+    }
+
+    override fun onExitBadNetworkMode() {
+        mainScope.launch {
+            flutterApi.onExitBadNetworkMode(emptyCallback)
+        }
+    }
+
     override fun onReset() {
-        Log.d("THEOliveView_$id", "onReset")
         isFirstPlaying = false
-        CoroutineScope(Dispatchers.Main).launch {
+        mainScope.launch {
             flutterApi.onReset(emptyCallback)
         }
     }
 
     override fun onError(message: String) {
-        Log.d("THEOliveView_$id", "error: $message")
         isFirstPlaying = false
-        CoroutineScope(Dispatchers.Main).launch {
+        mainScope.launch {
             flutterApi.onError(message, emptyCallback)
         }
     }
 
-    override fun getView(): View? {
-        return constraintLayout
-    }
-
     override fun dispose() {
-        Log.d("THEOliveView_$id", "dispose")
-
         playerView.player.removeEventListener(this)
-        constraintLayout.removeView(playerView)
+        linearLayout.removeView(playerView)
         playerView.player.destroy()
         playerView.onDestroy()
-    }
-
-    override fun loadChannel(channelID: String) {
-        Log.d("THEOliveView_$id", "loadChannel called, $channelID")
-        playerView.player.loadChannel(channelID)
-    }
-
-    override fun manualDispose() {
-        Log.d("THEOliveView_$id", "manualDispose")
-        //DO NOTHING, normal dispose() flow should be called by Flutter
-    }
-
-    override fun onLifecycleResume() {
-        Log.d("THEOliveView_$id", "onLifecycleResume")
-        playerView.onResume()
-        if (wasPlayingBeforeActivityOnPause) {
-            wasPlayingBeforeActivityOnPause = false
-            play()
-        }
-    }
-
-    override fun onLifecyclePause() {
-        Log.d("THEOliveView_$id", "onLifecyclePause")
-        wasPlayingBeforeActivityOnPause = !playerView.player.paused
-        playerView.onPause()
-    }
-
-
-    override fun preloadChannels(channelIDs: List<String>) {
-        this.playerView.player.preloadChannels(channelIDs.toTypedArray())
-    }
-
-    override fun play() {
-        this.playerView.player.play()
-    }
-
-    override fun pause() {
-        this.playerView.player.pause()
-    }
-
-    override fun goLive() {
-        this.playerView.player.goLive()
-    }
-
-    override fun updateConfiguration(configuration: PigeonNativePlayerConfiguration) {
-        this.playerView.player.updateConfig(configuration.sessionId)
     }
 
 }
