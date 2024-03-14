@@ -60,14 +60,6 @@ class THEOliveViewControllerMobile extends THEOliveViewController implements THE
   }
 
   @override
-  void addHeaderProvider(HeaderProvider headerProvider) {
-  }
-
-  @override
-  void removeHeaderProvider(HeaderProvider headerProvider) {
-  }
-
-  @override
   void reset() {
     _nativeAPI.reset();
   }

@@ -138,16 +138,6 @@ class THEOlive {
     return _playerState.badNetworkMode;
   }
 
-  /// Add a header provider which allows adding headers to the requests the player makes.
-  void addHeaderProvider(HeaderProvider headerProvider) {
-    _viewController.addHeaderProvider(headerProvider);
-  }
-
-  /// Remove a previously added header provider.
-  void removeHeaderProvider(HeaderProvider headerProvider) {
-    _viewController.removeHeaderProvider(headerProvider);
-  }
-
   /// Resets the player.
   /// This will stop playback and reset the state.
   /// But unlike destroy, can be followed up with a new loadChannel call.

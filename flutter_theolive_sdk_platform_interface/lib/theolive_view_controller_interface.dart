@@ -1,7 +1,5 @@
 import 'package:theolive_platform_interface/theolive_playerconfig.dart';
 
-typedef HeaderProvider = Map<String, String> Function(String url);
-
 abstract class THEOliveViewController {
   THEOliveViewController(int id) {}
 
@@ -20,10 +18,6 @@ abstract class THEOliveViewController {
   void setBadNetworkMode(bool badNetworkMode);
 
   void goLive();
-
-  void addHeaderProvider(HeaderProvider headerProvider);
-
-  void removeHeaderProvider(HeaderProvider headerProvider);
 
   void updateNativePlayerConfiguration(NativePlayerConfiguration configuration);
 
