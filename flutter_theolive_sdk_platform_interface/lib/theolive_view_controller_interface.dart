@@ -1,4 +1,4 @@
-abstract class THEOliveViewController{
+abstract class THEOliveViewController {
   static const String _debugTag = "FL_DART_THEOliveViewController";
 
   THEOliveViewController(int id) {}
@@ -20,7 +20,6 @@ abstract class THEOliveViewController{
 
   /// Updates the config of the player, make sure to call this before loading a channel.
   void updateNativePlayerConfiguration(NativePlayerConfiguration configuration);
-
 }
 
 abstract class THEOliveViewControllerEventListener {
