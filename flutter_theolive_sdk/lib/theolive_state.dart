@@ -1,4 +1,5 @@
 import 'package:theolive/theolive.dart';
+import 'package:theolive_platform_interface/theolive_view_controller_interface.dart';
 
 /// Internal Flutter representation of the underlying native THEOlive state.
 class PlayerState implements THEOliveViewControllerEventListener {
@@ -21,7 +22,7 @@ class PlayerState implements THEOliveViewControllerEventListener {
   /// Method to setup the connection with the platform-specific [THEOliveViewController] classes.
   void setViewController(THEOliveViewController viewController) {
     _viewController = viewController;
-    (_viewController as THEOliveViewControllerMobile).eventListener = this;
+    _viewController.setEventListener(this);
   }
 
   /// Use it signal that the native player creation is done.
@@ -124,7 +125,7 @@ class PlayerState implements THEOliveViewControllerEventListener {
 
   /// Method to clean the internal state on player dispose.
   void dispose() {
-    (_viewController as THEOliveViewControllerMobile).eventListener = null;
+    _viewController.setEventListener(null);
     isInitialized = false;
     resetState();
   }

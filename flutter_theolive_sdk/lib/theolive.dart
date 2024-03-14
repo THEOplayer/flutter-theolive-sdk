@@ -31,13 +31,13 @@ class THEOlive {
         onTHEOliveViewCreated: (THEOliveViewController viewController) {
           _viewController = viewController;
           _playerState.setViewController(viewController);
-          setupLifeCycleListeners();
+          _setupLifeCycleListeners();
           onCreate?.call();
           _playerState.initialized();
         });
   }
 
-  void setupLifeCycleListeners() {
+  void _setupLifeCycleListeners() {
     _lifecycleListener = AppLifecycleListener(
       onResume: () {
         _viewController.onLifecycleResume();
@@ -55,6 +55,7 @@ class THEOlive {
     return _tlv;
   }
 
+  /// [StateChangeListener] that's triggered every time the internal player state is changing.
   void setStateListener(StateChangeListener listener) {
     _playerState.setStateListener(listener);
   }
@@ -72,6 +73,7 @@ class THEOlive {
 
   /// Load a channel.
   void loadChannel(String channelId) {
+    _playerState.resetState();
     _viewController.loadChannel(channelId);
   }
 
@@ -143,6 +145,7 @@ class THEOlive {
   /// But unlike destroy, can be followed up with a new loadChannel call.
   void reset() {
     _viewController.reset();
+    _playerState.resetState();
   }
 
   void dispose() {

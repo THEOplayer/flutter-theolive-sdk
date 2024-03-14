@@ -8,13 +8,18 @@ class THEOliveViewControllerMobile extends THEOliveViewController implements THE
   late final int _id;
   late final PigeonMultiInstanceBinaryMessengerWrapper _pigeonMessenger;
   late final THEOliveNativeAPI _nativeAPI;
-  THEOliveViewControllerEventListener? eventListener;
+  THEOliveViewControllerEventListener? _eventListener;
 
   THEOliveViewControllerMobile(int id) : super(id) {
     _id = id;
     _pigeonMessenger = PigeonMultiInstanceBinaryMessengerWrapper(suffix: 'id_$_id');
     _nativeAPI = THEOliveNativeAPI(binaryMessenger: _pigeonMessenger);
     THEOliveFlutterAPI.setup(this, binaryMessenger: _pigeonMessenger);
+  }
+
+  @override
+  void setEventListener(THEOliveViewControllerEventListener? eventListener) {
+    _eventListener = eventListener;
   }
 
   @override
@@ -87,67 +92,67 @@ class THEOliveViewControllerMobile extends THEOliveViewController implements THE
 
   @override
   void onChannelLoadStart(String channelID) {
-    eventListener?.onChannelLoadStart(channelID);
+    _eventListener?.onChannelLoadStart(channelID);
   }
 
   @override
   void onChannelLoaded(String channelID) {
-    eventListener?.onChannelLoaded(channelID);
+    _eventListener?.onChannelLoaded(channelID);
   }
 
   @override
   void onChannelOffline(String channelID) {
-    eventListener?.onChannelOffline(channelID);
+    _eventListener?.onChannelOffline(channelID);
   }
 
   @override
   void onWaiting() {
-    eventListener?.onWaiting();
+    _eventListener?.onWaiting();
   }
 
   @override
   void onPlay() {
-    eventListener?.onPlay();
+    _eventListener?.onPlay();
   }
 
   @override
   void onPlaying() {
-    eventListener?.onPlaying();
+    _eventListener?.onPlaying();
   }
 
   @override
   void onPause() {
-    eventListener?.onPause();
+    _eventListener?.onPause();
   }
 
   @override
   void onMutedChange() {
-    eventListener?.onMutedChange();
+    _eventListener?.onMutedChange();
   }
 
   @override
   void onIntentToFallback() {
-    eventListener?.onIntentToFallback();
+    _eventListener?.onIntentToFallback();
   }
 
   @override
   void onEnterBadNetworkMode() {
-    eventListener?.onEnterBadNetworkMode();
+    _eventListener?.onEnterBadNetworkMode();
   }
 
   @override
   void onExitBadNetworkMode() {
-    eventListener?.onExitBadNetworkMode();
+    _eventListener?.onExitBadNetworkMode();
   }
 
   @override
   void onReset() {
-    eventListener?.onReset();
+    _eventListener?.onReset();
   }
 
   @override
   void onError(String message) {
-    eventListener?.onError(message);
+    _eventListener?.onError(message);
   }
 
 }

@@ -3,6 +3,8 @@ import 'package:theolive_platform_interface/theolive_playerconfig.dart';
 abstract class THEOliveViewController {
   THEOliveViewController(int id) {}
 
+  void setEventListener(THEOliveViewControllerEventListener? eventListener);
+
   void preloadChannels(List<String> list);
 
   void loadChannel(String channelId);
