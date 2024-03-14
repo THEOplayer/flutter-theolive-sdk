@@ -50,7 +50,7 @@ abstract class THEOliveNativeAPI {
 
   void updateConfiguration(PigeonNativePlayerConfiguration configuration);
 
-  void manualDispose();
+  void dispose();
 
   void onLifecycleResume();
 

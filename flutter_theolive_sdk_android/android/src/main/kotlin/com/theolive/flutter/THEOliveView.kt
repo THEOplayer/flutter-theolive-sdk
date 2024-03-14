@@ -117,8 +117,11 @@ class THEOliveView(context: Context, viewId: Int, args: Any?, messenger: BinaryM
         playerView.player.updateConfig(configuration.sessionId)
     }
 
-    override fun manualDispose() {
-        //DO NOTHING, normal dispose() flow should be called by Flutter
+    override fun dispose() {
+        playerView.player.removeEventListener(this)
+        linearLayout.removeView(playerView)
+        playerView.player.destroy()
+        playerView.onDestroy()
     }
 
     override fun onLifecycleResume() {
@@ -215,13 +218,6 @@ class THEOliveView(context: Context, viewId: Int, args: Any?, messenger: BinaryM
         mainScope.launch {
             flutterApi.onError(message, emptyCallback)
         }
-    }
-
-    override fun dispose() {
-        playerView.player.removeEventListener(this)
-        linearLayout.removeView(playerView)
-        playerView.player.destroy()
-        playerView.onDestroy()
     }
 
 }

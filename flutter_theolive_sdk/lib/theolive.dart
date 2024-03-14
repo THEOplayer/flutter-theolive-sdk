@@ -145,18 +145,9 @@ class THEOlive {
     _viewController.reset();
   }
 
-  void manualDispose() {
-    _viewController.manualDispose();
-  }
-
   void dispose() {
-    dprint("_THEOliveViewState dispose");
-
     _lifecycleListener.dispose();
-    // NOTE: this would be nicer, if we move it inside the THEOliveView that's a StatefulWidget
-    // FIX for https://github.com/flutter/flutter/issues/97499
-    if (defaultTargetPlatform == TargetPlatform.iOS) {
-      _viewController.manualDispose();
-    }
+    _viewController.dispose();
+    _playerState.dispose();
   }
 }

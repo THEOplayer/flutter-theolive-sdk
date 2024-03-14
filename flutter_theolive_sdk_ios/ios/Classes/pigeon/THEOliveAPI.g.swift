@@ -103,7 +103,7 @@ protocol THEOliveNativeAPI {
   func goLive() throws
   func reset() throws
   func updateConfiguration(configuration: PigeonNativePlayerConfiguration) throws
-  func manualDispose() throws
+  func dispose() throws
   func onLifecycleResume() throws
   func onLifecyclePause() throws
 }
@@ -254,18 +254,18 @@ class THEOliveNativeAPISetup {
     } else {
       updateConfigurationChannel.setMessageHandler(nil)
     }
-    let manualDisposeChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.manualDispose", binaryMessenger: binaryMessenger, codec: codec)
+    let disposeChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.dispose", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
-      manualDisposeChannel.setMessageHandler { _, reply in
+      disposeChannel.setMessageHandler { _, reply in
         do {
-          try api.manualDispose()
+          try api.dispose()
           reply(wrapResult(nil))
         } catch {
           reply(wrapError(error))
         }
       }
     } else {
-      manualDisposeChannel.setMessageHandler(nil)
+      disposeChannel.setMessageHandler(nil)
     }
     let onLifecycleResumeChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.onLifecycleResume", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {

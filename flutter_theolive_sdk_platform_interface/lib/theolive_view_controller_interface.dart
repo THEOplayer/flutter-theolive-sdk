@@ -23,7 +23,7 @@ abstract class THEOliveViewController {
 
   void reset();
 
-  void manualDispose();
+  void dispose();
 
   void onLifecycleResume();
 

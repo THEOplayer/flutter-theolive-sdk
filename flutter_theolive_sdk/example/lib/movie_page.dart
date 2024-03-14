@@ -163,11 +163,7 @@ class _MoviePageState extends State<MoviePage> {
 
   @override
   void dispose() {
-    dprint("_MoviePageState with THEOliveView: dispose ");
-
-    // NOTE: this would be nicer, if we move it inside the THEOliveView that's a StatefulWidget
-    // FIX for https://github.com/flutter/flutter/issues/97499
-    //_theoController.manualDispose();
+    _theoLive.dispose();
     super.dispose();
   }
 }

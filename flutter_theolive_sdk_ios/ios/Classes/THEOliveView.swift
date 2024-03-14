@@ -109,9 +109,7 @@ class THEOliveView: NSObject, FlutterPlatformView, THEOlivePlayerEventListener, 
         self.player.updateConfiguration(nativeConfig)
     }
 
-    // Fix for https://github.com/flutter/flutter/issues/97499
-    // The PlatformViews are not deallocated in time, so we clean up upfront.
-    func manualDispose() throws {
+    func dispose() throws {
         player.remove(eventListener: self)
         chromelessPlayerView?.removeFromSuperview()
         player.reset()
