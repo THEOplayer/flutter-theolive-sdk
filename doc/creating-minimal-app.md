@@ -1,6 +1,6 @@
 ## Creating a minimal demo app
 
-In this section we start from an empty Flutter project, include a dependency to `flutter_theolive`, and deploy it on an Android or iOS device.
+In this section we start from an empty Flutter project, include a dependency to `theolive`, and deploy it on an Android or iOS device.
 
 ### Table of Contents
 - [Setting up a new project](#setting-up-a-new-project)
@@ -10,19 +10,20 @@ In this section we start from an empty Flutter project, include a dependency to 
 ### Setting up a new project
 
 #### Getting a new project ready
-After [setting up your Flutter development environment](https://docs.flutter.dev/get-started/install) you can run the following command to create a new project from Terminal. (You can use Android Studio too)
+After [setting up your Flutter development environment](https://docs.flutter.dev/get-started/install)
+you can run the following command to create a new project from Terminal. (You can use Android Studio too)
 
 ```bash
-$ flutter create -a kotlin -i swift -t app --org com.theoplayer --description "New THEOlive project" --project-name "flutter_theolive_sample_app" --platform ios,android flutter_theolive_sample_app
+$ flutter create -a kotlin -i swift -t app --org com.theoplayer --description "New THEOlive project" --project-name "theolive_sample_app" --platform ios,android theolive_sample_app
 ```
 
 This will generate a basic project as a starting point for Android, iOS and Web development.
 
 ```bash
 Signing iOS app for device deployment using developer identity: "Apple Development: XXXXXXXXXX"
-Creating project flutter_theolive_sample_app...
-Resolving dependencies in flutter_theolive_sample_app... 
-Got dependencies in flutter_theolive_sample_app.
+Creating project theolive_sample_app...
+Resolving dependencies in theolive_sample_app... 
+Got dependencies in theolive_sample_app.
 Wrote 81 files.
 
 All done!
@@ -32,34 +33,40 @@ If you prefer video documentation, consider: https://www.youtube.com/c/flutterde
 
 In order to run your application, type:
 
-  $ cd flutter_theolive_sample_app
+  $ cd theolive_sample_app
   $ flutter run
 
-Your application code is in flutter_theolive_sample_app/lib/main.dart.
+Your application code is in theolive_sample_app/lib/main.dart.
 ```
 
 Following the guidance from the script you can have your basic app running:
 
 ```bash
-$ cd flutter_theolive_sample_app
+$ cd theolive_sample_app
 $ flutter run
 ```
 
 #### Adding THEOlive Flutter SDK
-Becuase THEOplayer Flutter SDK is still under development it is not available from public package managers. (e.g. [pub.dev](https://pub.dev)).
-
-To use the SDK, you need to initialize `git` in your project and **add the SDK as a submodule**:
+##### Option 1: Adding THEOlive Flutter SDK as dependency (Recommended)
+To add THEOlive Flutter SDK as a dependency, you can simply fetch it from [pub.dev](https://pub.dev) using:
 
 ```bash
-$ git init
+$ flutter pub add theolive
+```
+
+##### Option 2: Adding THEOlive Flutter SDK as submodule
+As an alternative, you can add the SDK as a submodule in your git project.
+This can be useful if you are trying to fork the project to [contribute](https://github.com/THEOplayer/theolive-flutter-sdk/blob/main/CONTRIBUTING.md) with us.
+
+```bash
 $ git submodule add https://GITHUB_USERNAME:GITHUB_PASSWORD@github.com/THEOplayer/theolive-flutter-sdk.git
 ```
 
 Your project structure will look like this:
 
 ```bash
-➜  flutter_theolive_sample_app git:(master) ✗ ls
-README.md                       flutter_theolive_sample_app.iml pubspec.yaml
+➜  theolive_sample_app git:(master) ✗ ls
+README.md                       theolive_sample_app.iml         pubspec.yaml
 analysis_options.yaml           ios                             test
 android                         lib                             theolive-flutter-sdk
 build                           pubspec.lock                   
@@ -78,7 +85,7 @@ You should get an output like this after executing the command, meaning `flutter
 Resolving dependencies... 
   collection 1.17.2 (1.18.0 available)
   flutter_lints 2.0.3 (3.0.1 available)
-+ flutter_theolive 0.0.1 from path theolive-flutter-sdk
++ theolive 1.0.0 from path theolive-flutter-sdk
   lints 2.1.1 (3.0.0 available)
   material_color_utilities 0.5.0 (0.8.0 available)
   meta 1.9.1 (1.11.0 available)
@@ -92,29 +99,39 @@ Changed 2 dependencies!
 
 ```
 
+To make sure the submodule references the platform-specific SDKs from within the repository run `melos bootstrap`.
+
+If your main project doesn't pick up the changes, it is possible you need to configure `melos` to include your project too.
+
+You can do it in 2 ways.
+
+1. Create your `melos.yaml` file in your root project and configure it according to your setup (including the `theolive` submodule and its packages).
+2. Or, modifiy the `theolive-flutter-sdk/melos.yaml` to include your project by adding `../` into the `packages` section of the melos file.
+
+Don't forget to run `melos bootstrap` again in the directory according to your choice from above.
+
 #### Adding THEOliveView to your view hierarchy
 
-1.) Initialize THEOplayer (e.g. in your StatefulWidget)
+1.) Initialize THEOlive (e.g. in your StatefulWidget)
 
 ```dart
-  late THEOliveViewController _theoController;
-  late THEOliveView theoLiveView;
+  late THEOlive _theoLive;
 
   @override
   void initState() {
     super.initState();
-    theoLiveView = THEOliveView(key: playerUniqueKey, onTHEOliveViewCreated:(THEOliveViewController controller) {
-      // assign the controller to interact with the player
-      _theoController = controller;
-      // if we would like to listen to events
-      //_theoController.eventListener = this;
+  
+    _theoLive = THEOlive(
+      playerConfig: PlayerConfig(
+        AndroidConfig(),
+      ),
+      onCreate: () {
+        // if you would like to listen to state changes
+        _theoLive.setStateListener(() => setState(() {}));
 
-      // automatically load the channel once the view is ready
-      _theoController.loadChannel("YOUR_CHANNEL_ID");
-
-    }
-    );
-
+        // automatically load the channel once the view is ready
+        _theoLive.loadChannel("38yyniscxeglzr8n0lbku57b0");
+      });
   }
 ```
 
@@ -124,7 +141,7 @@ Changed 2 dependencies!
 Container(
 	width: 300, 
 	height: 300, 
-	child: theoLiveView
+	child: _theoLive.getView()
 ),
 ```
 
@@ -163,7 +180,7 @@ As noted in the [limitations](./limitations.md), THEOlive on Android supports An
 ```java
 defaultConfig {
     // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-    applicationId "com.theoplayer.theoplayer_example"
+    applicationId "com.theolive.theolive_example"
     // You can update the following values to match your application needs.
     // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
     minSdkVersion 24
@@ -173,7 +190,8 @@ defaultConfig {
 }
 ```
 
-THEOlive Android SDK compatible with Kotlin and Kotlin Gradle Plugin 1.8.22+, so if your app is using a lower version, please upgrade. Usually you can find this in the `build.gradle` file in the root android directory, e.g. `android/build.gradle`.
+THEOlive Android SDK compatible with Kotlin and Kotlin Gradle Plugin 1.8.22+, so if your app is using a lower version, please upgrade. 
+Usually you can find this in the `build.gradle` file in the root android directory, e.g. `android/build.gradle`.
 
 ```java
 buildscript {
@@ -204,8 +222,7 @@ platform :ios, '12.0'
 ```
 
 
-
-By using the `flutter run ios` command, you can try out your applicaiton on an iOS device.
+By using the `flutter run ios` command, you can try out your application on an iOS device.
 
 ### Demo project
 
