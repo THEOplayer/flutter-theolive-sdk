@@ -5,7 +5,7 @@ homepage: https://theo.live
 repository: https://github.com/THEOplayer/theolive-flutter-sdk
 
 environment:
-  sdk: '>=2.19.6 <3.0.0'
+  sdk: ">=2.19.6 <3.0.0"
   flutter: ">=2.5.0"
 
 dependencies:
