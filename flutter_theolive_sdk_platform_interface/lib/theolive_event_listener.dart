@@ -1,4 +1,4 @@
-abstract class THEOliveEventListener {
+mixin THEOliveEventListener {
   void onChannelLoadStart(String channelID) {}
 
   void onChannelLoaded(String channelID) {}
