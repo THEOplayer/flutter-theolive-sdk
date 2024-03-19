@@ -1,9 +1,10 @@
+import 'package:theolive_platform_interface/theolive_event_listener.dart';
 import 'package:theolive_platform_interface/theolive_playerconfig.dart';
 
 abstract class THEOliveViewController {
   THEOliveViewController(int id) {}
 
-  void setEventListener(THEOliveViewControllerEventListener? eventListener);
+  void setEventListener(THEOliveEventListener? eventListener);
 
   void preloadChannels(List<String> list);
 
@@ -30,32 +31,4 @@ abstract class THEOliveViewController {
   void onLifecycleResume();
 
   void onLifecyclePause();
-}
-
-abstract class THEOliveViewControllerEventListener {
-  void onChannelLoadStart(String channelID);
-
-  void onChannelLoaded(String channelID);
-
-  void onChannelOffline(String channelID);
-
-  void onWaiting();
-
-  void onPlay();
-
-  void onPlaying();
-
-  void onPause();
-
-  void onMutedChange();
-
-  void onIntentToFallback();
-
-  void onEnterBadNetworkMode();
-
-  void onExitBadNetworkMode();
-
-  void onReset();
-
-  void onError(String message);
 }

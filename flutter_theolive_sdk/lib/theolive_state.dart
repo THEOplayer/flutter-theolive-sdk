@@ -1,8 +1,9 @@
 import 'package:theolive/theolive.dart';
+import 'package:theolive_platform_interface/theolive_event_listener.dart';
 import 'package:theolive_platform_interface/theolive_view_controller_interface.dart';
 
 /// Internal Flutter representation of the underlying native THEOlive state.
-class PlayerState implements THEOliveViewControllerEventListener {
+class PlayerState implements THEOliveEventListener {
   late THEOliveViewController _viewController;
   StateChangeListener? _stateChangeListener;
 
@@ -14,6 +15,7 @@ class PlayerState implements THEOliveViewControllerEventListener {
   bool muted = false;
   bool badNetworkMode = false;
   String? error;
+  List<THEOliveEventListener> _eventListeners = [];
 
   PlayerState() {
     resetState();
@@ -36,10 +38,23 @@ class PlayerState implements THEOliveViewControllerEventListener {
     _stateChangeListener = listener;
   }
 
+  /// Add a [THEOliveEventListener] that triggers on specific state change.
+  void addEventListener(THEOliveEventListener eventListener) {
+    _eventListeners.add(eventListener);
+  }
+
+  /// Remove a [THEOliveEventListener] that triggers on specific state change.
+  void removeEventListener(THEOliveEventListener eventListener) {
+    _eventListeners.remove(eventListener);
+  }
+
   @override
   void onChannelLoadStart(String channelID) {
     channelState = ChannelState.loading;
     _stateChangeListener?.call();
+    _eventListeners.forEach((listener) {
+      listener.onChannelLoadStart(channelID);
+    });
   }
 
   @override
@@ -48,68 +63,104 @@ class PlayerState implements THEOliveViewControllerEventListener {
     channelState = ChannelState.loaded;
     isLoaded = true;
     _stateChangeListener?.call();
+    _eventListeners.forEach((listener) {
+      listener.onChannelLoaded(channelID);
+    });
   }
 
   @override
   void onChannelOffline(String channelID) {
     channelState = ChannelState.offline;
     _stateChangeListener?.call();
+    _eventListeners.forEach((listener) {
+      listener.onChannelOffline(channelID);
+    });
   }
 
   @override
   void onWaiting() {
     _stateChangeListener?.call();
+    _eventListeners.forEach((listener) {
+      listener.onWaiting();
+    });
   }
 
   @override
   void onPlay() {
     isPaused = false;
     _stateChangeListener?.call();
+    _eventListeners.forEach((listener) {
+      listener.onPlay();
+    });
   }
 
   @override
   void onPlaying() {
     _stateChangeListener?.call();
+    _eventListeners.forEach((listener) {
+      listener.onPlaying();
+    });
   }
 
   @override
   void onPause() {
     isPaused = true;
     _stateChangeListener?.call();
+    _eventListeners.forEach((listener) {
+      listener.onPause();
+    });
   }
 
   @override
   void onMutedChange() {
     _stateChangeListener?.call();
+    _eventListeners.forEach((listener) {
+      listener.onMutedChange();
+    });
   }
 
   @override
   void onIntentToFallback() {
     _stateChangeListener?.call();
+    _eventListeners.forEach((listener) {
+      listener.onIntentToFallback();
+    });
   }
 
   @override
   void onEnterBadNetworkMode() {
     badNetworkMode = true;
     _stateChangeListener?.call();
+    _eventListeners.forEach((listener) {
+      listener.onEnterBadNetworkMode();
+    });
   }
 
   @override
   void onExitBadNetworkMode() {
     badNetworkMode = false;
     _stateChangeListener?.call();
+    _eventListeners.forEach((listener) {
+      listener.onExitBadNetworkMode();
+    });
   }
 
   @override
   void onReset() {
     resetState();
     _stateChangeListener?.call();
+    _eventListeners.forEach((listener) {
+      listener.onReset();
+    });
   }
 
   @override
   void onError(String message) {
     error = message;
     _stateChangeListener?.call();
+    _eventListeners.forEach((listener) {
+      listener.onError(message);
+    });
   }
 
   /// Method to reset the player state.

@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:theolive/theolive_state.dart';
 import 'package:theolive/theolive_view.dart';
 import 'package:theolive_platform_interface/debug_helpers.dart';
+import 'package:theolive_platform_interface/theolive_event_listener.dart';
 import 'package:theolive_platform_interface/theolive_playerconfig.dart';
 import 'package:theolive_platform_interface/theolive_view_controller_interface.dart';
 
@@ -10,6 +11,7 @@ export 'package:theolive/theolive_view.dart';
 export 'package:theolive_platform_interface/theolive_playerconfig.dart';
 export 'package:theolive_platform_interface/theolive_view_controller_interface.dart';
 export 'package:theolive_platform_interface/theolive_view_controller_mobile.dart';
+export 'package:theolive_platform_interface/theolive_event_listener.dart';
 
 typedef PlayerCreatedCallback = void Function();
 typedef StateChangeListener = void Function();
@@ -58,6 +60,16 @@ class THEOlive {
   /// [StateChangeListener] that's triggered every time the internal player state is changing.
   void setStateListener(StateChangeListener listener) {
     _playerState.setStateListener(listener);
+  }
+
+  /// Add a [THEOliveEventListener] that triggers on specific state change.
+  void addEventListener(THEOliveEventListener eventListener) {
+    _playerState.addEventListener(eventListener);
+  }
+
+  /// Remove a [THEOliveEventListener] that triggers on specific state change.
+  void removeEventListener(THEOliveEventListener eventListener) {
+    _playerState.removeEventListener(eventListener);
   }
 
   /// Update the config of the player, make sure to call this before loading a channel.

@@ -1,6 +1,7 @@
 import 'package:theolive_platform_interface/debug_helpers.dart';
 import 'package:theolive_platform_interface/pigeon/theolive_api.g.dart';
 import 'package:theolive_platform_interface/pigeon_multi_instance_wrapper.dart';
+import 'package:theolive_platform_interface/theolive_event_listener.dart';
 import 'package:theolive_platform_interface/theolive_playerconfig.dart';
 import 'package:theolive_platform_interface/theolive_view_controller_interface.dart';
 
@@ -8,7 +9,7 @@ class THEOliveViewControllerMobile extends THEOliveViewController implements THE
   late final int _id;
   late final PigeonMultiInstanceBinaryMessengerWrapper _pigeonMessenger;
   late final THEOliveNativeAPI _nativeAPI;
-  THEOliveViewControllerEventListener? _eventListener;
+  THEOliveEventListener? _eventListener;
 
   THEOliveViewControllerMobile(int id) : super(id) {
     _id = id;
@@ -18,7 +19,7 @@ class THEOliveViewControllerMobile extends THEOliveViewController implements THE
   }
 
   @override
-  void setEventListener(THEOliveViewControllerEventListener? eventListener) {
+  void setEventListener(THEOliveEventListener? eventListener) {
     _eventListener = eventListener;
   }
 
