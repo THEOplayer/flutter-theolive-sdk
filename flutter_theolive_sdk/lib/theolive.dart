@@ -114,6 +114,10 @@ class THEOlive {
     return _playerState.isPaused;
   }
 
+  bool isWaiting() {
+    return _playerState.isWaiting;
+  }
+
   /// Whether the currently loaded channel has autoplay enabled.
   bool isAutoplay() {
     return _playerState.isAutoplay;

@@ -12,6 +12,7 @@ class PlayerState implements THEOliveEventListener {
   bool isAutoplay = false;
   bool isLoaded = false;
   bool isPaused = true;
+  bool isWaiting = false;
   bool muted = false;
   bool badNetworkMode = false;
   String? error;
@@ -83,6 +84,7 @@ class PlayerState implements THEOliveEventListener {
 
   @override
   void onWaiting() {
+    isWaiting = true;
     _stateChangeListener?.call();
     _eventListeners.forEach((listener) {
       listener.onWaiting();
@@ -100,6 +102,7 @@ class PlayerState implements THEOliveEventListener {
 
   @override
   void onPlaying() {
+    isWaiting = false;
     _stateChangeListener?.call();
     _eventListeners.forEach((listener) {
       listener.onPlaying();
@@ -173,6 +176,7 @@ class PlayerState implements THEOliveEventListener {
     isAutoplay = false;
     isLoaded = false;
     isPaused = true;
+    isWaiting = false;
     muted = false;
     badNetworkMode = false;
     error = null;

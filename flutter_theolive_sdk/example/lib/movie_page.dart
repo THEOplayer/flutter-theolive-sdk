@@ -101,8 +101,7 @@ class _MoviePageState extends State<MoviePage> {
                           width: w,
                           height: h,
                           color: Colors.black,
-                          child:
-                              const Center(child: SizedBox(width: 50, height: 50, child: RefreshProgressIndicator())))
+                          child: const Center(child: SizedBox(width: 50, height: 50, child: RefreshProgressIndicator())))
                       : Container(),
                 ]),
                 !landscape
