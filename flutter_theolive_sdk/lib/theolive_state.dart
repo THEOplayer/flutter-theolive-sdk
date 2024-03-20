@@ -59,7 +59,11 @@ class PlayerState implements THEOliveEventListener {
 
   @override
   void onChannelLoaded(String channelID) {
-    _viewController.isAutoplay().then((value) => {isAutoplay = value});
+    _viewController.isAutoplay().then((value) {
+      isAutoplay = value;
+      _stateChangeListener?.call();
+    });
+
     channelState = ChannelState.loaded;
     isLoaded = true;
     _stateChangeListener?.call();
