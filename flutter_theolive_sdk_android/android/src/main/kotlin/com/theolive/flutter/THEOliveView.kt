@@ -1,6 +1,7 @@
 package com.theolive.flutter
 
 import android.content.Context
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
@@ -29,7 +30,7 @@ class THEOliveView(context: Context, viewId: Int, args: Any?, messenger: BinaryM
     private val emptyCallback: (Result<Unit>) -> Unit = {}
     private val mainScope = CoroutineScope(Dispatchers.Main)
 
-    // Workaround to eliminate the inital transparent layout with initExpensiveAndroidView
+    // Workaround to eliminate the initial transparent layout with initExpensiveAndroidView
     // TODO: remove it once initExpensiveAndroidView is not used.
     private var useHybridComposition: Boolean = false
     private var isFirstPlaying: Boolean = false
@@ -133,6 +134,9 @@ class THEOliveView(context: Context, viewId: Int, args: Any?, messenger: BinaryM
     }
 
     override fun onChannelLoadStart(channelId: String) {
+        if (BuildConfig.DEBUG) {
+            Log.d("THEOliveView_$id", "onChannelLoadStart: $channelId")
+        }
         isFirstPlaying = false
         mainScope.launch {
             flutterApi.onChannelLoadStart(channelId, emptyCallback)
@@ -140,6 +144,9 @@ class THEOliveView(context: Context, viewId: Int, args: Any?, messenger: BinaryM
     }
 
     override fun onChannelLoaded(channelId: String) {
+        if (BuildConfig.DEBUG) {
+            Log.d("THEOliveView_$id", "onChannelLoaded: $channelId")
+        }
         isFirstPlaying = false
         mainScope.launch {
             flutterApi.onChannelLoaded(channelId, emptyCallback)
@@ -147,6 +154,9 @@ class THEOliveView(context: Context, viewId: Int, args: Any?, messenger: BinaryM
     }
 
     override fun onChannelOffline(channelId: String) {
+        if (BuildConfig.DEBUG) {
+            Log.d("THEOliveView_$id", "onChannelOffline: $channelId")
+        }
         isFirstPlaying = false
         mainScope.launch {
             flutterApi.onChannelOffline(channelId, emptyCallback)
@@ -154,18 +164,27 @@ class THEOliveView(context: Context, viewId: Int, args: Any?, messenger: BinaryM
     }
 
     override fun onWaiting() {
+        if (BuildConfig.DEBUG) {
+            Log.d("THEOliveView_$id", "onWaiting")
+        }
         mainScope.launch {
             flutterApi.onWaiting(emptyCallback)
         }
     }
 
     override fun onPlay() {
+        if (BuildConfig.DEBUG) {
+            Log.d("THEOliveView_$id", "onPlay")
+        }
         mainScope.launch {
             flutterApi.onPlay(emptyCallback)
         }
     }
 
     override fun onPlaying() {
+        if (BuildConfig.DEBUG) {
+            Log.d("THEOliveView_$id", "onPlaying")
+        }
         if (!isFirstPlaying) {
             isFirstPlaying = true
         }
@@ -176,18 +195,27 @@ class THEOliveView(context: Context, viewId: Int, args: Any?, messenger: BinaryM
     }
 
     override fun onPause() {
+        if (BuildConfig.DEBUG) {
+            Log.d("THEOliveView_$id", "onPause")
+        }
         mainScope.launch {
             flutterApi.onPause(emptyCallback)
         }
     }
 
     override fun onMutedChange() {
+        if (BuildConfig.DEBUG) {
+            Log.d("THEOliveView_$id", "onMutedChange")
+        }
         mainScope.launch {
             flutterApi.onMutedChange(emptyCallback)
         }
     }
 
     override fun onIntentToFallback() {
+        if (BuildConfig.DEBUG) {
+            Log.d("THEOliveView_$id", "onIntentToFallback")
+        }
         isFirstPlaying = false
         mainScope.launch {
             flutterApi.onIntentToFallback(emptyCallback)
@@ -195,18 +223,27 @@ class THEOliveView(context: Context, viewId: Int, args: Any?, messenger: BinaryM
     }
 
     override fun onEnterBadNetworkMode() {
+        if (BuildConfig.DEBUG) {
+            Log.d("THEOliveView_$id", "onEnterBadNetworkMode")
+        }
         mainScope.launch {
             flutterApi.onEnterBadNetworkMode(emptyCallback)
         }
     }
 
     override fun onExitBadNetworkMode() {
+        if (BuildConfig.DEBUG) {
+            Log.d("THEOliveView_$id", "onExitBadNetworkMode")
+        }
         mainScope.launch {
             flutterApi.onExitBadNetworkMode(emptyCallback)
         }
     }
 
     override fun onReset() {
+        if (BuildConfig.DEBUG) {
+            Log.d("THEOliveView_$id", "onReset")
+        }
         isFirstPlaying = false
         mainScope.launch {
             flutterApi.onReset(emptyCallback)
@@ -214,6 +251,9 @@ class THEOliveView(context: Context, viewId: Int, args: Any?, messenger: BinaryM
     }
 
     override fun onError(message: String) {
+        if (BuildConfig.DEBUG) {
+            Log.d("THEOliveView_$id", "onError: $message")
+        }
         isFirstPlaying = false
         mainScope.launch {
             flutterApi.onError(message, emptyCallback)
