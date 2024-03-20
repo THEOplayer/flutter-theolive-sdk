@@ -28,5 +28,6 @@ enum ChannelState {
   idle,
   loading,
   loaded,
+  intentToFallback,
   offline
 }

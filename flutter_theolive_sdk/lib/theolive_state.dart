@@ -128,6 +128,7 @@ class PlayerState implements THEOliveEventListener {
 
   @override
   void onIntentToFallback() {
+    channelState = ChannelState.intentToFallback;
     _stateChangeListener?.call();
     _eventListeners.forEach((listener) {
       listener.onIntentToFallback();
