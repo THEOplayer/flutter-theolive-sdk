@@ -93,13 +93,17 @@ class THEOliveNativeAPICodec: FlutterStandardMessageCodec {
 
 /// Generated protocol from Pigeon that represents a handler of messages from Flutter.
 protocol THEOliveNativeAPI {
-  func loadChannel(channelID: String) throws
   func preloadChannels(channelIDs: [String]) throws
+  func loadChannel(channelID: String) throws
   func play() throws
   func pause() throws
+  func isAutoplay() throws -> Bool
+  func setMuted(muted: Bool) throws
+  func setBadNetworkMode(badNetworkMode: Bool) throws
   func goLive() throws
+  func reset() throws
   func updateConfiguration(configuration: PigeonNativePlayerConfiguration) throws
-  func manualDispose() throws
+  func dispose() throws
   func onLifecycleResume() throws
   func onLifecyclePause() throws
 }
@@ -110,21 +114,6 @@ class THEOliveNativeAPISetup {
   static var codec: FlutterStandardMessageCodec { THEOliveNativeAPICodec.shared }
   /// Sets up an instance of `THEOliveNativeAPI` to handle messages through the `binaryMessenger`.
   static func setUp(binaryMessenger: FlutterBinaryMessenger, api: THEOliveNativeAPI?) {
-    let loadChannelChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.loadChannel", binaryMessenger: binaryMessenger, codec: codec)
-    if let api = api {
-      loadChannelChannel.setMessageHandler { message, reply in
-        let args = message as! [Any?]
-        let channelIDArg = args[0] as! String
-        do {
-          try api.loadChannel(channelID: channelIDArg)
-          reply(wrapResult(nil))
-        } catch {
-          reply(wrapError(error))
-        }
-      }
-    } else {
-      loadChannelChannel.setMessageHandler(nil)
-    }
     let preloadChannelsChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.preloadChannels", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       preloadChannelsChannel.setMessageHandler { message, reply in
@@ -139,6 +128,21 @@ class THEOliveNativeAPISetup {
       }
     } else {
       preloadChannelsChannel.setMessageHandler(nil)
+    }
+    let loadChannelChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.loadChannel", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      loadChannelChannel.setMessageHandler { message, reply in
+        let args = message as! [Any?]
+        let channelIDArg = args[0] as! String
+        do {
+          try api.loadChannel(channelID: channelIDArg)
+          reply(wrapResult(nil))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      loadChannelChannel.setMessageHandler(nil)
     }
     let playChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.play", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
@@ -166,6 +170,49 @@ class THEOliveNativeAPISetup {
     } else {
       pauseChannel.setMessageHandler(nil)
     }
+    let isAutoplayChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.isAutoplay", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      isAutoplayChannel.setMessageHandler { _, reply in
+        do {
+          let result = try api.isAutoplay()
+          reply(wrapResult(result))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      isAutoplayChannel.setMessageHandler(nil)
+    }
+    let setMutedChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.setMuted", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      setMutedChannel.setMessageHandler { message, reply in
+        let args = message as! [Any?]
+        let mutedArg = args[0] as! Bool
+        do {
+          try api.setMuted(muted: mutedArg)
+          reply(wrapResult(nil))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      setMutedChannel.setMessageHandler(nil)
+    }
+    let setBadNetworkModeChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.setBadNetworkMode", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      setBadNetworkModeChannel.setMessageHandler { message, reply in
+        let args = message as! [Any?]
+        let badNetworkModeArg = args[0] as! Bool
+        do {
+          try api.setBadNetworkMode(badNetworkMode: badNetworkModeArg)
+          reply(wrapResult(nil))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      setBadNetworkModeChannel.setMessageHandler(nil)
+    }
     let goLiveChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.goLive", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       goLiveChannel.setMessageHandler { _, reply in
@@ -178,6 +225,19 @@ class THEOliveNativeAPISetup {
       }
     } else {
       goLiveChannel.setMessageHandler(nil)
+    }
+    let resetChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.reset", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      resetChannel.setMessageHandler { _, reply in
+        do {
+          try api.reset()
+          reply(wrapResult(nil))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      resetChannel.setMessageHandler(nil)
     }
     let updateConfigurationChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.updateConfiguration", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
@@ -194,18 +254,18 @@ class THEOliveNativeAPISetup {
     } else {
       updateConfigurationChannel.setMessageHandler(nil)
     }
-    let manualDisposeChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.manualDispose", binaryMessenger: binaryMessenger, codec: codec)
+    let disposeChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.dispose", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
-      manualDisposeChannel.setMessageHandler { _, reply in
+      disposeChannel.setMessageHandler { _, reply in
         do {
-          try api.manualDispose()
+          try api.dispose()
           reply(wrapResult(nil))
         } catch {
           reply(wrapError(error))
         }
       }
     } else {
-      manualDisposeChannel.setMessageHandler(nil)
+      disposeChannel.setMessageHandler(nil)
     }
     let onLifecycleResumeChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.onLifecycleResume", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
@@ -237,14 +297,17 @@ class THEOliveNativeAPISetup {
 }
 /// Generated protocol from Pigeon that represents Flutter messages that can be called from Swift.
 protocol THEOliveFlutterAPIProtocol {
-  func onChannelLoadedEvent(channelID channelIDArg: String, completion: @escaping (Result<Void, FlutterError>) -> Void) 
-  func onChannelLoadStartEvent(channelID channelIDArg: String, completion: @escaping (Result<Void, FlutterError>) -> Void) 
-  func onChannelOfflineEvent(channelID channelIDArg: String, completion: @escaping (Result<Void, FlutterError>) -> Void) 
-  func onPlaying(completion: @escaping (Result<Void, FlutterError>) -> Void) 
+  func onChannelLoadStart(channelID channelIDArg: String, completion: @escaping (Result<Void, FlutterError>) -> Void) 
+  func onChannelLoaded(channelID channelIDArg: String, completion: @escaping (Result<Void, FlutterError>) -> Void) 
+  func onChannelOffline(channelID channelIDArg: String, completion: @escaping (Result<Void, FlutterError>) -> Void) 
   func onWaiting(completion: @escaping (Result<Void, FlutterError>) -> Void) 
-  func onPause(completion: @escaping (Result<Void, FlutterError>) -> Void) 
   func onPlay(completion: @escaping (Result<Void, FlutterError>) -> Void) 
+  func onPlaying(completion: @escaping (Result<Void, FlutterError>) -> Void) 
+  func onPause(completion: @escaping (Result<Void, FlutterError>) -> Void) 
+  func onMutedChange(completion: @escaping (Result<Void, FlutterError>) -> Void) 
   func onIntentToFallback(completion: @escaping (Result<Void, FlutterError>) -> Void) 
+  func onEnterBadNetworkMode(completion: @escaping (Result<Void, FlutterError>) -> Void) 
+  func onExitBadNetworkMode(completion: @escaping (Result<Void, FlutterError>) -> Void) 
   func onReset(completion: @escaping (Result<Void, FlutterError>) -> Void) 
   func onError(message messageArg: String, completion: @escaping (Result<Void, FlutterError>) -> Void) 
 }
@@ -253,38 +316,26 @@ class THEOliveFlutterAPI: THEOliveFlutterAPIProtocol {
   init(binaryMessenger: FlutterBinaryMessenger){
     self.binaryMessenger = binaryMessenger
   }
-  func onChannelLoadedEvent(channelID channelIDArg: String, completion: @escaping (Result<Void, FlutterError>) -> Void)  {
-    let channel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onChannelLoadedEvent", binaryMessenger: binaryMessenger)
+  func onChannelLoadStart(channelID channelIDArg: String, completion: @escaping (Result<Void, FlutterError>) -> Void)  {
+    let channel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onChannelLoadStart", binaryMessenger: binaryMessenger)
     channel.sendMessage([channelIDArg] as [Any?]) { _ in
       completion(.success(Void()))
     }
   }
-  func onChannelLoadStartEvent(channelID channelIDArg: String, completion: @escaping (Result<Void, FlutterError>) -> Void)  {
-    let channel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onChannelLoadStartEvent", binaryMessenger: binaryMessenger)
+  func onChannelLoaded(channelID channelIDArg: String, completion: @escaping (Result<Void, FlutterError>) -> Void)  {
+    let channel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onChannelLoaded", binaryMessenger: binaryMessenger)
     channel.sendMessage([channelIDArg] as [Any?]) { _ in
       completion(.success(Void()))
     }
   }
-  func onChannelOfflineEvent(channelID channelIDArg: String, completion: @escaping (Result<Void, FlutterError>) -> Void)  {
-    let channel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onChannelOfflineEvent", binaryMessenger: binaryMessenger)
+  func onChannelOffline(channelID channelIDArg: String, completion: @escaping (Result<Void, FlutterError>) -> Void)  {
+    let channel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onChannelOffline", binaryMessenger: binaryMessenger)
     channel.sendMessage([channelIDArg] as [Any?]) { _ in
-      completion(.success(Void()))
-    }
-  }
-  func onPlaying(completion: @escaping (Result<Void, FlutterError>) -> Void)  {
-    let channel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onPlaying", binaryMessenger: binaryMessenger)
-    channel.sendMessage(nil) { _ in
       completion(.success(Void()))
     }
   }
   func onWaiting(completion: @escaping (Result<Void, FlutterError>) -> Void)  {
     let channel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onWaiting", binaryMessenger: binaryMessenger)
-    channel.sendMessage(nil) { _ in
-      completion(.success(Void()))
-    }
-  }
-  func onPause(completion: @escaping (Result<Void, FlutterError>) -> Void)  {
-    let channel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onPause", binaryMessenger: binaryMessenger)
     channel.sendMessage(nil) { _ in
       completion(.success(Void()))
     }
@@ -295,8 +346,38 @@ class THEOliveFlutterAPI: THEOliveFlutterAPIProtocol {
       completion(.success(Void()))
     }
   }
+  func onPlaying(completion: @escaping (Result<Void, FlutterError>) -> Void)  {
+    let channel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onPlaying", binaryMessenger: binaryMessenger)
+    channel.sendMessage(nil) { _ in
+      completion(.success(Void()))
+    }
+  }
+  func onPause(completion: @escaping (Result<Void, FlutterError>) -> Void)  {
+    let channel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onPause", binaryMessenger: binaryMessenger)
+    channel.sendMessage(nil) { _ in
+      completion(.success(Void()))
+    }
+  }
+  func onMutedChange(completion: @escaping (Result<Void, FlutterError>) -> Void)  {
+    let channel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onMutedChange", binaryMessenger: binaryMessenger)
+    channel.sendMessage(nil) { _ in
+      completion(.success(Void()))
+    }
+  }
   func onIntentToFallback(completion: @escaping (Result<Void, FlutterError>) -> Void)  {
     let channel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onIntentToFallback", binaryMessenger: binaryMessenger)
+    channel.sendMessage(nil) { _ in
+      completion(.success(Void()))
+    }
+  }
+  func onEnterBadNetworkMode(completion: @escaping (Result<Void, FlutterError>) -> Void)  {
+    let channel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onEnterBadNetworkMode", binaryMessenger: binaryMessenger)
+    channel.sendMessage(nil) { _ in
+      completion(.success(Void()))
+    }
+  }
+  func onExitBadNetworkMode(completion: @escaping (Result<Void, FlutterError>) -> Void)  {
+    let channel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.flutter_theolive.THEOliveFlutterAPI.onExitBadNetworkMode", binaryMessenger: binaryMessenger)
     channel.sendMessage(nil) { _ in
       completion(.success(Void()))
     }

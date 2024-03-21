@@ -1,32 +1,17 @@
 import 'package:theolive/theolive.dart';
+import 'package:theolive_platform_interface/theolive_view_controller_interface.dart';
 
 /// Internal Flutter representation of the underlying native THEOlive state.
-class PlayerState implements THEOliveViewControllerEventListener {
+class PlayerState implements THEOliveEventListener {
+  final List<THEOliveEventListener> _eventListeners = [];
   late THEOliveViewController _viewController;
   StateChangeListener? _stateChangeListener;
 
+  ChannelState channelState = ChannelState.idle;
   bool isInitialized = false;
-
-  // SourceDescription? source;
-  // bool isAutoplay = false;
-  bool isLoaded = false;
-  bool isPaused = true;
-
-  // double currentTime = 0.0;
-  // DateTime? currentProgramDateTime;
-  // double duration = 0.0;
-  // double playbackRate = 0.0;
-  // double volume = 1.0;
-  // bool muted = false;
-  // PreloadType preload = PreloadType.none;
-  // ReadyState readyState = ReadyState.have_nothing;
-  // bool isSeeking = false;
-  // bool isEnded = false;
-  // int videoWidth = 0;
-  // int videoHeight = 0;
-  // List<TimeRange?> buffered = [];
-  // List<TimeRange?> seekable = [];
-  // List<TimeRange?> played = [];
+  bool isAutoplay = false;
+  bool muted = false;
+  bool badNetworkMode = false;
   String? error;
 
   PlayerState() {
@@ -36,7 +21,7 @@ class PlayerState implements THEOliveViewControllerEventListener {
   /// Method to setup the connection with the platform-specific [THEOliveViewController] classes.
   void setViewController(THEOliveViewController viewController) {
     _viewController = viewController;
-    (_viewController as THEOliveViewControllerMobile).eventListener = this;
+    _viewController.setEventListener(this);
   }
 
   /// Use it signal that the native player creation is done.
@@ -50,83 +35,147 @@ class PlayerState implements THEOliveViewControllerEventListener {
     _stateChangeListener = listener;
   }
 
-  @override
-  void onChannelLoadStartEvent(String channelID) {
-    _stateChangeListener?.call();
+  /// Add a [THEOliveEventListener] that triggers on specific state change.
+  void addEventListener(THEOliveEventListener eventListener) {
+    _eventListeners.add(eventListener);
+  }
+
+  /// Remove a [THEOliveEventListener] that triggers on specific state change.
+  void removeEventListener(THEOliveEventListener eventListener) {
+    _eventListeners.remove(eventListener);
   }
 
   @override
-  void onChannelLoadedEvent(String channelID) {
+  void onChannelLoadStart(String channelID) {
+    channelState = ChannelState.loading;
     _stateChangeListener?.call();
+    _eventListeners.forEach((listener) {
+      listener.onChannelLoadStart(channelID);
+    });
   }
 
   @override
-  void onChannelOfflineEvent(String channelID) {
-    _stateChangeListener?.call();
+  void onChannelLoaded(String channelID) {
+    _viewController.isAutoplay().then((value) {
+      isAutoplay = value;
+      channelState = ChannelState.loaded;
+      _stateChangeListener?.call();
+      _eventListeners.forEach((listener) {
+        listener.onChannelLoaded(channelID);
+      });
+    });
   }
 
   @override
-  void onError(String message) {
-    error = message;
+  void onChannelOffline(String channelID) {
+    channelState = ChannelState.offline;
     _stateChangeListener?.call();
-  }
-
-  @override
-  void onIntentToFallback() {
-    _stateChangeListener?.call();
-  }
-
-  @override
-  void onPause() {
-    isPaused = true;
-    _stateChangeListener?.call();
-  }
-
-  @override
-  void onPlay() {
-    isPaused = false;
-    _stateChangeListener?.call();
-  }
-
-  @override
-  void onPlaying() {
-    isLoaded = true;
-    _stateChangeListener?.call();
-  }
-
-  @override
-  void onReset() {
-    _stateChangeListener?.call();
+    _eventListeners.forEach((listener) {
+      listener.onChannelOffline(channelID);
+    });
   }
 
   @override
   void onWaiting() {
+    channelState = ChannelState.waiting;
     _stateChangeListener?.call();
+    _eventListeners.forEach((listener) {
+      listener.onWaiting();
+    });
+  }
+
+  @override
+  void onPlay() {
+    _stateChangeListener?.call();
+    _eventListeners.forEach((listener) {
+      listener.onPlay();
+    });
+  }
+
+  @override
+  void onPlaying() {
+    channelState = ChannelState.playing;
+    _stateChangeListener?.call();
+    _eventListeners.forEach((listener) {
+      listener.onPlaying();
+    });
+  }
+
+  @override
+  void onPause() {
+    channelState = ChannelState.paused;
+    _stateChangeListener?.call();
+    _eventListeners.forEach((listener) {
+      listener.onPause();
+    });
+  }
+
+  @override
+  void onMutedChange() {
+    _stateChangeListener?.call();
+    _eventListeners.forEach((listener) {
+      listener.onMutedChange();
+    });
+  }
+
+  @override
+  void onIntentToFallback() {
+    channelState = ChannelState.intentToFallback;
+    _stateChangeListener?.call();
+    _eventListeners.forEach((listener) {
+      listener.onIntentToFallback();
+    });
+  }
+
+  @override
+  void onEnterBadNetworkMode() {
+    badNetworkMode = true;
+    _stateChangeListener?.call();
+    _eventListeners.forEach((listener) {
+      listener.onEnterBadNetworkMode();
+    });
+  }
+
+  @override
+  void onExitBadNetworkMode() {
+    badNetworkMode = false;
+    _stateChangeListener?.call();
+    _eventListeners.forEach((listener) {
+      listener.onExitBadNetworkMode();
+    });
+  }
+
+  @override
+  void onReset() {
+    resetState();
+    _stateChangeListener?.call();
+    _eventListeners.forEach((listener) {
+      listener.onReset();
+    });
+  }
+
+  @override
+  void onError(String message) {
+    channelState = ChannelState.error;
+    error = message;
+    _stateChangeListener?.call();
+    _eventListeners.forEach((listener) {
+      listener.onError(message);
+    });
   }
 
   /// Method to reset the player state.
   void resetState() {
-    // source = null;
-    isLoaded = false;
-    isPaused = true;
-    // currentTime = 0.0;
-    // currentProgramDateTime = null;
-    // duration = 0.0;
-    // volume = 1.0;
-    // readyState = ReadyState.have_nothing;
-    // isSeeking = false;
-    // isEnded = false;
-    // videoWidth = 0;
-    // videoHeight = 0;
-    // buffered = [];
-    // seekable = [];
-    // played = [];
+    channelState = ChannelState.idle;
+    isAutoplay = false;
+    muted = false;
+    badNetworkMode = false;
     error = null;
   }
 
   /// Method to clean the internal state on player dispose.
   void dispose() {
-    (_viewController as THEOliveViewControllerMobile).eventListener = null;
+    _viewController.setEventListener(null);
     isInitialized = false;
     resetState();
   }

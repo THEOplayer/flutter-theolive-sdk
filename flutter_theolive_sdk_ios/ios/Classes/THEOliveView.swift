@@ -16,16 +16,13 @@ let log = OSLog(subsystem: Bundle.main.bundleIdentifier ?? "live.theo.THEOlive.F
 class THEOliveView: NSObject, FlutterPlatformView, THEOlivePlayerEventListener, THEOliveNativeAPI {
 
     private static var TAG = "FL_IOS_THEOliveView"
-    private var _view: UIView
     private let _viewId: Int64
-    private let _flutterAPI: THEOliveFlutterAPI
+    private var _view: UIView
     private let _pigeonMessenger: PigeonMultiInstanceBinaryMessengerWrapper
-
+    private let _flutterAPI: THEOliveFlutterAPI
     private let player = THEOliveSDK.THEOlivePlayer()
-    
-    var newPlayerView: THEOliveSDK.THEOliveChromelessPlayerView?
-    
     private let emptyCompletion: () -> Void = {}
+    private var chromelessPlayerView: THEOliveSDK.THEOliveChromelessPlayerView?
     
     init(
         frame: CGRect,
@@ -48,39 +45,34 @@ class THEOliveView: NSObject, FlutterPlatformView, THEOlivePlayerEventListener, 
         // iOS views can be created here
         createNativeView(view: _view)
         setupEventListeners()
-
-    }
-
-
-    func view() -> UIView {
-        return _view
     }
 
     func createNativeView(view _view: UIView){
         _view.backgroundColor = UIColor.black
 
-        let newPlayerView = THEOliveSDK.THEOliveChromelessPlayerView(player: player)
+        let chromelessPlayerView = THEOliveSDK.THEOliveChromelessPlayerView(player: player)
+        chromelessPlayerView.translatesAutoresizingMaskIntoConstraints = false
+        chromelessPlayerView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        chromelessPlayerView.frame = _view.bounds
 
-        newPlayerView.translatesAutoresizingMaskIntoConstraints = false
-        newPlayerView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        _view.addSubview(chromelessPlayerView)
 
-        newPlayerView.frame = _view.bounds
-
-        _view.addSubview(newPlayerView)
-
-        self.newPlayerView = newPlayerView
-
+        self.chromelessPlayerView = chromelessPlayerView
     }
 
     func setupEventListeners() {
-
         player.add(eventListener: self)
-
+    }
+    
+    func view() -> UIView {
+        return _view
     }
 
-    // THEOliveNativeAPI
+    func preloadChannels(channelIDs: [String]) throws {
+        self.player.preloadChannels(channelIDs)
+    }
+    
     func loadChannel(channelID: String) throws {
-        os_log("loadChannel: %@", log: log, type: .debug, channelID)
         self.player.loadChannel(channelID)
     }
 
@@ -92,8 +84,24 @@ class THEOliveView: NSObject, FlutterPlatformView, THEOlivePlayerEventListener, 
         self.player.pause()
     }
 
-    func preloadChannels(channelIDs: [String]) throws {
-        self.player.preloadChannels(channelIDs)
+    func isAutoplay() throws -> Bool {
+        return false // TODO: not implemented in native
+    }
+    
+    func setMuted(muted: Bool) throws {
+        self.player.muted = muted
+    }
+    
+    func setBadNetworkMode(badNetworkMode: Bool) throws {
+        // TODO: not implemented in native
+    }
+    
+    func goLive() throws {
+        self.player.goLive()
+    }
+    
+    func reset() throws {
+        self.player.reset()
     }
 
     func updateConfiguration(configuration: PigeonNativePlayerConfiguration) throws {
@@ -101,72 +109,64 @@ class THEOliveView: NSObject, FlutterPlatformView, THEOlivePlayerEventListener, 
         self.player.updateConfiguration(nativeConfig)
     }
 
-    // Fix for https://github.com/flutter/flutter/issues/97499
-    // The PlatformViews are not deallocated in time, so we clean up upfront.
-    func manualDispose() throws {
-        os_log("manualDispose", log: log, type: .debug)
+    func dispose() throws {
         player.remove(eventListener: self)
-        newPlayerView?.removeFromSuperview()
+        chromelessPlayerView?.removeFromSuperview()
         player.reset()
-
     }
 
     func onLifecycleResume() {
+        // ignore on iOS
     }
 
     func onLifecyclePause() {
-    }
-
-    // THEOlivePlayerEventListener
-    func onChannelLoaded(channelId: String) {
-        os_log("onChannelLoaded: %@", log: log, type: .debug, channelId)
-        _flutterAPI.onChannelLoadedEvent(channelID: channelId, completion: emptyCompletion)
-    }
-    
-    
-    func goLive() throws {
-        os_log("onPlaying", log: log, type: .debug)
-        player.goLive()
-    }
-
-    func onPlaying() {
-        os_log("onPlaying", log: log, type: .debug)
-        _flutterAPI.onPlaying(completion: emptyCompletion);
-    }
-
-    func onError(message: String) {
-        os_log("onError: %@" , log: log, type: .debug, message)
-        _flutterAPI.onError(message: message, completion: emptyCompletion)
-    }
-
-    func onChannelOffline(channelId: String) {
-        os_log("onChannelOffline: %@" , log: log, type: .debug, channelId)
-        _flutterAPI.onChannelOfflineEvent(channelID: channelId, completion: emptyCompletion)
+        // ignore on iOS
     }
 
     func onChannelLoadStart(channelId: String) {
-        os_log("onChannelLoadStart: %@" , log: log, type: .debug, channelId)
-        _flutterAPI.onChannelLoadStartEvent(channelID: channelId, completion: emptyCompletion)
+        _flutterAPI.onChannelLoadStart(channelID: channelId, completion: emptyCompletion)
     }
 
+    func onChannelLoaded(channelId: String) {
+        _flutterAPI.onChannelLoaded(channelID: channelId, completion: emptyCompletion)
+    }
+
+    func onChannelOffline(channelId: String) {
+        _flutterAPI.onChannelOffline(channelID: channelId, completion: emptyCompletion)
+    }
+    
     func onWaiting() {
-        os_log("onWaiting", log: log, type: .debug)
         _flutterAPI.onWaiting(completion: emptyCompletion);
     }
-
+    
     func onPlay() {
-        os_log("onPlay", log: log, type: .debug)
         _flutterAPI.onPlay(completion: emptyCompletion);
+    }
+    
+    func onPlaying() {
+        _flutterAPI.onPlaying(completion: emptyCompletion);
     }
 
     func onPause() {
-        os_log("onPause", log: log, type: .debug)
         _flutterAPI.onPause(completion: emptyCompletion)
     }
 
+    func onMutedChange() {
+        _flutterAPI.onMutedChange(completion: emptyCompletion)
+    }
+    
     func onIntentToFallback() {
-        os_log("onIntentToFallback", log: log, type: .debug)
         _flutterAPI.onIntentToFallback(completion: emptyCompletion)
+    }
+
+//    func onEnterBadNetworkMode() {}
+    
+//    func onExitBadNetworkMode() {}
+    
+//    func onReset() {}
+    
+    func onError(message: String) {
+        _flutterAPI.onError(message: message, completion: emptyCompletion)
     }
 
     deinit {

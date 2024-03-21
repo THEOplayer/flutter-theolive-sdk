@@ -23,8 +23,8 @@ class _MoviePageState extends State<MoviePage> {
     _theoLive = THEOlive(
         playerConfig: PlayerConfig(
           AndroidConfig(
-            useHybridComposition: false,
-            nativeRenderingTarget: AndroidNativeRenderingTarget.textureView,
+            useHybridComposition: true,
+            nativeRenderingTarget: AndroidNativeRenderingTarget.surfaceView,
           ),
         ),
         onCreate: () {
@@ -93,16 +93,15 @@ class _MoviePageState extends State<MoviePage> {
                   'THEOlive',
                 ),
                 Stack(alignment: Alignment.center, children: [
-                  !inFullscreen
-                      ? Container(width: w, height: h, color: Colors.black, child: _theoLive.getView())
-                      : Container(),
-                  !_theoLive.isLoaded()
+                  inFullscreen
+                      ? Container()
+                      : Container(width: w, height: h, color: Colors.black, child: _theoLive.getView()),
+                  _theoLive.isWaiting()
                       ? Container(
                           width: w,
                           height: h,
-                          color: Colors.black,
-                          child:
-                              const Center(child: SizedBox(width: 50, height: 50, child: RefreshProgressIndicator())))
+                          color: Colors.transparent,
+                          child: const Center(child: SizedBox(width: 50, height: 50, child: RefreshProgressIndicator())))
                       : Container(),
                 ]),
                 !landscape
@@ -163,11 +162,7 @@ class _MoviePageState extends State<MoviePage> {
 
   @override
   void dispose() {
-    dprint("_MoviePageState with THEOliveView: dispose ");
-
-    // NOTE: this would be nicer, if we move it inside the THEOliveView that's a StatefulWidget
-    // FIX for https://github.com/flutter/flutter/issues/97499
-    //_theoController.manualDispose();
+    _theoLive.dispose();
     super.dispose();
   }
 }
