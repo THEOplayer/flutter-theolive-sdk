@@ -28,5 +28,4 @@ abstract class THEOliveFlutterAPI {
   void onReset();
 
   void onError(String message);
-
 }

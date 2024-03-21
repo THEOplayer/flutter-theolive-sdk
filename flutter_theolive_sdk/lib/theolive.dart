@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:theolive/theolive_state.dart';
 import 'package:theolive/theolive_view.dart';
@@ -7,10 +6,7 @@ import 'package:theolive_platform_interface/theolive_event_listener.dart';
 import 'package:theolive_platform_interface/theolive_playerconfig.dart';
 import 'package:theolive_platform_interface/theolive_view_controller_interface.dart';
 
-export 'package:theolive/theolive_view.dart';
 export 'package:theolive_platform_interface/theolive_playerconfig.dart';
-export 'package:theolive_platform_interface/theolive_view_controller_interface.dart';
-export 'package:theolive_platform_interface/theolive_view_controller_mobile.dart';
 export 'package:theolive_platform_interface/theolive_event_listener.dart';
 
 typedef PlayerCreatedCallback = void Function();

@@ -12,13 +12,13 @@ class MoviePage extends StatefulWidget {
   State<MoviePage> createState() => _MoviePageState();
 }
 
-class _MoviePageState extends State<MoviePage> {
+class _MoviePageState extends State<MoviePage> with THEOliveEventListener {
   late THEOlive _theoLive;
   bool inFullscreen = false;
 
   @override
   void initState() {
-    dprint("_MoviePageState with THEOliveView: initState ");
+    dprint("MoviePageState: initState ");
     super.initState();
     _theoLive = THEOlive(
         playerConfig: PlayerConfig(
@@ -32,13 +32,14 @@ class _MoviePageState extends State<MoviePage> {
           nativePlayerConfiguration.sessionId = "sessionIdForTracking";
 
           _theoLive.setStateListener(() => setState(() {}));
+          _theoLive.addEventListener(this);
 
           // Updates the config of the player, make sure to call this before loading a channel.
           _theoLive.updateNativePlayerConfiguration(nativePlayerConfiguration);
 
           // automatically load the channel once the view is ready
-          // _theoLive.preloadChannels(["38yyniscxeglzr8n0lbku57b0"]);
-          _theoLive.loadChannel("38yyniscxeglzr8n0lbku57b0");
+          // _theoLive.preloadChannels(["2vqqekesftg9zuvxu9tdme6kl"]);
+          _theoLive.loadChannel("2vqqekesftg9zuvxu9tdme6kl");
         });
   }
 
@@ -124,7 +125,7 @@ class _MoviePageState extends State<MoviePage> {
                               settings: null,
                             ),
                           ).then((value) {
-                            dprint("_MoviePageState with THEOliveView: return from fullscreen ");
+                            dprint("MoviePage: return from fullscreen");
                             setState(() {
                               inFullscreen = false;
                             });
@@ -135,7 +136,7 @@ class _MoviePageState extends State<MoviePage> {
                 !landscape
                     ? FilledButton(
                         onPressed: () {
-                          _theoLive.loadChannel("38yyniscxeglzr8n0lbku57b0");
+                          _theoLive.loadChannel("2vqqekesftg9zuvxu9tdme6kl");
                         },
                         child: const Text("Change channel"))
                     : Container(),
@@ -165,4 +166,70 @@ class _MoviePageState extends State<MoviePage> {
     _theoLive.dispose();
     super.dispose();
   }
+
+  @override
+  void onChannelLoadStart(String channelID) {
+    dprint("MoviePage - THEOliveEventListener - onChannelLoadStart: $channelID");
+  }
+
+  @override
+  void onChannelLoaded(String channelID) {
+    dprint("MoviePage - THEOliveEventListener - onChannelLoaded: $channelID");
+  }
+
+  @override
+  void onChannelOffline(String channelID) {
+    dprint("MoviePage - THEOliveEventListener - onChannelOffline: $channelID");
+  }
+
+  @override
+  void onWaiting() {
+    dprint("MoviePage - THEOliveEventListener - onWaiting");
+  }
+
+  @override
+  void onPlay() {
+    dprint("MoviePage - THEOliveEventListener - onPlay");
+  }
+
+  @override
+  void onPlaying() {
+    dprint("MoviePage - THEOliveEventListener - onPlaying");
+  }
+
+  @override
+  void onPause() {
+    dprint("MoviePage - THEOliveEventListener - onPause");
+  }
+
+  @override
+  void onMutedChange() {
+    dprint("MoviePage - THEOliveEventListener - onMutedChange");
+  }
+
+  @override
+  void onIntentToFallback() {
+    dprint("MoviePage - THEOliveEventListener - onIntentToFallback");
+  }
+
+  @override
+  void onEnterBadNetworkMode() {
+    dprint("MoviePage - THEOliveEventListener - onEnterBadNetworkMode");
+  }
+
+  @override
+  void onExitBadNetworkMode() {
+    dprint("MoviePage - THEOliveEventListener - onExitBadNetworkMode");
+  }
+
+  @override
+  void onReset() {
+    dprint("MoviePage - THEOliveEventListener - onReset");
+  }
+
+  @override
+  void onError(String message) {
+    dprint("MoviePage - THEOliveEventListener - onError: $message");
+  }
+
 }

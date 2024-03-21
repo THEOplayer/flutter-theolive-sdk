@@ -26,7 +26,7 @@ abstract class TheolivePlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Widget buildView(BuildContext context,PlayerConfig playerConfig, THEOliveViewCreatedCallback createdCallback) {
+  Widget buildView(BuildContext context, PlayerConfig playerConfig, THEOliveViewCreatedCallback createdCallback) {
     throw UnimplementedError('buildView(BuildContext) has not been implemented.');
   }
 }

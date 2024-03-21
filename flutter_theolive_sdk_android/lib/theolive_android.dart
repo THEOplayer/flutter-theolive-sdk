@@ -21,54 +21,54 @@ class THEOliveAndroid extends TheolivePlatform {
     // Pass parameters to the platform side.
     Map<String, dynamic> creationParams = <String, dynamic>{};
 
-      //TODO: use single object
-        creationParams["nativeRenderingTarget"] = playerConfig.androidConfig.nativeRenderingTarget.name;
-        creationParams["useHybridComposition"] = playerConfig.androidConfig.useHybridComposition;
+    //TODO: use single object
+    creationParams["nativeRenderingTarget"] = playerConfig.androidConfig.nativeRenderingTarget.name;
+    creationParams["useHybridComposition"] = playerConfig.androidConfig.useHybridComposition;
 
-        return PlatformViewLink(
-          viewType: viewType,
-          surfaceFactory: (context, controller) {
-            return AndroidViewSurface(
-              controller: controller as AndroidViewController,
-              gestureRecognizers: const <Factory<OneSequenceGestureRecognizer>>{},
-              hitTestBehavior: PlatformViewHitTestBehavior.opaque,
-            );
-          },
-          onCreatePlatformView: (params) {
-            late AndroidViewController androidViewController;
-
-            if (playerConfig.androidConfig.useHybridComposition) {
-              androidViewController = PlatformViewsService.initExpensiveAndroidView(
-                id: params.id,
-                viewType: viewType,
-                layoutDirection: TextDirection.ltr,
-                creationParams: creationParams,
-                creationParamsCodec: const StandardMessageCodec(),
-                onFocus: () {
-                  params.onFocusChanged(true);
-                },
-              );
-            } else {
-              androidViewController = PlatformViewsService.initAndroidView(
-                id: params.id,
-                viewType: viewType,
-                layoutDirection: TextDirection.ltr,
-                creationParams: creationParams,
-                creationParamsCodec: const StandardMessageCodec(),
-                onFocus: () {
-                  params.onFocusChanged(true);
-                },
-              );
-            }
-
-            return androidViewController
-              ..addOnPlatformViewCreatedListener((id) {
-                dprint("THEOliveAndroid OnPlatformViewCreatedListener");
-                params.onPlatformViewCreated(id);
-                createdCallback(THEOliveViewControllerAndroid(id));
-              })
-              ..create();
-          },
+    return PlatformViewLink(
+      viewType: viewType,
+      surfaceFactory: (context, controller) {
+        return AndroidViewSurface(
+          controller: controller as AndroidViewController,
+          gestureRecognizers: const <Factory<OneSequenceGestureRecognizer>>{},
+          hitTestBehavior: PlatformViewHitTestBehavior.opaque,
         );
+      },
+      onCreatePlatformView: (params) {
+        late AndroidViewController androidViewController;
+
+        if (playerConfig.androidConfig.useHybridComposition) {
+          androidViewController = PlatformViewsService.initExpensiveAndroidView(
+            id: params.id,
+            viewType: viewType,
+            layoutDirection: TextDirection.ltr,
+            creationParams: creationParams,
+            creationParamsCodec: const StandardMessageCodec(),
+            onFocus: () {
+              params.onFocusChanged(true);
+            },
+          );
+        } else {
+          androidViewController = PlatformViewsService.initAndroidView(
+            id: params.id,
+            viewType: viewType,
+            layoutDirection: TextDirection.ltr,
+            creationParams: creationParams,
+            creationParamsCodec: const StandardMessageCodec(),
+            onFocus: () {
+              params.onFocusChanged(true);
+            },
+          );
+        }
+
+        return androidViewController
+          ..addOnPlatformViewCreatedListener((id) {
+            dprint("THEOliveAndroid OnPlatformViewCreatedListener");
+            params.onPlatformViewCreated(id);
+            createdCallback(THEOliveViewControllerAndroid(id));
+          })
+          ..create();
+      },
+    );
   }
 }

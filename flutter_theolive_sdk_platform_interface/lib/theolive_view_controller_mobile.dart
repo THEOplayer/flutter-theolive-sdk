@@ -155,5 +155,4 @@ class THEOliveViewControllerMobile extends THEOliveViewController implements THE
   void onError(String message) {
     _eventListener?.onError(message);
   }
-
 }
