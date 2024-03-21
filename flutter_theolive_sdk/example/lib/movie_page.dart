@@ -38,8 +38,8 @@ class _MoviePageState extends State<MoviePage> with THEOliveEventListener {
           _theoLive.updateNativePlayerConfiguration(nativePlayerConfiguration);
 
           // automatically load the channel once the view is ready
-          // _theoLive.preloadChannels(["38yyniscxeglzr8n0lbku57b0"]);
-          _theoLive.loadChannel("38yyniscxeglzr8n0lbku57b0");
+          // _theoLive.preloadChannels(["2vqqekesftg9zuvxu9tdme6kl"]);
+          _theoLive.loadChannel("2vqqekesftg9zuvxu9tdme6kl");
         });
   }
 
@@ -136,7 +136,7 @@ class _MoviePageState extends State<MoviePage> with THEOliveEventListener {
                 !landscape
                     ? FilledButton(
                         onPressed: () {
-                          _theoLive.loadChannel("38yyniscxeglzr8n0lbku57b0");
+                          _theoLive.loadChannel("2vqqekesftg9zuvxu9tdme6kl");
                         },
                         child: const Text("Change channel"))
                     : Container(),

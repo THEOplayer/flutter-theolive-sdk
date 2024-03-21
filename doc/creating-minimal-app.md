@@ -130,7 +130,7 @@ Don't forget to run `melos bootstrap` again in the directory according to your c
         _theoLive.setStateListener(() => setState(() {}));
 
         // automatically load the channel once the view is ready
-        _theoLive.loadChannel("38yyniscxeglzr8n0lbku57b0");
+        _theoLive.loadChannel("2vqqekesftg9zuvxu9tdme6kl");
       });
   }
 ```
