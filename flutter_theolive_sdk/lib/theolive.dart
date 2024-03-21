@@ -104,18 +104,29 @@ class THEOlive {
     _viewController.goLive();
   }
 
+  /// The channels current state.
+  ChannelState state() {
+    return _playerState.channelState;
+  }
+
+  /// Whether the player is initialized.
+  bool isInitialized() {
+    return _playerState.isInitialized;
+  }
+
   /// Whether the player is loaded.
   bool isLoaded() {
-    return _playerState.isLoaded;
+    return _playerState.channelState.index >= ChannelState.loaded.index;
   }
 
   /// Whether the player is paused.
   bool isPaused() {
-    return _playerState.isPaused;
+    return _playerState.channelState == ChannelState.paused;
   }
 
+  /// Whether the player is buffering.
   bool isWaiting() {
-    return _playerState.isWaiting;
+    return _playerState.channelState == ChannelState.waiting;
   }
 
   /// Whether the currently loaded channel has autoplay enabled.
@@ -154,6 +165,11 @@ class THEOlive {
   /// still upswitch, but we can't give any guarantees. This mode can be exited by setting badNetworkMode to false.
   bool isBadNetworkMode() {
     return _playerState.badNetworkMode;
+  }
+
+  /// The last error the player triggered.
+  String? getError() {
+    return _playerState.error;
   }
 
   /// Resets the player.

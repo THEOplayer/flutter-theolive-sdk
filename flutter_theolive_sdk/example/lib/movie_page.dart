@@ -23,8 +23,8 @@ class _MoviePageState extends State<MoviePage> {
     _theoLive = THEOlive(
         playerConfig: PlayerConfig(
           AndroidConfig(
-            useHybridComposition: false,
-            nativeRenderingTarget: AndroidNativeRenderingTarget.textureView,
+            useHybridComposition: true,
+            nativeRenderingTarget: AndroidNativeRenderingTarget.surfaceView,
           ),
         ),
         onCreate: () {
@@ -93,14 +93,14 @@ class _MoviePageState extends State<MoviePage> {
                   'THEOlive',
                 ),
                 Stack(alignment: Alignment.center, children: [
-                  !inFullscreen
-                      ? Container(width: w, height: h, color: Colors.black, child: _theoLive.getView())
-                      : Container(),
-                  !_theoLive.isLoaded()
+                  inFullscreen
+                      ? Container()
+                      : Container(width: w, height: h, color: Colors.black, child: _theoLive.getView()),
+                  _theoLive.isWaiting()
                       ? Container(
                           width: w,
                           height: h,
-                          color: Colors.black,
+                          color: Colors.transparent,
                           child: const Center(child: SizedBox(width: 50, height: 50, child: RefreshProgressIndicator())))
                       : Container(),
                 ]),

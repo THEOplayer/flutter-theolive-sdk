@@ -28,6 +28,10 @@ enum ChannelState {
   idle,
   loading,
   loaded,
+  waiting,
+  playing,
+  paused,
+  error,
   intentToFallback,
   offline
 }

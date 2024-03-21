@@ -1,22 +1,18 @@
 import 'package:theolive/theolive.dart';
-import 'package:theolive_platform_interface/theolive_event_listener.dart';
 import 'package:theolive_platform_interface/theolive_view_controller_interface.dart';
 
 /// Internal Flutter representation of the underlying native THEOlive state.
 class PlayerState implements THEOliveEventListener {
+  final List<THEOliveEventListener> _eventListeners = [];
   late THEOliveViewController _viewController;
   StateChangeListener? _stateChangeListener;
 
   ChannelState channelState = ChannelState.idle;
   bool isInitialized = false;
   bool isAutoplay = false;
-  bool isLoaded = false;
-  bool isPaused = true;
-  bool isWaiting = false;
   bool muted = false;
   bool badNetworkMode = false;
   String? error;
-  List<THEOliveEventListener> _eventListeners = [];
 
   PlayerState() {
     resetState();
@@ -62,14 +58,11 @@ class PlayerState implements THEOliveEventListener {
   void onChannelLoaded(String channelID) {
     _viewController.isAutoplay().then((value) {
       isAutoplay = value;
+      channelState = ChannelState.loaded;
       _stateChangeListener?.call();
-    });
-
-    channelState = ChannelState.loaded;
-    isLoaded = true;
-    _stateChangeListener?.call();
-    _eventListeners.forEach((listener) {
-      listener.onChannelLoaded(channelID);
+      _eventListeners.forEach((listener) {
+        listener.onChannelLoaded(channelID);
+      });
     });
   }
 
@@ -84,7 +77,7 @@ class PlayerState implements THEOliveEventListener {
 
   @override
   void onWaiting() {
-    isWaiting = true;
+    channelState = ChannelState.waiting;
     _stateChangeListener?.call();
     _eventListeners.forEach((listener) {
       listener.onWaiting();
@@ -93,7 +86,6 @@ class PlayerState implements THEOliveEventListener {
 
   @override
   void onPlay() {
-    isPaused = false;
     _stateChangeListener?.call();
     _eventListeners.forEach((listener) {
       listener.onPlay();
@@ -102,7 +94,7 @@ class PlayerState implements THEOliveEventListener {
 
   @override
   void onPlaying() {
-    isWaiting = false;
+    channelState = ChannelState.playing;
     _stateChangeListener?.call();
     _eventListeners.forEach((listener) {
       listener.onPlaying();
@@ -111,7 +103,7 @@ class PlayerState implements THEOliveEventListener {
 
   @override
   void onPause() {
-    isPaused = true;
+    channelState = ChannelState.paused;
     _stateChangeListener?.call();
     _eventListeners.forEach((listener) {
       listener.onPause();
@@ -164,6 +156,7 @@ class PlayerState implements THEOliveEventListener {
 
   @override
   void onError(String message) {
+    channelState = ChannelState.error;
     error = message;
     _stateChangeListener?.call();
     _eventListeners.forEach((listener) {
@@ -175,9 +168,6 @@ class PlayerState implements THEOliveEventListener {
   void resetState() {
     channelState = ChannelState.idle;
     isAutoplay = false;
-    isLoaded = false;
-    isPaused = true;
-    isWaiting = false;
     muted = false;
     badNetworkMode = false;
     error = null;
