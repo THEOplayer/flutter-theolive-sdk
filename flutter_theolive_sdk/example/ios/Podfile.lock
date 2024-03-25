@@ -1,0 +1,29 @@
+PODS:
+  - Flutter (1.0.0)
+  - theolive_ios (0.0.1):
+    - Flutter
+    - THEOliveSDK (= 3.13.1)
+  - THEOliveSDK (3.13.1)
+
+DEPENDENCIES:
+  - Flutter (from `Flutter`)
+  - theolive_ios (from `.symlinks/plugins/theolive_ios/ios`)
+
+SPEC REPOS:
+  trunk:
+    - THEOliveSDK
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+  theolive_ios:
+    :path: ".symlinks/plugins/theolive_ios/ios"
+
+SPEC CHECKSUMS:
+  Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
+  theolive_ios: 2896de0407753d35182217612388d009cda836bd
+  THEOliveSDK: 37f625222047a9da4a471db45bbb26bfd8768dee
+
+PODFILE CHECKSUM: 8ae5c35a5cecf3f61034d5617181e61ad4d19544
+
+COCOAPODS: 1.12.1

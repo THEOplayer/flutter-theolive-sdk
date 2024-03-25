@@ -1,0 +1,34 @@
+name: theolive
+description: THEOlive Flutter SDK
+version: 1.0.0
+homepage: https://theo.live
+repository: https://github.com/THEOplayer/theolive-flutter-sdk
+
+environment:
+  sdk: ^3.3.0
+  flutter: ">=3.19.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  theolive_platform_interface: 1.0.0
+  theolive_android: 1.0.0
+  theolive_ios: 1.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+flutter:
+  plugin:
+    platforms:
+      android:
+        default_package: flutter_theolive_sdk_android
+      ios:
+        default_package: flutter_theolive_sdk_ios
+
+topics:
+  - theolive
+  - video
+  - low-latency

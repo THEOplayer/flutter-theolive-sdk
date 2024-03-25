@@ -1,0 +1,3 @@
+class PigeonNativePlayerConfiguration {
+  String? sessionId;
+}

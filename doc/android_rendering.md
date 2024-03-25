@@ -40,25 +40,26 @@ Today THEOlive Android SDK supports 2 options:
 When initializing THEOliveView, you can pass these parameters under `playerConfig`:
 
 ```dart
+  late THEOlive _theoLive;
+
   @override
   void initState() {
-    print("_MoviePageState with THEOliveView: initState ");
     super.initState();
-    theoLiveView = THEOliveView(
-      key: playerUniqueKey,
+  
+    _theoLive = THEOlive(
       playerConfig: PlayerConfig(
-          AndroidConfig(
-              useHybridComposition: false,
-              nativeRenderingTarget: AndroidNativeRenderingTarget.textureView
-          )
+        AndroidConfig(
+          useHybridComposition: false,
+          nativeRenderingTarget: AndroidNativeRenderingTarget.textureView
+        ),
       ),
-      onTHEOliveViewCreated:(THEOliveViewController controller) {
-        // assign the controller to interact with the player
-        _theoController = controller;
-        ...
-      },
-    );
+      onCreate: () {
+        // if you would like to listen to state changes
+        _theoLive.setStateListener(() => setState(() {}));
 
+        // automatically load the channel once the view is ready
+        _theoLive.loadChannel("2vqqekesftg9zuvxu9tdme6kl");
+      });
   }
 ```
 

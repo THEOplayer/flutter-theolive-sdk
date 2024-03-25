@@ -30,7 +30,8 @@ THEOlive Flutter SDK only compatible with THEOlive 3.9 and above.
 
 ### Fullscreen and Picture-in-picture
 
-THEOlive Flutter SDK doesn't have a built-in presentation mode switch, so only in-app Fullscreen and Picture-and-Picture mode can be achieved by implementing the logic on app-level.
+THEOlive Flutter SDK doesn't have a built-in presentation mode switch,
+so only in-app Fullscreen and Picture-and-Picture mode can be achieved by implementing the logic on app-level.
 
 The example project within the SDK package contains an example use-case for Fullscreen.
 
@@ -38,5 +39,4 @@ The example project within the SDK package contains an example use-case for Full
 Currently, THEOlive Flutter SDK is completely chromeless, the UI needs to be implemented on top of the public APIs on the Flutter level.
 
 ### Missing features
-THEOlive Flutter SDK is not in feature parity yet with the native SDKs, new features will be added continuosly.
-
+THEOlive Flutter SDK is not in feature parity yet with the native SDKs, new features will be added continuously.
