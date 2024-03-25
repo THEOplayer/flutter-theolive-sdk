@@ -2,7 +2,7 @@ name: theolive
 description: THEOlive Flutter SDK
 version: 1.0.0
 homepage: https://theo.live
-repository: https://github.com/THEOplayer/theolive-flutter-sdk
+repository: https://github.com/THEOplayer/flutter-theolive-sdk
 
 environment:
   sdk: ^3.3.0

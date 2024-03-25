@@ -1,4 +1,4 @@
-<img src="https://raw.githubusercontent.com/THEOplayer/theolive-flutter-sdk/main/doc/theolive_flutter_sdk_logo.png">
+<img src="https://raw.githubusercontent.com/THEOplayer/flutter-theolive-sdk/main/doc/theolive_flutter_sdk_logo.png">
 
 # THEOlive Flutter SDK
 
@@ -49,13 +49,13 @@ please reach out to us for support.
 
 This section starts with creating a minimal demo app that integrates the `theolive` package.
 
-A minimal example application including a basic user interface and a demo source is included in [this git repository](https://github.com/THEOplayer/theolive-flutter-sdk/tree/main/example),
+A minimal example application including a basic user interface and a demo source is included in [this git repository](https://github.com/THEOplayer/flutter-theolive-sdk/tree/main/example),
 and parts of it are discussed in the next section.
 
-- [Creating a minimal demo app](https://github.com/THEOplayer/theolive-flutter-sdk/blob/main/doc/creating-minimal-app.md)
-    - [Getting started on Android](https://github.com/THEOplayer/theolive-flutter-sdk/blob/main/doc/creating-minimal-app.md#getting-started-on-android)
-    - [Getting started on iOS](https://github.com/THEOplayer/theolive-flutter-sdk/blob/main/doc/creating-minimal-app.md#getting-started-on-ios)
+- [Creating a minimal demo app](https://github.com/THEOplayer/flutter-theolive-sdk/blob/main/doc/creating-minimal-app.md)
+    - [Getting started on Android](https://github.com/THEOplayer/flutter-theolive-sdk/blob/main/doc/creating-minimal-app.md#getting-started-on-android)
+    - [Getting started on iOS](https://github.com/THEOplayer/flutter-theolive-sdk/blob/main/doc/creating-minimal-app.md#getting-started-on-ios)
 
 - Knowledge Base
-  - [Using different rendering targets on Android](https://github.com/THEOplayer/theolive-flutter-sdk/blob/main/doc/android_rendering.md)
-- [Limitations and known issues](https://github.com/THEOplayer/theolive-flutter-sdk/blob/main/doc/limitations.md)
+  - [Using different rendering targets on Android](https://github.com/THEOplayer/flutter-theolive-sdk/blob/main/doc/android_rendering.md)
+- [Limitations and known issues](https://github.com/THEOplayer/flutter-theolive-sdk/blob/main/doc/limitations.md)

@@ -56,10 +56,10 @@ $ flutter pub add theolive
 
 ##### Option 2: Adding THEOlive Flutter SDK as submodule
 As an alternative, you can add the SDK as a submodule in your git project.
-This can be useful if you are trying to fork the project to [contribute](https://github.com/THEOplayer/theolive-flutter-sdk/blob/main/CONTRIBUTING.md) with us.
+This can be useful if you are trying to fork the project to [contribute](https://github.com/THEOplayer/flutter-theolive-sdk/blob/main/CONTRIBUTING.md) with us.
 
 ```bash
-$ git submodule add https://GITHUB_USERNAME:GITHUB_PASSWORD@github.com/THEOplayer/theolive-flutter-sdk.git
+$ git submodule add https://GITHUB_USERNAME:GITHUB_PASSWORD@github.com/THEOplayer/flutter-theolive-sdk.git
 ```
 
 Your project structure will look like this:
@@ -68,7 +68,7 @@ Your project structure will look like this:
 ➜  theolive_sample_app git:(master) ✗ ls
 README.md                       theolive_sample_app.iml         pubspec.yaml
 analysis_options.yaml           ios                             test
-android                         lib                             theolive-flutter-sdk
+android                         lib                             flutter-theolive-sdk
 build                           pubspec.lock                   
 
 ```
@@ -76,7 +76,7 @@ build                           pubspec.lock
 After the submodule added, you can add the THEOplayer Flutter SDK as a dependency in your project's `pubspec.yaml` file manually, or just by running this command:
 
 ```bash
-$ flutte pub add 'flutter_theolive:{"path":"./theolive-flutter-sdk"}' --directory .
+$ flutte pub add 'flutter_theolive:{"path":"./flutter-theolive-sdk"}' --directory .
 ```
 
 You should get an output like this after executing the command, meaning `flutter` found and added the SDK as a dependency, and fetched the necessary packages too.
@@ -85,7 +85,7 @@ You should get an output like this after executing the command, meaning `flutter
 Resolving dependencies... 
   collection 1.17.2 (1.18.0 available)
   flutter_lints 2.0.3 (3.0.1 available)
-+ theolive 1.0.0 from path theolive-flutter-sdk
++ theolive 1.0.0 from path flutter-theolive-sdk
   lints 2.1.1 (3.0.0 available)
   material_color_utilities 0.5.0 (0.8.0 available)
   meta 1.9.1 (1.11.0 available)
@@ -106,7 +106,7 @@ If your main project doesn't pick up the changes, it is possible you need to con
 You can do it in 2 ways.
 
 1. Create your `melos.yaml` file in your root project and configure it according to your setup (including the `theolive` submodule and its packages).
-2. Or, modifiy the `theolive-flutter-sdk/melos.yaml` to include your project by adding `../` into the `packages` section of the melos file.
+2. Or, modifiy the `flutter-theolive-sdk/melos.yaml` to include your project by adding `../` into the `packages` section of the melos file.
 
 Don't forget to run `melos bootstrap` again in the directory according to your choice from above.
 
@@ -226,4 +226,4 @@ By using the `flutter run ios` command, you can try out your application on an i
 
 ### Demo project
 
-A separate minimal demo project is also available on [https://github.com/THEOplayer/theolive-flutter-sdk-sample-app](https://github.com/THEOplayer/theolive-flutter-sdk-sample-app) that was built by following this guide.
+A separate minimal demo project is also available on [https://github.com/THEOplayer/flutter-theolive-sdk-sample-app](https://github.com/THEOplayer/flutter-theolive-sdk-sample-app) that was built by following this guide.
