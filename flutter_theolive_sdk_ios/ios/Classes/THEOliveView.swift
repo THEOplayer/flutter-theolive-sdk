@@ -13,6 +13,10 @@ import os
 
 let log = OSLog(subsystem: Bundle.main.bundleIdentifier ?? "live.theo.THEOlive.Flutter" , category: "THEOliveView")
 
+//TODO: This extension of Error is required to do use FlutterError in any Swift code.
+//TODO: https://github.com/flutter/packages/blob/main/packages/pigeon/example/README.md#swift
+extension FlutterError: Error {}
+
 class THEOliveView: NSObject, FlutterPlatformView, THEOlivePlayerEventListener, THEOliveNativeAPI {
 
     private static var TAG = "FL_IOS_THEOliveView"
@@ -21,7 +25,7 @@ class THEOliveView: NSObject, FlutterPlatformView, THEOlivePlayerEventListener, 
     private let _pigeonMessenger: PigeonMultiInstanceBinaryMessengerWrapper
     private let _flutterAPI: THEOliveFlutterAPI
     private let player = THEOliveSDK.THEOlivePlayer()
-    private let emptyCompletion: () -> Void = {}
+    private let emptyCompletion: (Result<Void, FlutterError>) -> Void = {result in }
     private var chromelessPlayerView: THEOliveSDK.THEOliveChromelessPlayerView?
     
     init(
