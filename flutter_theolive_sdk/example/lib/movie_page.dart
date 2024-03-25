@@ -96,7 +96,7 @@ class _MoviePageState extends State<MoviePage> with THEOliveEventListener {
                 Stack(alignment: Alignment.center, children: [
                   inFullscreen
                       ? Container()
-                      : Container(width: w, height: h, color: Colors.black, child: _theoLive.getView()),
+                      : Container(width: w, height: h, color: Colors.black, child: ChromelessPlayer(player: _theoLive, key: ChromelessPlayer.globalKey,)),
                   _theoLive.isWaiting()
                       ? Container(
                           width: w,
@@ -233,3 +233,20 @@ class _MoviePageState extends State<MoviePage> with THEOliveEventListener {
   }
 
 }
+
+class ChromelessPlayer extends StatelessWidget {
+  static GlobalKey globalKey = GlobalKey();
+
+  const ChromelessPlayer({
+    super.key,
+    required this.player,
+  });
+
+  final THEOlive player;
+
+  @override
+  Widget build(BuildContext context) {
+    return player.getView();
+  }
+}
+

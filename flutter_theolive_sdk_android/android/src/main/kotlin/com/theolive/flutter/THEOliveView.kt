@@ -47,6 +47,10 @@ class THEOliveView(context: Context, viewId: Int, args: Any?, messenger: BinaryM
             field = value
         }
 
+    // sync behavior with native iOS SDK
+    // TODO: this logic should be fixed in the native SDK.
+    private var wasPlayingBeforeActivityOnPause: Boolean = false
+
     init {
         id = viewId
         useHybridComposition = (args as? Map<*, *>)?.get("useHybridComposition") as? Boolean == true
@@ -127,9 +131,14 @@ class THEOliveView(context: Context, viewId: Int, args: Any?, messenger: BinaryM
 
     override fun onLifecycleResume() {
         playerView.onResume()
+        if (wasPlayingBeforeActivityOnPause) {
+            wasPlayingBeforeActivityOnPause = false
+            play()
+        }
     }
 
     override fun onLifecyclePause() {
+        wasPlayingBeforeActivityOnPause = !playerView.player.paused
         playerView.onPause()
     }
 

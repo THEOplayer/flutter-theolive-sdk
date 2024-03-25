@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_theolive_example/debug_tools.dart';
+import 'package:flutter_theolive_example/movie_page.dart';
 import 'package:theolive/theolive.dart';
 
 class FullscreenPage extends StatefulWidget {
@@ -54,7 +55,7 @@ class _FullscreenPageState extends State<FullscreenPage> {
             //double w = MediaQuery.of(context).size.width;
             //double h = MediaQuery.of(context).size.height;
             //bool landscape = false;
-            return Center(child: !willPop ? widget.theoLive.getView() : Container());
+            return Center(child: !willPop ? ChromelessPlayer(key: ChromelessPlayer.globalKey, player: widget.theoLive) : Container());
           },
         ),
         floatingActionButton: FloatingActionButton(
