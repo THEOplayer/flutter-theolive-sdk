@@ -110,19 +110,14 @@ class THEOlive {
     return _playerState.isInitialized;
   }
 
-  /// Whether the player is loaded.
-  bool isLoaded() {
-    return _playerState.channelState.index >= ChannelState.loaded.index;
-  }
-
   /// Whether the player is paused.
   bool isPaused() {
-    return _playerState.channelState == ChannelState.paused;
+    return _playerState.isPaused;
   }
 
   /// Whether the player is buffering.
   bool isWaiting() {
-    return _playerState.channelState == ChannelState.waiting;
+    return _playerState.isWaiting;
   }
 
   /// Whether the currently loaded channel has autoplay enabled.

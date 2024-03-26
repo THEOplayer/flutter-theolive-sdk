@@ -24,4 +24,4 @@ class NativePlayerConfiguration {
   String? sessionId;
 }
 
-enum ChannelState { idle, loading, loaded, waiting, playing, paused, error, intentToFallback, offline }
+enum ChannelState { idle, loading, loaded, intentToFallback, offline }
