@@ -9,6 +9,9 @@ class PlayerState implements THEOliveEventListener {
 
   ChannelState channelState = ChannelState.idle;
   bool isInitialized = false;
+  bool isLoaded = false;
+  bool isPaused = true;
+  bool isWaiting = false;
   bool isAutoplay = false;
   bool muted = false;
   bool badNetworkMode = false;
@@ -57,8 +60,9 @@ class PlayerState implements THEOliveEventListener {
   @override
   void onChannelLoaded(String channelID) {
     _viewController.isAutoplay().then((value) {
-      isAutoplay = value;
       channelState = ChannelState.loaded;
+      isAutoplay = value;
+      isLoaded = true;
       _stateChangeListener?.call();
       _eventListeners.forEach((listener) {
         listener.onChannelLoaded(channelID);
@@ -77,7 +81,7 @@ class PlayerState implements THEOliveEventListener {
 
   @override
   void onWaiting() {
-    channelState = ChannelState.waiting;
+    isWaiting = true;
     _stateChangeListener?.call();
     _eventListeners.forEach((listener) {
       listener.onWaiting();
@@ -86,6 +90,7 @@ class PlayerState implements THEOliveEventListener {
 
   @override
   void onPlay() {
+    isPaused = false;
     _stateChangeListener?.call();
     _eventListeners.forEach((listener) {
       listener.onPlay();
@@ -94,7 +99,7 @@ class PlayerState implements THEOliveEventListener {
 
   @override
   void onPlaying() {
-    channelState = ChannelState.playing;
+    isWaiting = false;
     _stateChangeListener?.call();
     _eventListeners.forEach((listener) {
       listener.onPlaying();
@@ -103,7 +108,7 @@ class PlayerState implements THEOliveEventListener {
 
   @override
   void onPause() {
-    channelState = ChannelState.paused;
+    isPaused = true;
     _stateChangeListener?.call();
     _eventListeners.forEach((listener) {
       listener.onPause();
@@ -156,7 +161,6 @@ class PlayerState implements THEOliveEventListener {
 
   @override
   void onError(String message) {
-    channelState = ChannelState.error;
     error = message;
     _stateChangeListener?.call();
     _eventListeners.forEach((listener) {
@@ -167,6 +171,9 @@ class PlayerState implements THEOliveEventListener {
   /// Method to reset the player state.
   void resetState() {
     channelState = ChannelState.idle;
+    isLoaded = false;
+    isPaused = true;
+    isWaiting = false;
     isAutoplay = false;
     muted = false;
     badNetworkMode = false;
