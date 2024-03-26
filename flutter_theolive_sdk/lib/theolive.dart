@@ -110,11 +110,6 @@ class THEOlive {
     return _playerState.isInitialized;
   }
 
-  /// Whether the player is loaded.
-  bool isLoaded() {
-    return _playerState.isLoaded;
-  }
-
   /// Whether the player is paused.
   bool isPaused() {
     return _playerState.isPaused;

@@ -9,7 +9,6 @@ class PlayerState implements THEOliveEventListener {
 
   ChannelState channelState = ChannelState.idle;
   bool isInitialized = false;
-  bool isLoaded = false;
   bool isPaused = true;
   bool isWaiting = false;
   bool isAutoplay = false;
@@ -62,7 +61,6 @@ class PlayerState implements THEOliveEventListener {
     _viewController.isAutoplay().then((value) {
       channelState = ChannelState.loaded;
       isAutoplay = value;
-      isLoaded = true;
       _stateChangeListener?.call();
       _eventListeners.forEach((listener) {
         listener.onChannelLoaded(channelID);
@@ -171,7 +169,6 @@ class PlayerState implements THEOliveEventListener {
   /// Method to reset the player state.
   void resetState() {
     channelState = ChannelState.idle;
-    isLoaded = false;
     isPaused = true;
     isWaiting = false;
     isAutoplay = false;
