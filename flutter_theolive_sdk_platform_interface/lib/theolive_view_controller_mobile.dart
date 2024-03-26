@@ -78,7 +78,7 @@ class THEOliveViewControllerMobile extends THEOliveViewController implements THE
 
   @override
   void dispose() {
-    _nativeAPI.dispose();
+    _nativeAPI.destroy();
   }
 
   @override

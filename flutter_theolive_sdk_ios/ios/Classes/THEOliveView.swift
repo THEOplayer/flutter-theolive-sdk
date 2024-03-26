@@ -113,7 +113,7 @@ class THEOliveView: NSObject, FlutterPlatformView, THEOlivePlayerEventListener, 
         self.player.updateConfiguration(nativeConfig)
     }
 
-    func dispose() throws {
+    func destroy() throws {
         player.remove(eventListener: self)
         chromelessPlayerView?.removeFromSuperview()
         player.reset()

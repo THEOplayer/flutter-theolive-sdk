@@ -96,7 +96,7 @@ interface THEOliveNativeAPI {
   fun goLive()
   fun reset()
   fun updateConfiguration(configuration: PigeonNativePlayerConfiguration)
-  fun dispose()
+  fun destroy()
   fun onLifecycleResume()
   fun onLifecyclePause()
 
@@ -288,12 +288,12 @@ interface THEOliveNativeAPI {
         }
       }
       run {
-        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.dispose", codec)
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.destroy", codec)
         if (api != null) {
           channel.setMessageHandler { _, reply ->
             var wrapped: List<Any?>
             try {
-              api.dispose()
+              api.destroy()
               wrapped = listOf<Any?>(null)
             } catch (exception: Throwable) {
               wrapped = wrapError(exception)
