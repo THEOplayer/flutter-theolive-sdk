@@ -296,9 +296,9 @@ class THEOliveNativeAPI {
     }
   }
 
-  Future<void> dispose() async {
+  Future<void> destroy() async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.dispose', codec,
+        'dev.flutter.pigeon.flutter_theolive.THEOliveNativeAPI.destroy', codec,
         binaryMessenger: _binaryMessenger);
     final List<Object?>? replyList =
         await channel.send(null) as List<Object?>?;

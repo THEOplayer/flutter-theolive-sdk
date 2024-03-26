@@ -82,6 +82,10 @@ class THEOliveView(context: Context, viewId: Int, args: Any?, messenger: BinaryM
         return linearLayout
     }
 
+    override fun dispose() {
+        // do nothing, we rely on destroy() method to clean things
+    }
+
     override fun preloadChannels(channelIDs: List<String>) {
         playerView.player.preloadChannels(channelIDs.toTypedArray())
     }
@@ -122,7 +126,7 @@ class THEOliveView(context: Context, viewId: Int, args: Any?, messenger: BinaryM
         playerView.player.updateConfig(configuration.sessionId)
     }
 
-    override fun dispose() {
+    override fun destroy() {
         playerView.player.removeEventListener(this)
         linearLayout.removeView(playerView)
         playerView.player.destroy()
