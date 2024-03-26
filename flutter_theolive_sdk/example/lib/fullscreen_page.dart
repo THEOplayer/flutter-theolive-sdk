@@ -14,19 +14,27 @@ class FullscreenPage extends StatefulWidget {
   State<FullscreenPage> createState() => _FullscreenPageState();
 }
 
-class _FullscreenPageState extends State<FullscreenPage> {
+class _FullscreenPageState extends State<FullscreenPage> with THEOliveEventListener {
   bool willPop = false;
+  bool _isPaused = false;
 
   @override
   void initState() {
     dprint("_FullscreenPageState with THEOliveView: initState ");
     super.initState();
+
+    widget.theoLive.addEventListener(this);
+    _updateLocalPausedState();
+  }
+
+  void _updateLocalPausedState() {
+    _isPaused = widget.theoLive.isPaused();
   }
 
   @override
   void dispose() {
     dprint("_FullscreenPageState with THEOliveView: dispose ");
-    // TODO: implement dispose
+    widget.theoLive.removeEventListener(this);
     super.dispose();
   }
 
@@ -36,6 +44,20 @@ class _FullscreenPageState extends State<FullscreenPage> {
     } else {
       widget.theoLive.pause();
     }
+  }
+
+  @override
+  void onPlay() {
+    setState(() {
+      _updateLocalPausedState();
+    });
+  }
+
+  @override
+  void onPause() {
+    setState(() {
+      _updateLocalPausedState();
+    });
   }
 
   @override
@@ -61,7 +83,7 @@ class _FullscreenPageState extends State<FullscreenPage> {
         floatingActionButton: FloatingActionButton(
           onPressed: _playPause,
           tooltip: 'Load',
-          child: widget.theoLive.isPaused() ? const Icon(Icons.play_arrow) : const Icon(Icons.pause),
+          child: _isPaused ? const Icon(Icons.play_arrow) : const Icon(Icons.pause),
         ),
       ),
     );

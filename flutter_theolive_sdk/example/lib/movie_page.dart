@@ -31,6 +31,9 @@ class _MoviePageState extends State<MoviePage> with THEOliveEventListener {
           NativePlayerConfiguration nativePlayerConfiguration = NativePlayerConfiguration();
           nativePlayerConfiguration.sessionId = "sessionIdForTracking";
 
+          // NOTE: this is to trigger UI updates based on the player state change
+          // To do this more efficiently, it is better to react on the single events available
+          // through THEOlive.addEventListener(THEOliveEventListener eventListener)
           _theoLive.setStateListener(() => setState(() {}));
           _theoLive.addEventListener(this);
 
