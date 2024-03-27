@@ -1,0 +1,63 @@
+name: Build iOS on PRs
+on:
+  workflow_dispatch:
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+jobs:
+  build_ios:
+
+    strategy:
+      matrix:
+        xcode_version: ['14.3.1', '15.2'] # probably we can focus only on the latest stable 15.x later
+
+    runs-on: macos-14
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+
+      - name: Select Xcode ${{ matrix.xcode_version }}
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: ${{ matrix.xcode_version }} # Check versions: https://github.com/actions/runner-images/blob/main/images/macos/macos-14-Readme.md
+
+      - name: Setup flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          #architecture: x64
+          cache: true
+          cache-key: 'flutter-:os:-:channel:-:version:-:arch:-:hash:' # optional, change this to force refresh cache
+          cache-path: '${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:' # optional, change this to specify the cache path
+
+      - name: Print flutter version
+        run: flutter doctor
+
+      - name: Setup Melos
+        uses: bluefireteam/melos-action@v3
+
+      - name: Pub get
+        run: flutter pub get
+        working-directory: flutter_theolive_sdk
+
+      - name: Run unit tests
+        run: flutter test
+        working-directory: flutter_theolive_sdk
+
+      - name: Start iOS simulator
+        uses: futureware-tech/simulator-action@v3
+        with:
+          model: 'iPhone 14'
+          os_version: '>=16.0'
+
+      - name: Run integration tests
+        run: flutter test integration_test_single_entrypoint/entrypoint.dart
+        working-directory: flutter_theolive_sdk/example
+        env:
+          TEST_LICENSE: ${{ secrets.TEST_LICENSE }}
+
+
+      - name: Build iOS
+        run: flutter build ios --release --no-codesign
+        working-directory: flutter_theolive_sdk/example
