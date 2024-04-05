@@ -25,70 +25,84 @@ class THEOliveViewControllerMobile extends THEOliveViewController implements THE
 
   @override
   void preloadChannels(List<String> list) {
-    _nativeAPI.preloadChannels(list);
+    _nativeAPI.preloadChannels(list)
+        .onError<Exception>((error, stackTrace) => exceptionHandler(exception: error, tag: "PIGEON", stacktrace: stackTrace));
   }
 
   @override
   void loadChannel(String channelId) {
-    _nativeAPI.loadChannel(channelId).onError((error, stackTrace) =>
-        //consume the exception, it is irrelevant to the flow, just for information
-        dprint("ERROR during loadChannel: $error"));
+    _nativeAPI.loadChannel(channelId)
+        .onError<Exception>((error, stackTrace) => exceptionHandler(exception: error, tag: "PIGEON", stacktrace: stackTrace));
   }
-
+    
   @override
   void play() {
-    _nativeAPI.play();
+    _nativeAPI.play()
+        .onError<Exception>((error, stackTrace) => exceptionHandler(exception: error, tag: "PIGEON", stacktrace: stackTrace));
   }
 
   @override
   void pause() {
-    _nativeAPI.pause();
+    _nativeAPI.pause()
+        .onError<Exception>((error, stackTrace) => exceptionHandler(exception: error, tag: "PIGEON", stacktrace: stackTrace));
   }
 
   @override
   Future<bool> isAutoplay() {
-    return _nativeAPI.isAutoplay();
+    return _nativeAPI.isAutoplay()
+        .onError<Exception>((error, stackTrace) {
+          exceptionHandler(exception: error, tag: "PIGEON", stacktrace: stackTrace);
+          return false;
+        });
   }
 
   @override
   void setMuted(bool muted) {
-    _nativeAPI.setMuted(muted);
+    _nativeAPI.setMuted(muted)
+        .onError<Exception>((error, stackTrace) => exceptionHandler(exception: error, tag: "PIGEON", stacktrace: stackTrace));
   }
 
   @override
   void setBadNetworkMode(bool badNetworkMode) {
-    _nativeAPI.setBadNetworkMode(badNetworkMode);
+    _nativeAPI.setBadNetworkMode(badNetworkMode)
+        .onError<Exception>((error, stackTrace) => exceptionHandler(exception: error, tag: "PIGEON", stacktrace: stackTrace));
   }
 
   @override
   void goLive() {
-    _nativeAPI.goLive();
+    _nativeAPI.goLive()
+        .onError<Exception>((error, stackTrace) => exceptionHandler(exception: error, tag: "PIGEON", stacktrace: stackTrace));
   }
 
   @override
   void reset() {
-    _nativeAPI.reset();
+    _nativeAPI.reset()
+        .onError<Exception>((error, stackTrace) => exceptionHandler(exception: error, tag: "PIGEON", stacktrace: stackTrace));
   }
 
   @override
   void updateNativePlayerConfiguration(NativePlayerConfiguration configuration) {
     final nativeConfig = PigeonNativePlayerConfiguration(sessionId: configuration.sessionId);
-    _nativeAPI.updateConfiguration(nativeConfig);
+    _nativeAPI.updateConfiguration(nativeConfig)
+        .onError<Exception>((error, stackTrace) => exceptionHandler(exception: error, tag: "PIGEON", stacktrace: stackTrace));
   }
 
   @override
   void dispose() {
-    _nativeAPI.destroy();
+    _nativeAPI.destroy()
+        .onError<Exception>((error, stackTrace) => exceptionHandler(exception: error, tag: "PIGEON", stacktrace: stackTrace));
   }
 
   @override
   void onLifecycleResume() {
-    _nativeAPI.onLifecycleResume();
+    _nativeAPI.onLifecycleResume()
+        .onError<Exception>((error, stackTrace) => exceptionHandler(exception: error, tag: "PIGEON", stacktrace: stackTrace));
   }
 
   @override
   void onLifecyclePause() {
-    _nativeAPI.onLifecyclePause();
+    _nativeAPI.onLifecyclePause()
+        .onError<Exception>((error, stackTrace) => exceptionHandler(exception: error, tag: "PIGEON", stacktrace: stackTrace));
   }
 
   @override
