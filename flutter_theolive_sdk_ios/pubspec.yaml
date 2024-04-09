@@ -1,6 +1,6 @@
 name: theolive_ios
 description: THEOlive Flutter SDK for iOS. Used by `theolive` to support ultra low-latency video playback on the iOS platform.
-version: 1.0.0
+version: 1.0.1
 homepage: https://theo.live
 repository: https://github.com/THEOplayer/flutter-theolive-sdk
 
@@ -11,7 +11,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  theolive_platform_interface: 1.0.0
+  theolive_platform_interface: 1.0.1
 
 dev_dependencies:
   flutter_test:
