@@ -1,6 +1,6 @@
 name: theolive_platform_interface
 description: A common platform interface for the THEOlive Flutter SDK. Used by the platform-specific packages of `theolive`.
-version: 1.0.0
+version: 1.0.1
 homepage: https://theo.live
 repository: https://github.com/THEOplayer/flutter-theolive-sdk
 
