@@ -1,26 +1,5 @@
 import 'package:flutter/foundation.dart';
 
-void dprint(Object? object) {
-  if (kDebugMode) {
-    print(object);
-  }
-}
-
-void exceptionHandler({required String tag, required Exception exception, String? context = null, StackTrace? stacktrace = null}) {
-  if (kDebugMode) {
-    throw exception;
-  } else {
-    final prefix = "[$tag]";
-    final ctx = context != null ? "[C:$context]" : "";
-    var logMessage = "THEOLogger$prefix$ctx - Exception happened: $exception";
-    if (!THEOLogger.instance.isListening()) {
-      logMessage += " - for more info, attach a logger to THEOLogger.instance!";
-    }
-    print(logMessage);
-    THEOLogger.instance._log(exception, stacktrace);
-  }
-}
-
 /**
  * Logger class to capture logs and exceptions
  * NOTE:
@@ -54,4 +33,19 @@ class THEOLogger {
 
 abstract class THEOLoggerCallback {
   void onException(Exception e, StackTrace stackTrace);
+}
+
+void exceptionHandler({required String tag, required Exception exception, String? context = null, StackTrace? stacktrace = null}) {
+  if (kDebugMode) {
+    throw exception;
+  } else {
+    final prefix = "[$tag]";
+    final ctx = context != null ? "[C:$context]" : "";
+    var logMessage = "THEOLogger$prefix$ctx - Exception happened: $exception";
+    if (!THEOLogger.instance.isListening()) {
+      logMessage += " - for more info, attach a logger to THEOLogger.instance!";
+    }
+    print(logMessage);
+    THEOLogger.instance._log(exception, stacktrace);
+  }
 }
