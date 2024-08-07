@@ -36,6 +36,10 @@ apply plugin: 'kotlin-android'
 def theoliveVersion ='3.13.1'
 
 android {
+    if (project.android.hasProperty("namespace")) {
+        namespace 'com.theolive.flutter'
+    }
+
     compileSdkVersion 31
 
     compileOptions {
