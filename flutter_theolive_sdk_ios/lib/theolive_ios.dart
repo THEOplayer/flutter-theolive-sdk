@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:theolive_ios/theolive_viewcontroller_ios.dart';
 import 'package:theolive_platform_interface/theolive_platform_interface.dart';
 import 'package:theolive_platform_interface/theolive_playerconfig.dart';
-import 'package:theolive_platform_interface/debug_helpers.dart';
+import 'package:theolive_platform_interface/helpers/debug_helpers.dart';
 
 class THEOliveIOS extends TheolivePlatform {
   /// Registers this class as the default instance of [TheoplayerPlatform].

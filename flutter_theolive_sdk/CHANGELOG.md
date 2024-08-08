@@ -1,3 +1,8 @@
+## [Unreleased]
+
+* [Android] Updated Gradle version to 7.3.1
+* [Android] Fixed Gradle namespace issue
+
 ## 1.0.1
 
 * Updated documentation.
