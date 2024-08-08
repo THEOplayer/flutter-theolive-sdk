@@ -1,13 +1,14 @@
 import 'package:flutter/widgets.dart';
 import 'package:theolive/theolive_state.dart';
 import 'package:theolive/theolive_view.dart';
-import 'package:theolive_platform_interface/debug_helpers.dart';
+import 'package:theolive_platform_interface/helpers/debug_helpers.dart';
 import 'package:theolive_platform_interface/theolive_event_listener.dart';
 import 'package:theolive_platform_interface/theolive_playerconfig.dart';
 import 'package:theolive_platform_interface/theolive_view_controller_interface.dart';
 
 export 'package:theolive_platform_interface/theolive_playerconfig.dart';
 export 'package:theolive_platform_interface/theolive_event_listener.dart';
+export 'package:theolive_platform_interface/helpers/theologger.dart';
 
 typedef PlayerCreatedCallback = void Function();
 typedef StateChangeListener = void Function();

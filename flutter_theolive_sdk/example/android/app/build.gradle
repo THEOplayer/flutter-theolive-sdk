@@ -26,6 +26,10 @@ apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
+    if (project.android.hasProperty("namespace")) {
+        namespace 'com.theolive.theolive_example'
+    }
+
     compileSdkVersion flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
 

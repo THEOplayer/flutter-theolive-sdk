@@ -1,4 +1,4 @@
-import 'package:theolive_platform_interface/debug_helpers.dart';
+import 'package:theolive_platform_interface/helpers/theologger.dart';
 import 'package:theolive_platform_interface/pigeon/theolive_api.g.dart';
 import 'package:theolive_platform_interface/pigeon_multi_instance_wrapper.dart';
 import 'package:theolive_platform_interface/theolive_event_listener.dart';

@@ -1,6 +1,6 @@
 name: theolive
 description: The THEOlive SDK provides HTTP-based real-time streaming video API at scale
-version: 1.0.1
+version: 1.0.2
 homepage: https://theo.live
 repository: https://github.com/THEOplayer/flutter-theolive-sdk
 
@@ -11,9 +11,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  theolive_platform_interface: 1.0.1
-  theolive_android: 1.0.1
-  theolive_ios: 1.0.1
+  theolive_platform_interface: 1.0.2
+  theolive_android: 1.0.2
+  theolive_ios: 1.0.2
 
 dev_dependencies:
   flutter_test:
